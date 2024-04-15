@@ -49,7 +49,7 @@
 #define CONST_MASK(nr)			(1 << ((nr) & 7))
 
 static __always_inline void
-arch_set_bit(long nr, volatile unsigned long *addr)
+arch_set_bit(long nr, volatile unsigned long long *addr)
 {
 	if (__builtin_constant_p(nr)) {
 		asm volatile(LOCK_PREFIX "orb %b1,%0"
@@ -63,13 +63,13 @@ arch_set_bit(long nr, volatile unsigned long *addr)
 }
 
 static __always_inline void
-arch___set_bit(unsigned long nr, volatile unsigned long *addr)
+arch___set_bit(unsigned long nr, volatile unsigned long long *addr)
 {
 	asm volatile(__ASM_SIZE(bts) " %1,%0" : : ADDR, "Ir" (nr) : "memory");
 }
 
 static __always_inline void
-arch_clear_bit(long nr, volatile unsigned long *addr)
+arch_clear_bit(long nr, volatile unsigned long long *addr)
 {
 	if (__builtin_constant_p(nr)) {
 		asm volatile(LOCK_PREFIX "andb %b1,%0"
@@ -82,20 +82,20 @@ arch_clear_bit(long nr, volatile unsigned long *addr)
 }
 
 static __always_inline void
-arch_clear_bit_unlock(long nr, volatile unsigned long *addr)
+arch_clear_bit_unlock(long nr, volatile unsigned long long *addr)
 {
 	barrier();
 	arch_clear_bit(nr, addr);
 }
 
 static __always_inline void
-arch___clear_bit(unsigned long nr, volatile unsigned long *addr)
+arch___clear_bit(unsigned long nr, volatile unsigned long long *addr)
 {
 	asm volatile(__ASM_SIZE(btr) " %1,%0" : : ADDR, "Ir" (nr) : "memory");
 }
 
 static __always_inline bool arch_xor_unlock_is_negative_byte(unsigned long mask,
-		volatile unsigned long *addr)
+		volatile unsigned long long *addr)
 {
 	bool negative;
 	asm volatile(LOCK_PREFIX "xorb %2,%1"
@@ -107,19 +107,19 @@ static __always_inline bool arch_xor_unlock_is_negative_byte(unsigned long mask,
 #define arch_xor_unlock_is_negative_byte arch_xor_unlock_is_negative_byte
 
 static __always_inline void
-arch___clear_bit_unlock(long nr, volatile unsigned long *addr)
+arch___clear_bit_unlock(long nr, volatile unsigned long long *addr)
 {
 	arch___clear_bit(nr, addr);
 }
 
 static __always_inline void
-arch___change_bit(unsigned long nr, volatile unsigned long *addr)
+arch___change_bit(unsigned long nr, volatile unsigned long long *addr)
 {
 	asm volatile(__ASM_SIZE(btc) " %1,%0" : : ADDR, "Ir" (nr) : "memory");
 }
 
 static __always_inline void
-arch_change_bit(long nr, volatile unsigned long *addr)
+arch_change_bit(long nr, volatile unsigned long long *addr)
 {
 	if (__builtin_constant_p(nr)) {
 		asm volatile(LOCK_PREFIX "xorb %b1,%0"
@@ -132,19 +132,19 @@ arch_change_bit(long nr, volatile unsigned long *addr)
 }
 
 static __always_inline bool
-arch_test_and_set_bit(long nr, volatile unsigned long *addr)
+arch_test_and_set_bit(long nr, volatile unsigned long long *addr)
 {
 	return GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(bts), *addr, c, "Ir", nr);
 }
 
 static __always_inline bool
-arch_test_and_set_bit_lock(long nr, volatile unsigned long *addr)
+arch_test_and_set_bit_lock(long nr, volatile unsigned long long *addr)
 {
 	return arch_test_and_set_bit(nr, addr);
 }
 
 static __always_inline bool
-arch___test_and_set_bit(unsigned long nr, volatile unsigned long *addr)
+arch___test_and_set_bit(unsigned long nr, volatile unsigned long long *addr)
 {
 	bool oldbit;
 
@@ -156,7 +156,7 @@ arch___test_and_set_bit(unsigned long nr, volatile unsigned long *addr)
 }
 
 static __always_inline bool
-arch_test_and_clear_bit(long nr, volatile unsigned long *addr)
+arch_test_and_clear_bit(long nr, volatile unsigned long long *addr)
 {
 	return GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(btr), *addr, c, "Ir", nr);
 }
@@ -170,7 +170,7 @@ arch_test_and_clear_bit(long nr, volatile unsigned long *addr)
  * this without also updating arch/x86/kernel/kvm.c
  */
 static __always_inline bool
-arch___test_and_clear_bit(unsigned long nr, volatile unsigned long *addr)
+arch___test_and_clear_bit(unsigned long nr, volatile unsigned long long *addr)
 {
 	bool oldbit;
 
@@ -182,7 +182,7 @@ arch___test_and_clear_bit(unsigned long nr, volatile unsigned long *addr)
 }
 
 static __always_inline bool
-arch___test_and_change_bit(unsigned long nr, volatile unsigned long *addr)
+arch___test_and_change_bit(unsigned long nr, volatile unsigned long long *addr)
 {
 	bool oldbit;
 
@@ -195,18 +195,18 @@ arch___test_and_change_bit(unsigned long nr, volatile unsigned long *addr)
 }
 
 static __always_inline bool
-arch_test_and_change_bit(long nr, volatile unsigned long *addr)
+arch_test_and_change_bit(long nr, volatile unsigned long long *addr)
 {
 	return GEN_BINARY_RMWcc(LOCK_PREFIX __ASM_SIZE(btc), *addr, c, "Ir", nr);
 }
 
-static __always_inline bool constant_test_bit(long nr, const volatile unsigned long *addr)
+static __always_inline bool constant_test_bit(long nr, const volatile unsigned long long *addr)
 {
 	return ((1UL << (nr & (BITS_PER_LONG-1))) &
 		(addr[nr >> _BITOPS_LONG_SHIFT])) != 0;
 }
 
-static __always_inline bool constant_test_bit_acquire(long nr, const volatile unsigned long *addr)
+static __always_inline bool constant_test_bit_acquire(long nr, const volatile unsigned long long *addr)
 {
 	bool oldbit;
 
@@ -220,7 +220,7 @@ static __always_inline bool constant_test_bit_acquire(long nr, const volatile un
 	return oldbit;
 }
 
-static __always_inline bool variable_test_bit(long nr, volatile const unsigned long *addr)
+static __always_inline bool variable_test_bit(long nr, volatile const unsigned long long *addr)
 {
 	bool oldbit;
 
@@ -233,14 +233,14 @@ static __always_inline bool variable_test_bit(long nr, volatile const unsigned l
 }
 
 static __always_inline bool
-arch_test_bit(unsigned long nr, const volatile unsigned long *addr)
+arch_test_bit(unsigned long nr, const volatile unsigned long long *addr)
 {
 	return __builtin_constant_p(nr) ? constant_test_bit(nr, addr) :
 					  variable_test_bit(nr, addr);
 }
 
 static __always_inline bool
-arch_test_bit_acquire(unsigned long nr, const volatile unsigned long *addr)
+arch_test_bit_acquire(unsigned long nr, const volatile unsigned long long *addr)
 {
 	return __builtin_constant_p(nr) ? constant_test_bit_acquire(nr, addr) :
 					  variable_test_bit(nr, addr);

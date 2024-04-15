@@ -51,11 +51,14 @@
 	".long 986b\n\t"					\
 	".popsection\n\t"
 
+/*
 #define ASM_REACHABLE							\
 	"998:\n\t"							\
 	".pushsection .discard.reachable\n\t"				\
 	".long 998b\n\t"						\
 	".popsection\n\t"
+*/
+#define ASM_REACHABLE
 
 #else /* __ASSEMBLY__ */
 

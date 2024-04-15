@@ -42,6 +42,8 @@ extern struct module __this_module;
 	.long sym
 #endif
 
+#define ___EXPORT_SYMBOL(sym, license, ns)
+#if 0
 #define ___EXPORT_SYMBOL(sym, license, ns)		\
 	.section ".export_symbol","a"		ASM_NL	\
 	__export_symbol_##sym:			ASM_NL	\
@@ -49,6 +51,7 @@ extern struct module __this_module;
 		.asciz ns			ASM_NL	\
 		__EXPORT_SYMBOL_REF(sym)	ASM_NL	\
 	.previous
+#endif
 
 #if defined(__DISABLE_EXPORTS)
 

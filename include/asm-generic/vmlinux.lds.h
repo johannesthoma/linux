@@ -813,7 +813,8 @@
 		.strtab 0 : { *(.strtab) }				\
 		.shstrtab 0 : { *(.shstrtab) }
 
-#ifdef CONFIG_GENERIC_BUG
+// #ifdef CONFIG_GENERIC_BUG
+#if 0
 #define BUG_TABLE							\
 	. = ALIGN(8);							\
 	__bug_table : AT(ADDR(__bug_table) - LOAD_OFFSET) {		\

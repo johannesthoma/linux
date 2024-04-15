@@ -363,7 +363,8 @@ struct ftrace_likely_data {
 #endif
 
 #ifndef asm_volatile_goto
-#define asm_volatile_goto(x...) asm goto(x)
+// #define asm_volatile_goto(x...) asm goto(x)
+#define asm_volatile_goto(x...) /* nix */
 #endif
 
 #ifdef CONFIG_CC_HAS_ASM_INLINE
@@ -431,8 +432,12 @@ struct ftrace_likely_data {
  * supplied condition is *false*, emitting the supplied error message if the
  * compiler has support to do so.
  */
+/*
 #define compiletime_assert(condition, msg) \
 	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+*/
+
+#define compiletime_assert(condition, msg) /* nix */
 
 #define compiletime_assert_atomic_type(t)				\
 	compiletime_assert(__native_word(t),				\

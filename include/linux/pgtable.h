@@ -110,7 +110,8 @@ static inline pte_t *__pte_map(pmd_t *pmd, unsigned long address)
 }
 static inline void pte_unmap(pte_t *pte)
 {
-	rcu_read_unlock();
+	KIRQL flags;	/* TODO: = PASSIVE_LEVEL? */
+	rcu_read_unlock(flags);
 }
 #endif
 

@@ -13,6 +13,11 @@
 
 #ifndef __ASSEMBLY__
 
+/* TODO: ifdef 64bit: else 32bit */
+typedef unsigned long long ULONG_PTR;
+typedef long long LONG_PTR;
+typedef char KIRQL;
+
 /*
  * Skipped when running bindgen due to a libclang issue;
  * see https://github.com/rust-lang/rust-bindgen/issues/2244.

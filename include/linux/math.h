@@ -2,6 +2,7 @@
 #ifndef _LINUX_MATH_H
 #define _LINUX_MATH_H
 
+#include <linux/compiler_types.h>
 #include <linux/types.h>
 #include <asm/div64.h>
 #include <uapi/linux/kernel.h>
@@ -141,7 +142,7 @@ __STRUCT_FRACT(u32)
  * Return: an absolute value of x.
  */
 #define abs(x)	__abs_choose_expr(x, long long,				\
-		__abs_choose_expr(x, ULONG_PTR,				\
+		__abs_choose_expr(x, long,				\
 		__abs_choose_expr(x, int,				\
 		__abs_choose_expr(x, short,				\
 		__abs_choose_expr(x, char,				\

@@ -706,15 +706,15 @@ void dm_sync_table(struct mapped_device *md)
  * A fast alternative to dm_get_live_table/dm_put_live_table.
  * The caller must not block between these two functions.
  */
-static struct dm_table *dm_get_live_table_fast(struct mapped_device *md) __acquires(RCU)
+static struct dm_table *dm_get_live_table_fast(struct mapped_device *md, KIRQL *flags) __acquires(RCU)
 {
-	rcu_read_lock();
+	*flags = rcu_read_lock();
 	return rcu_dereference(md->map);
 }
 
-static void dm_put_live_table_fast(struct mapped_device *md) __releases(RCU)
+static void dm_put_live_table_fast(struct mapped_device *md, KIRQL *flags) __releases(RCU)
 {
-	rcu_read_unlock();
+	rcu_read_unlock(*flags);
 }
 
 static char *_dm_claim_ptr = "I belong to device-mapper";
@@ -2643,10 +2643,12 @@ struct dm_table *dm_swap_table(struct mapped_device *md, struct dm_table *table)
 	 * reappear.
 	 */
 	if (dm_table_has_no_data_devices(table)) {
-		live_map = dm_get_live_table_fast(md);
+		KIRQL flags;
+
+		live_map = dm_get_live_table_fast(md, &flags);
 		if (live_map)
 			limits = md->queue->limits;
-		dm_put_live_table_fast(md);
+		dm_put_live_table_fast(md, &flags);
 	}
 
 	if (!live_map) {

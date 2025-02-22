@@ -2,6 +2,12 @@
 #ifndef __LINUX_COMPILER_TYPES_H
 #define __LINUX_COMPILER_TYPES_H
 
+/* Windows headers should be included *only* here: */
+
+#include <ntdef.h>
+#include <ntddk.h>
+#include <ntdddisk.h>
+
 /*
  * __has_builtin is supported on gcc >= 10, clang >= 3 and icc >= 21.
  * In the meantime, to support gcc < 10, we implement __has_builtin
@@ -13,6 +19,7 @@
 
 #ifndef __ASSEMBLY__
 
+#if 0
 #ifdef CONFIG_32BIT
 typedef unsigned long ULONG_PTR;
 typedef long LONG_PTR;
@@ -21,6 +28,7 @@ typedef unsigned long long ULONG_PTR;
 typedef long long LONG_PTR;
 #endif
 typedef char KIRQL;
+#endif
 
 /*
  * Skipped when running bindgen due to a libclang issue;

@@ -297,6 +297,10 @@ extern void init_wait_entry(struct wait_queue_entry *wq_entry, int flags);
  * otherwise.
  */
 
+#ifdef __out
+#undef __out
+#endif
+
 #define ___wait_event(wq_head, condition, state, exclusive, ret, cmd)		\
 ({										\
 	__label__ __out;							\

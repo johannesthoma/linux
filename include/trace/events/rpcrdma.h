@@ -1509,7 +1509,7 @@ DECLARE_EVENT_CLASS(svcrdma_accept_class,
 		DEFINE_EVENT(svcrdma_accept_class, svcrdma_##name##_err, \
 				TP_PROTO( \
 					const struct svcxprt_rdma *rdma, \
-					long status \
+					LONG_PTR status \
 				), \
 				TP_ARGS(rdma, status))
 

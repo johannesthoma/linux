@@ -13,9 +13,13 @@
 
 #ifndef __ASSEMBLY__
 
-/* TODO: ifdef 64bit: else 32bit */
+#ifdef CONFIG_32BIT
+typedef unsigned long ULONG_PTR;
+typedef long LONG_PTR;
+#else
 typedef unsigned long long ULONG_PTR;
 typedef long long LONG_PTR;
+#endif
 typedef char KIRQL;
 
 /*

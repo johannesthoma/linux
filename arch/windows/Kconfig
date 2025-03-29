@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0
+
+menu "Windows/ReactOS-specific options"
+
+config WINDOWS
+	bool
+	default y
+
+endmenu

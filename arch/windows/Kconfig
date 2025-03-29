@@ -6,4 +6,8 @@ config WINDOWS
 	bool
 	default y
 
+config HZ
+        int
+        default 1000
+
 endmenu

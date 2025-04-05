@@ -1,3 +1,5 @@
+#define TIF_NEED_RESCHED        3       /* rescheduling necessary */
+
 struct thread_info {
 	int preempt_count;
 	unsigned long flags;

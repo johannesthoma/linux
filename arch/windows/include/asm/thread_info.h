@@ -1,4 +1,7 @@
+#define TIF_SIGPENDING          2       /* signal pending */
 #define TIF_NEED_RESCHED        3       /* rescheduling necessary */
+#define TIF_NOTIFY_SIGNAL       17      /* signal notifications exist */
+
 
 struct thread_info {
 	int preempt_count;
@@ -10,3 +13,9 @@ static inline struct thread_info *current_thread_info(void)
 {
 	return NULL;
 }
+
+static __always_inline int user_mode(struct pt_regs *regs)
+{
+	return 0;	/* never on windows */
+}
+

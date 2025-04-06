@@ -740,7 +740,7 @@ do {									      \
  * read-side critical sections may be preempted and they may also block, but
  * only when acquiring spinlocks that are subject to priority inheritance.
  */
-static __always_inline KIRQL rcu_read_lock(void)
+static __always_inline void rcu_read_lock(void)
 {
 	__rcu_read_lock();
 	__acquire(RCU);
@@ -771,7 +771,7 @@ static __always_inline KIRQL rcu_read_lock(void)
  *
  * See rcu_read_lock() for more information.
  */
-static inline void rcu_read_unlock(KIRQL flags)
+static inline void rcu_read_unlock(void)
 {
 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
 			 "rcu_read_unlock() used illegally while idle");

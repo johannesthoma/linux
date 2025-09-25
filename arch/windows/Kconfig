@@ -3,25 +3,28 @@
 menu "Windows and ReactOS-specific options"
 
 config WINDOWS
-	bool
+	bool "Windows architecture - compile Windows drivers from Linux sources"
 	default y
 	select GENERIC_ATOMIC64
 
-config MMU
-	bool
-	default n
-
 config HZ
-        int
+        int "Clock frequency."
         default 1000
 
 # TODO: those should depend on WINDOWS_ARCH
 config 64BIT
-	bool
+	bool "64 bit"
 	default n
 
 config 32BIT
-	bool
+	bool "32 bit"
 	default y
+
+config MMU
+	bool "MMU-based Paged Memory Management Support"
+	default n
+	help
+	  Select if you want MMU-based virtualised addressing space
+	  support by paged memory management. If unsure, say 'Y'.
 
 endmenu

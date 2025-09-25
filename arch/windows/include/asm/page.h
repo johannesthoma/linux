@@ -1,3 +1,6 @@
+#ifndef _ASM_PAGE_H
+#define _ASM_PAGE_H
+
 #define PAGE_SIZE 4096
 #define PAGE_MASK ~(PAGE_SIZE-1)
 #define PAGE_SHIFT 12
@@ -34,6 +37,16 @@ typedef unsigned long pgprot_t;
 #include <asm-generic/pgtable-nopud.h>
 
 #define virt_to_page(addr) (struct page*)(0)
+#define page_to_phys(p) (0)
 #define page_to_pfn(addr) (0)
 #define pfn_to_page(addr) (struct page*)(0)
 #define __va(phys) (0)
+#define __pa(virt) (0)
+
+static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, 
+                             struct task_struct *tsk)
+{
+	/* nothing */
+}
+
+#endif

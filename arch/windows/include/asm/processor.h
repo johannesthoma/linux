@@ -7,4 +7,6 @@ struct thread_struct {
 	unsigned long nix;
 };
 
+#define INIT_THREAD  {  }
+
 #endif

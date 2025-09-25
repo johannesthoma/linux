@@ -1,12 +1,19 @@
 #ifndef _ASM_PAGE_H
 #define _ASM_PAGE_H
 
-#define PAGE_SIZE 4096
-#define PAGE_MASK ~(PAGE_SIZE-1)
-#define PAGE_SHIFT 12
+#include <asm-generic/page.h>
+#include <asm-generic/pgtable-nopud.h>
 
 #define THREAD_SIZE PAGE_SIZE
 #define TASK_SIZE 0x80000000
+
+/* No pages, they are maintained by the Windows kernel */
+#define PAGE_KERNEL (void*)0
+
+#if 0
+#define PAGE_SIZE 4096
+#define PAGE_MASK ~(PAGE_SIZE-1)
+#define PAGE_SHIFT 12
 
 /* taken from arm/include/asm/page_nommu.h */
 #define clear_page(page)	memset((page), 0, PAGE_SIZE)
@@ -43,10 +50,6 @@ typedef unsigned long pgprot_t;
 #define __va(phys) (0)
 #define __pa(virt) (0)
 
-static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, 
-                             struct task_struct *tsk)
-{
-	/* nothing */
-}
+#endif
 
 #endif

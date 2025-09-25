@@ -9,4 +9,9 @@ struct thread_struct {
 
 #define INIT_THREAD  {  }
 
+static inline unsigned long __get_wchan(struct task_struct *p)
+{
+	return 0;
+}
+
 #endif

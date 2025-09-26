@@ -4,6 +4,7 @@
 # WINDOWS_ARCH ?= x86_64
 WINDOWS_ARCH ?= i686
 CROSS_COMPILE = $(WINDOWS_ARCH)-w64-mingw32-
+# ?? shouldn't that be the subarch?
 SRCARCH = $(ARCH)
 
 # EXTRA_CFLAGS += -UWIN32

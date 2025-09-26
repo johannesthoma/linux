@@ -27,4 +27,10 @@ config MMU
 	  Select if you want MMU-based virtualised addressing space
 	  support by paged memory management. If unsure, say 'Y'.
 
+config HUGETLB_PAGE
+	bool "Huge TLB. Say no"
+	default n
+	help
+	   Say no.
+
 endmenu

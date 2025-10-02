@@ -33,4 +33,17 @@ config HUGETLB_PAGE
 	help
 	   Say no.
 
+config KALLSYMS
+	bool "allsyms. say no"
+	default n
+	depends on !WINDOWS
+	help
+	   Say no.
+
+config HAVE_FUNCTION_DESCRIPTORS
+	bool "no"
+	default n
+	help
+	   say no
+
 endmenu

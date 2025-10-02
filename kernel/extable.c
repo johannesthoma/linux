@@ -160,6 +160,13 @@ void *dereference_kernel_function_descriptor(void *ptr)
 }
 #endif
 
+#ifdef CONFIG_WINDOWS
+int func_ptr_is_kernel_text(void *ptr)
+{
+	return 0;
+}
+
+#else
 int func_ptr_is_kernel_text(void *ptr)
 {
 	unsigned long addr;
@@ -168,3 +175,4 @@ int func_ptr_is_kernel_text(void *ptr)
 		return 1;
 	return is_module_text_address(addr);
 }
+#endif

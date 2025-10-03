@@ -1,0 +1,20 @@
+#include <linux/sched/task.h>
+
+/* should never be called ... */
+
+void *__switch_to(struct task_struct *from, struct task_struct *to)
+{
+	return from;
+}
+
+int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
+{
+	return 0;
+}
+
+void flush_thread(void)
+{
+}
+
+/* normally this is in linker, but now we have it here ... */
+unsigned long init_stack[THREAD_SIZE / sizeof(unsigned long)];

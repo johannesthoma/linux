@@ -40,4 +40,10 @@ config GENERIC_HWEIGHT
 config CRYPTO_LIB_BLAKE2S_GENERIC
 	def_bool y
 
+config GENERIC_SCHED_CLOCK
+	def_bool y
+
+config GENERIC_IRQ_SHOW
+	def_bool y
+
 endmenu

@@ -38,7 +38,7 @@ static inline void blake2s_increment_counter(struct blake2s_state *state,
 
 void blake2s_compress(struct blake2s_state *state, const u8 *block,
 		      size_t nblocks, const u32 inc)
-		      __weak __alias(blake2s_compress_generic);
+		      __alias(blake2s_compress_generic);
 
 void blake2s_compress_generic(struct blake2s_state *state, const u8 *block,
 			      size_t nblocks, const u32 inc)

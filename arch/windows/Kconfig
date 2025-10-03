@@ -34,4 +34,10 @@ config GENERIC_CALIBRATE_DELAY
 config GENERIC_ATOMIC64
 	def_bool y
 
+config GENERIC_HWEIGHT
+	def_bool y
+
+config CRYPTO_LIB_BLAKE2S_GENERIC
+	def_bool y
+
 endmenu

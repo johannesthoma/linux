@@ -9853,12 +9853,23 @@ void __init sched_init_smp(void)
 }
 #endif /* CONFIG_SMP */
 
+#ifndef CONFIG_WINDOWS
+
 int in_sched_functions(unsigned long addr)
 {
 	return in_lock_functions(addr) ||
 		(addr >= (unsigned long)__sched_text_start
 		&& addr < (unsigned long)__sched_text_end);
 }
+
+#else
+
+int in_sched_functions(unsigned long addr)
+{
+	return 0;
+}
+
+#endif
 
 #ifdef CONFIG_CGROUP_SCHED
 /*

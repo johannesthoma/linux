@@ -189,6 +189,8 @@ static const char *argv_init[MAX_INIT_ARGS+2] = { "init", NULL, };
 const char *envp_init[MAX_INIT_ENVS+2] = { "HOME=/", "TERM=linux", NULL, };
 static const char *panic_later, *panic_param;
 
+#ifndef CONFIG_WINDOWS
+
 static bool __init obsolete_checksetup(char *line)
 {
 	const struct obs_kernel_param *p;
@@ -218,6 +220,14 @@ static bool __init obsolete_checksetup(char *line)
 	return had_early_param;
 }
 
+#else
+
+static bool __init obsolete_checksetup(char *line)
+{
+	return false;
+}
+
+#endif
 /*
  * This should be approx 2 Bo*oMips to start (note initial shift), and will
  * still work even if initially too large, it will just take slightly longer
@@ -730,6 +740,8 @@ noinline void __ref __noreturn rest_init(void)
 	cpu_startup_entry(CPUHP_ONLINE);
 }
 
+#ifndef CONFIG_WINDOWS
+
 /* Check for early params. */
 static int __init do_early_param(char *param, char *val,
 				 const char *unused, void *arg)
@@ -748,6 +760,16 @@ static int __init do_early_param(char *param, char *val,
 	/* We accept everything at this stage. */
 	return 0;
 }
+
+#else
+
+static int __init do_early_param(char *param, char *val,
+				 const char *unused, void *arg)
+{
+	return 0;
+}
+
+#endif
 
 void __init parse_early_options(char *cmdline)
 {

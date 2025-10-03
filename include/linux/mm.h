@@ -3118,6 +3118,8 @@ static inline void free_reserved_ptdesc(struct ptdesc *pt)
 	free_reserved_page(ptdesc_page(pt));
 }
 
+#ifndef CONFIG_WINDOWS
+
 /*
  * Default method to free all the __init memory into the buddy system.
  * The freed pages will be poisoned with pattern "poison" if it's within
@@ -3131,6 +3133,15 @@ static inline unsigned long free_initmem_default(int poison)
 	return free_reserved_area(&__init_begin, &__init_end,
 				  poison, "unused kernel image (initmem)");
 }
+
+#else
+
+static inline unsigned long free_initmem_default(int poison)
+{
+	return 0;
+}
+
+#endif
 
 static inline unsigned long get_num_physpages(void)
 {

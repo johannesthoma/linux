@@ -1253,6 +1253,8 @@ int __init_or_module do_one_initcall(initcall_t fn)
 }
 
 
+#ifndef CONFIG_WINDOWS
+
 static initcall_entry_t *initcall_levels[] __initdata = {
 	__initcall0_start,
 	__initcall1_start,
@@ -1264,6 +1266,8 @@ static initcall_entry_t *initcall_levels[] __initdata = {
 	__initcall7_start,
 	__initcall_end,
 };
+
+#endif
 
 /* Keep these in sync with initcalls in include/linux/init.h */
 static const char *initcall_level_names[] __initdata = {
@@ -1282,6 +1286,8 @@ static int __init ignore_unknown_bootoption(char *param, char *val,
 {
 	return 0;
 }
+
+#ifndef CONFIG_WINDOWS
 
 static void __init do_initcall_level(int level, char *command_line)
 {
@@ -1317,6 +1323,8 @@ static void __init do_initcalls(void)
 	kfree(command_line);
 }
 
+#endif
+
 /*
  * Ok, the machine is now initialized. None of the devices
  * have been touched yet, but the CPU subsystem is up and
@@ -1330,8 +1338,12 @@ static void __init do_basic_setup(void)
 	driver_init();
 	init_irq_proc();
 	do_ctors();
+#ifndef CONFIG_WINDOWS
 	do_initcalls();
+#endif
 }
+
+#ifndef CONFIG_WINDOWS
 
 static void __init do_pre_smp_initcalls(void)
 {
@@ -1341,6 +1353,8 @@ static void __init do_pre_smp_initcalls(void)
 	for (fn = __initcall_start; fn < __initcall0_start; fn++)
 		do_one_initcall(initcall_from_entry(fn));
 }
+
+#endif
 
 static int run_init_process(const char *init_filename)
 {
@@ -1538,7 +1552,9 @@ static noinline void __init kernel_init_freeable(void)
 	init_mm_internals();
 
 	rcu_init_tasks_generic();
+#ifndef CONFIG_WINDOWS
 	do_pre_smp_initcalls();
+#endif
 	lockup_detector_init();
 
 	smp_init();

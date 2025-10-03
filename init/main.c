@@ -1267,8 +1267,6 @@ static initcall_entry_t *initcall_levels[] __initdata = {
 	__initcall_end,
 };
 
-#endif
-
 /* Keep these in sync with initcalls in include/linux/init.h */
 static const char *initcall_level_names[] __initdata = {
 	"pure",
@@ -1286,8 +1284,6 @@ static int __init ignore_unknown_bootoption(char *param, char *val,
 {
 	return 0;
 }
-
-#ifndef CONFIG_WINDOWS
 
 static void __init do_initcall_level(int level, char *command_line)
 {

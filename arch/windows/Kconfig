@@ -3,9 +3,7 @@
 menu "Windows and ReactOS-specific options"
 
 config WINDOWS
-	bool "Windows architecture - compile Windows drivers from Linux sources"
-	default y
-	select GENERIC_ATOMIC64
+	def_bool y
 
 config HZ
         int "Clock frequency."
@@ -13,37 +11,27 @@ config HZ
 
 # TODO: those should depend on WINDOWS_ARCH
 config 64BIT
-	bool "64 bit"
-	default n
+	def_bool n
 
 config 32BIT
-	bool "32 bit"
-	default y
+	def_bool y
 
 config MMU
-	bool "MMU-based Paged Memory Management Support"
-	default n
-	help
-	  Select if you want MMU-based virtualised addressing space
-	  support by paged memory management. If unsure, say 'Y'.
+	def_bool n
 
 config HUGETLB_PAGE
-	bool "Huge TLB. Say no"
-	default n
-	help
-	   Say no.
+	def_bool n
 
 config KALLSYMS
-	bool "allsyms. say no"
-	default n
-	depends on !WINDOWS
-	help
-	   Say no.
+	def_bool n
 
 config HAVE_FUNCTION_DESCRIPTORS
-	bool "no"
-	default n
-	help
-	   say no
+	def_bool n
+
+config GENERIC_CALIBRATE_DELAY
+	def_bool y
+
+config GENERIC_ATOMIC64
+	def_bool y
 
 endmenu

@@ -20,3 +20,6 @@ KBUILD_CFLAGS += -D__linux__=1
 KBUILD_CFLAGS += -Wno-format-extra-args -Wno-format
 generated-y :=
 generic-y :=
+
+libs-y += arch/windows/lib/
+

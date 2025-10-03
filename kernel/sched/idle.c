@@ -8,7 +8,9 @@
  */
 
 /* Linker adds these: start and end of __cpuidle functions */
+#ifndef CONFIG_WINDOWS
 extern char __cpuidle_text_start[], __cpuidle_text_end[];
+#endif
 
 /**
  * sched_idle_set_state - Record idle state for the current CPU.
@@ -313,11 +315,22 @@ static void do_idle(void)
 		klp_update_patch_state(current);
 }
 
+#ifndef CONFIG_WINDOWS
+
 bool cpu_in_idle(unsigned long pc)
 {
 	return pc >= (unsigned long)__cpuidle_text_start &&
 		pc < (unsigned long)__cpuidle_text_end;
 }
+
+#else
+
+bool cpu_in_idle(unsigned long pc)
+{
+	return false;
+}
+
+#endif
 
 struct idle_timer {
 	struct hrtimer timer;

@@ -12,6 +12,13 @@ SRCARCH = $(ARCH)
 # mingw does not define this:
 KBUILD_CFLAGS += -D__linux__=1
 
+DRIVER_ENTRY = _start_kernel
+# KBUILD_LDFLAGS += -shared --subsystem native --dynamicbase --entry start_kernel
+# This works (without script): need to write a lds script one day.
+# i686-w64-mingw32-ld -shared --subsystem native --image-base 0xc0000000 --dynamicbase --nxcompat --file-alignment 0x200 --section-alignment 0x1000 --stack 0x100000 --gc-sections --exclude-all-symbols --entry _start_kernel --build-id=sha1 -o vmlinux --whole-archive vmlinux.a init/version-timestamp.o --no-whole-archive --start-group lib/lib.a arch/windows/lib/lib.a --end-group
+
+LDFLAGS_vmlinux += -shared --subsystem native --image-base 0xc0000000 --dynamicbase --nxcompat --file-alignment 0x200 --section-alignment 0x1000 --stack 0x100000 --gc-sections --exclude-all-symbols --entry $(DRIVER_ENTRY)
+
 # MinGW assumes printf format strings as supported by
 # Windows (32 bit). We are using the Linux kernel
 # vsnprintf.c implementation which supports far more

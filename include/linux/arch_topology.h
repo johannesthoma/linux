@@ -18,7 +18,7 @@ void topology_init_cpu_capacity_cppc(void);
 struct device_node;
 bool topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu);
 
-DECLARE_PER_CPU(ULONG_PTR, cpu_scale);
+DECLARE_PER_CPU(unsigned long, cpu_scale);
 
 static inline unsigned long topology_get_cpu_scale(int cpu)
 {
@@ -27,7 +27,7 @@ static inline unsigned long topology_get_cpu_scale(int cpu)
 
 void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity);
 
-DECLARE_PER_CPU(ULONG_PTR, arch_freq_scale);
+DECLARE_PER_CPU(unsigned long, arch_freq_scale);
 
 static inline unsigned long topology_get_freq_scale(int cpu)
 {
@@ -53,7 +53,7 @@ void topology_scale_freq_tick(void);
 void topology_set_scale_freq_source(struct scale_freq_data *data, const struct cpumask *cpus);
 void topology_clear_scale_freq_source(enum scale_freq_source source, const struct cpumask *cpus);
 
-DECLARE_PER_CPU(ULONG_PTR, thermal_pressure);
+DECLARE_PER_CPU(unsigned long, thermal_pressure);
 
 static inline unsigned long topology_get_thermal_pressure(int cpu)
 {

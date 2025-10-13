@@ -130,7 +130,7 @@ static inline int sigequalsets(const sigset_t *set1, const sigset_t *set2)
 #define _SIG_SET_BINOP(name, op)					\
 static inline void name(sigset_t *r, const sigset_t *a, const sigset_t *b) \
 {									\
-	ULONG_PTR a0, a1, a2, a3, b0, b1, b2, b3;			\
+	unsigned long a0, a1, a2, a3, b0, b1, b2, b3;			\
 									\
 	switch (_NSIG_WORDS) {						\
 	case 4:								\

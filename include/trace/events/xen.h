@@ -276,7 +276,7 @@ DECLARE_EVENT_CLASS(xen_mmu_ptep_modify_prot,
 	);
 #define DEFINE_XEN_MMU_PTEP_MODIFY_PROT(name)				\
 	DEFINE_EVENT(xen_mmu_ptep_modify_prot, name,			\
-		     TP_PROTO(struct mm_struct *mm, ULONG_PTR addr,	\
+		     TP_PROTO(struct mm_struct *mm, unsigned long addr,	\
 			      pte_t *ptep, pte_t pteval),		\
 		     TP_ARGS(mm, addr, ptep, pteval))
 

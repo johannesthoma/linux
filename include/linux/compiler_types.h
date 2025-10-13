@@ -21,6 +21,7 @@
 
 #ifndef __ASSEMBLY__
 
+/*
 #ifdef CONFIG_32BIT
 typedef unsigned long ULONG_PTR;
 typedef long LONG_PTR;
@@ -29,6 +30,7 @@ typedef unsigned long long ULONG_PTR;
 typedef long long LONG_PTR;
 #endif
 typedef char KIRQL;
+*/
 
 /*
  * Skipped when running bindgen due to a libclang issue;

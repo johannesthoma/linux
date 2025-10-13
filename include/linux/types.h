@@ -8,7 +8,7 @@
 #ifndef __ASSEMBLY__
 
 #define DECLARE_BITMAP(name,bits) \
-	ULONG_PTR name[BITS_TO_LONGS(bits)]
+	unsigned long name[BITS_TO_LONGS(bits)]
 
 #ifdef __SIZEOF_INT128__
 typedef __s128 s128;

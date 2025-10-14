@@ -452,9 +452,22 @@ struct pi_entry {
  *
  * See the vsnprintf() documentation for format string extensions over C99.
  */
+
+#ifdef CONFIG_WINDOWS
+
+extern unsigned long DbgPrint(const char *fmt, ...);
+
+/* TODO: one day we want this being handled via a console ... */
+#define printk(fmt, ...) DbgPrint(fmt, ##__VA_ARGS__)
+#define printk_deferred(fmt, ...) DbgPrint(fmt, ##__VA_ARGS__)
+
+#else
+
 #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
 #define printk_deferred(fmt, ...)					\
 	printk_index_wrap(_printk_deferred, fmt, ##__VA_ARGS__)
+
+#endif
 
 /**
  * pr_emerg - Print an emergency-level message

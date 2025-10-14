@@ -34,9 +34,11 @@ struct thread_info {
         .flags          = 0,                    \
 }
 
+extern struct thread_info windows_thread_info;
+
 static inline struct thread_info *current_thread_info(void)
 {
-	return NULL;
+	return &windows_thread_info;
 }
 
 static __always_inline int user_mode(struct pt_regs *regs)

@@ -1,5 +1,7 @@
 #include <linux/sched/task.h>
 
+struct thread_info windows_thread_info;
+
 /* should never be called ... */
 
 void *__switch_to(struct task_struct *from, struct task_struct *to)

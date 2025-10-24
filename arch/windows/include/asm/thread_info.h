@@ -23,6 +23,9 @@
 #define _TIF_SECCOMP            (1 << TIF_SECCOMP)
 #define _TIF_SINGLESTEP         (1 << TIF_SINGLESTEP)
 
+struct task_struct;
+extern struct task_struct init_task;
+
 struct thread_info {
 	int preempt_count;
 	unsigned long flags;
@@ -31,13 +34,19 @@ struct thread_info {
 
 #define INIT_THREAD_INFO(tsk)                   \
 {                                               \
+	.preempt_count  = 0,			\
         .flags          = 0,                    \
+        .task		= &tsk,			\
 }
 
 extern struct thread_info windows_thread_info;
 
 static inline struct thread_info *current_thread_info(void)
 {
+	DbgPrint("windows_thread_info->task is %p\n", windows_thread_info.task);
+	windows_thread_info.task = &init_task;
+	DbgPrint("windows_thread_info->task is now %p\n", windows_thread_info.task);
+
 	return &windows_thread_info;
 }
 

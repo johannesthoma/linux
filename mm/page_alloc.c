@@ -4529,9 +4529,27 @@ EXPORT_SYMBOL_GPL(__alloc_pages_bulk);
 /*
  * This is the 'heart' of the zoned buddy allocator.
  */
+
+#ifdef CONFIG_WINDOWS
+#include <windows/api.h>
+#endif
+
 struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
 							nodemask_t *nodemask)
 {
+#ifdef CONFIG_WINDOWS
+	struct page *page = win_allocate_memory(sizeof(*page));
+	if (page == NULL)
+		return NULL;
+
+	set_page_address(page, win_allocate_memory(PAGE_SIZE << order));
+	if (page_address(page) == NULL) {
+		/* free page */
+		return NULL;
+	}
+	return page;
+#else
+
 	struct page *page;
 	unsigned int alloc_flags = ALLOC_WMARK_LOW;
 	gfp_t alloc_gfp; /* The gfp_t that was actually used for allocation */
@@ -4591,6 +4609,7 @@ out:
 	kmsan_alloc_page(page, order, alloc_gfp);
 
 	return page;
+#endif
 }
 EXPORT_SYMBOL(__alloc_pages);
 

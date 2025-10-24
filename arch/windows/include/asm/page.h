@@ -12,4 +12,9 @@
 /* No pages, they are maintained by the Windows kernel */
 #define PAGE_KERNEL __pgprot(0)
 
+/* This adds the virtual member to struct page. It is needed
+ * to store the actual virtual address returned by ExAllocatePool().
+ */
+#define WANT_PAGE_VIRTUAL 1
+
 #endif

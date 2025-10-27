@@ -80,6 +80,11 @@ vmlinux_link()
 		ld="${CC}"
 		ldflags="${CFLAGS_vmlinux}"
 		ldlibs="-lutil -lrt -lpthread"
+	elif [ "${SRCARCH}" = "windows" ]; then
+		wl=
+		ld="${LD}"
+		ldflags="${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}"
+		ldlibs="-shared -L/home/johannes/.zeranoe/mingw-w64/i686/i686-w64-mingw32/lib -lntoskrnl -lhal -lntdll -lnetio"
 	else
 		wl=
 		ld="${LD}"

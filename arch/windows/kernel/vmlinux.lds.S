@@ -42,3 +42,6 @@ SECTIONS
 
 	DISCARDS		// must be the last
 }
+
+// SEARCH_DIR(/home/johannes/.zeranoe/mingw-w64/i686/i686-w64-mingw32/lib)
+// INPUT(-lntoskrnl -lhal -lntdll -lnetio)

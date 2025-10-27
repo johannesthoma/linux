@@ -14,27 +14,34 @@ OUTPUT_ARCH(i386)
 ENTRY(_DriverEntry)
 SECTIONS
 {
-	. = 0x1000;
+	. = 0x10001000;
 
 	_stext = .;
-	TEXT_SECTION = 0x1000;
-	.text : AT(0x1000) { *(.text*) }
+	TEXT_SECTION = 0x10001000;
+	.text : AT(0x10001000) { *(.text*) }
 	_etext = .;
 
 	__init_begin = .;
+	. = ALIGN(PAGE_SIZE);
 	HEAD_TEXT_SECTION
+	. = ALIGN(PAGE_SIZE);
 	INIT_TEXT_SECTION(PAGE_SIZE)
+	. = ALIGN(PAGE_SIZE);
 	INIT_DATA_SECTION(PAGE_SIZE)
-	PERCPU_SECTION(CACHELINE_SIZE)
+	. = ALIGN(PAGE_SIZE);
+	PERCPU_SECTION(PAGE_SIZE)
+	. = ALIGN(PAGE_SIZE);
 	.idata : { *(.idata*) }
 	__init_end = .;
 
 	_sdata = .;
+	. = ALIGN(PAGE_SIZE);
 	RO_DATA(PAGE_SIZE)
-	RW_DATA(16, PAGE_SIZE, THREAD_SIZE)
+	. = ALIGN(PAGE_SIZE);
+	RW_DATA(PAGE_SIZE, PAGE_SIZE, THREAD_SIZE)
 	_edata = .;
 
-	EXCEPTION_TABLE(16)
+	EXCEPTION_TABLE(PAGE_SIZE)
 
 	BSS_SECTION(0, 0, 0)
 	_end = .;

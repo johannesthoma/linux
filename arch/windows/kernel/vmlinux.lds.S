@@ -14,17 +14,20 @@ OUTPUT_ARCH(i386)
 ENTRY(_DriverEntry)
 SECTIONS
 {
-	. = 0x40000000;
+	. = 0x1000;
+
+	_stext = .;
+	TEXT_SECTION = 0x1000;
+	.text : AT(0x1000) { *(.text*) }
+	_etext = .;
+
 	__init_begin = .;
 	HEAD_TEXT_SECTION
 	INIT_TEXT_SECTION(PAGE_SIZE)
-	INIT_DATA_SECTION(16)
+	INIT_DATA_SECTION(PAGE_SIZE)
 	PERCPU_SECTION(CACHELINE_SIZE)
+	.idata : { *(.idata*) }
 	__init_end = .;
-
-	_stext = .;
-	TEXT_SECTION = 0;
-	_etext = .;
 
 	_sdata = .;
 	RO_DATA(PAGE_SIZE)
@@ -36,11 +39,11 @@ SECTIONS
 	BSS_SECTION(0, 0, 0)
 	_end = .;
 
-	STABS_DEBUG
-	DWARF_DEBUG
-	ELF_DETAILS
+//	STABS_DEBUG
+//	DWARF_DEBUG
+//	ELF_DETAILS
 
-	DISCARDS		// must be the last
+//	DISCARDS		// must be the last
 }
 
 // SEARCH_DIR(/home/johannes/.zeranoe/mingw-w64/i686/i686-w64-mingw32/lib)

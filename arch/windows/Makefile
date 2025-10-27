@@ -25,7 +25,7 @@ DRIVER_ENTRY = _DriverEntry
 # Update: changed image-base:
 # /home/johannes/.zeranoe/mingw-w64/i686/bin/i686-w64-mingw32-ld -g -shared --subsystem native --image-base 0x40000000 --dynamicbase --nxcompat --file-alignment 0x200 --section-alignment 0x1000 --stack 0x100000 --gc-sections --exclude-all-symbols --entry _DriverEntry --build-id=sha1 -o vmlinux --whole-archive vmlinux.a init/version-timestamp.o --no-whole-archive --start-group lib/lib.a arch/windows/lib/lib.a --end-group -L/home/johannes/.zeranoe/mingw-w64/i686/i686-w64-mingw32/lib -lntoskrnl -lhal -lntdll -lnetio
 
-LDFLAGS_vmlinux += -shared --subsystem native --image-base 0x40000000 --dynamicbase --nxcompat --file-alignment 0x200 --section-alignment 0x1000 --stack 0x100000 --gc-sections --exclude-all-symbols --entry $(DRIVER_ENTRY)
+LDFLAGS_vmlinux += -shared --subsystem native # --image-base 0x40000000 --dynamicbase --nxcompat --file-alignment 0x200 --section-alignment 0x1000 --stack 0x100000 --gc-sections --exclude-all-symbols --entry $(DRIVER_ENTRY)
 
 # MinGW assumes printf format strings as supported by
 # Windows (32 bit). We are using the Linux kernel

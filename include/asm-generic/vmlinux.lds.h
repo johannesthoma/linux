@@ -523,6 +523,7 @@
 	}								\
 									\
 	/* Built-in module parameters. */				\
+	. = ALIGN((align));						\
 	__param : AT(ADDR(__param) - LOAD_OFFSET) {			\
 		BOUNDED_SECTION_BY(__param, ___param)			\
 	}								\
@@ -535,6 +536,7 @@
 	KCFI_TRAPS							\
 									\
 	RO_EXCEPTION_TABLE						\
+	. = ALIGN((align));						\
 	NOTES								\
 	BTF								\
 									\

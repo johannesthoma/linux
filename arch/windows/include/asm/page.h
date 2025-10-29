@@ -17,4 +17,9 @@
  */
 #define WANT_PAGE_VIRTUAL 1
 
+#ifndef __ASSEMBLY__
+struct page *win_virt_to_page(const void *vaddr);
+void *win_page_to_virt(const struct page *page);
+#endif
+
 #endif

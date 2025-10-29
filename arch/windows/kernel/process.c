@@ -6,6 +6,13 @@ struct thread_info windows_thread_info;
 
 void *__switch_to(struct task_struct *from, struct task_struct *to)
 {
+/* Let the Windows scheduler do the work: */
+/* KeSetEvent(to, 1)
+   KeClearEvent(from)
+   KeWaitForSingleObject(from)
+
+   ... or so ...
+ */
 	return from;
 }
 

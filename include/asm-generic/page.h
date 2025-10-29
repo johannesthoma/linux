@@ -85,8 +85,14 @@ static inline void *pfn_to_virt(unsigned long pfn)
 }
 #define pfn_to_virt pfn_to_virt
 
+/* TODO: ARCH_HAS_VIRT_TO_PAGE or something ... */
+#ifdef CONFIG_WINDOWS
+#define virt_to_page(addr)	win_virt_to_page(addr)
+#define page_to_virt(page)	win_page_to_virt(page)
+#else
 #define virt_to_page(addr)	pfn_to_page(virt_to_pfn(addr))
 #define page_to_virt(page)	pfn_to_virt(page_to_pfn(page))
+#endif
 
 #ifndef page_to_phys
 #define page_to_phys(page)      ((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)

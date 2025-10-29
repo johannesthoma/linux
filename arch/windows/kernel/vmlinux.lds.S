@@ -30,9 +30,23 @@ SECTIONS
 	INIT_DATA_SECTION(PAGE_SIZE)
 	. = ALIGN(PAGE_SIZE);
 	PERCPU_SECTION(PAGE_SIZE)
-	. = ALIGN(PAGE_SIZE);
-	.idata : { *(.idata*) }
 	__init_end = .;
+
+  .idata BLOCK(__section_alignment__) :
+  {
+    /* This cannot currently be handled with grouped sections.
+        See pe.em:sort_sections.  */
+    KEEP (SORT(*)(.idata$2))
+    KEEP (SORT(*)(.idata$3))
+    /* These zeroes mark the end of the import list.  */
+    LONG (0); LONG (0); LONG (0); LONG (0); LONG (0);
+    KEEP (SORT(*)(.idata$4))
+    __IAT_start__ = .;
+    KEEP (SORT(*)(.idata$5))
+    __IAT_end__ = .;
+    KEEP (SORT(*)(.idata$6))
+    KEEP (SORT(*)(.idata$7))
+  }
 
 	_sdata = .;
 	. = ALIGN(PAGE_SIZE);

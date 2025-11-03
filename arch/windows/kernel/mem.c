@@ -30,6 +30,7 @@ struct page *win_virt_to_page(const void *vaddr)
 {
 	struct page *page;
 
+	vaddr = (const void *)((unsigned long) vaddr & PAGE_MASK);
 	hash_for_each_possible(virt_to_page_hashtable, page, hlist, (unsigned long) vaddr) {
 		if (page->virtual == vaddr)
 			return page;

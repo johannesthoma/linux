@@ -318,7 +318,7 @@ extern "C" {
   __MINGW_EXTENSION typedef unsigned __int64 uintptr_t;
 #endif
 #else
-  typedef unsigned int uintptr_t;
+  typedef unsigned long uintptr_t;
 #endif
 #endif
 #endif

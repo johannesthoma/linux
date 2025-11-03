@@ -4547,6 +4547,7 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
 		/* free page */
 		return NULL;
 	}
+	win_add_page(page);
 	return page;
 #else
 

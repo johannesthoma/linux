@@ -1,6 +1,5 @@
 #include <ntdef.h>
 #include <ntddk.h>
-#include <ntdddisk.h>
 
 // typedef int NTSTATUS;
 // #define STATUS_SUCCESS 0

@@ -35,13 +35,13 @@ struct win_timer_list *timer_interrupt;
 
 void timer_interrupt_handler(struct win_timer_list *t)
 {
-//	DbgPrint("tick %lld ...\n", jiffies);
+	DbgPrint("tick %ld ...\n", jiffies);
 	jiffies++;
-	win_mod_timer(timer_interrupt, 1);
+	win_mod_timer_relative(timer_interrupt, 100);
 }
 
 void __init init_IRQ(void)
 {
 	timer_interrupt = win_allocate_timer(timer_interrupt_handler);
-	win_mod_timer(timer_interrupt, 1);
+	win_mod_timer_relative(timer_interrupt, 100);
 }

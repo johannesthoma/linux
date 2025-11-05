@@ -17,11 +17,33 @@
 #include <linux/preempt.h>
 #include <linux/delay.h>
 
+/* Taken from x86 architecture code: */
+static void delay_loop(u64 __loops)
+{
+        unsigned long loops = (unsigned long)__loops;
+
+        asm volatile(
+                "       test %0,%0      \n"
+                "       jz 3f           \n"
+                "       jmp 1f          \n"
+
+                ".align 16              \n"
+                "1:     jmp 2f          \n"
+
+                ".align 16              \n"
+                "2:     dec %0          \n"
+                "       jnz 2b          \n"
+                "3:     dec %0          \n"
+
+                : "+a" (loops)
+                :
+        );
+}
+
+
 void __delay(unsigned long loops)
 {
-	int i;
-	for (i=0;i<1000*loops;i++)
-		;
+	delay_loop((unsigned long long) loops*1000ULL);
 }
 EXPORT_SYMBOL(__delay);
 

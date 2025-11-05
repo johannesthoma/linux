@@ -12,7 +12,6 @@ struct win_timer_list {
     KTIMER ktimer;
     KDPC dpc;
     void (*function)(struct win_timer_list *data);
-    ULONG_PTR expires;
 };
 
 unsigned long long win_jiffies(void)
@@ -52,28 +51,17 @@ struct win_timer_list *win_allocate_timer(void(*callback)(struct win_timer_list 
 void win_del_timer(struct win_timer_list *t)
 {
 	KeCancelTimer(&t->ktimer);
-	t->expires = 0;
 }
 
-void win_mod_timer(struct win_timer_list *timer, unsigned long long expires)
+void win_mod_timer_relative(struct win_timer_list *timer, unsigned long long expires)
 {
-	LARGE_INTEGER nWaitTime = { .QuadPart = 0 };
-	ULONG_PTR current_milisec = win_jiffies();
+	LARGE_INTEGER wait_time;
 
-	timer->expires = expires;
+		/* negative values indicate relative time. The unit
+		 * is 100ns so multiplying with 10000 gives 1ms.
+		 */
 
-	if (current_milisec >= expires)
-		nWaitTime.QuadPart = -1;
-	else {
-		expires -= current_milisec;
-		nWaitTime.QuadPart = -(((long long) expires) * 10 * 1000);
-	}
-
-	KeSetTimer(&timer->ktimer, nWaitTime, &timer->dpc);
-}
-
-void win_add_timer(struct win_timer_list *t)
-{
-	win_mod_timer(t, t->expires);
+	wait_time.QuadPart = -(expires * 10 * 1000);
+	KeSetTimer(&timer->ktimer, wait_time, &timer->dpc);
 }
 

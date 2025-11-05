@@ -13,6 +13,6 @@ void __init setup_arch(char **cmdline_p)
 		memblock_add(initial_memory, INIT_MEMBLOCK_SIZE);
 	}
 	/* TODO: read from Windows registry ... */
-	*cmdline_p = "hallo linux=1";
+	*cmdline_p = "lpj=1000";
 }
 

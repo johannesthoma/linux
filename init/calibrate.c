@@ -223,6 +223,7 @@ recalibrate:
 	 * equal one clock (up to LPS_PREC bits)
 	 */
 	chop_limit = lpj >> LPS_PREC;
+printk("1 lpj_base: %lu lpj: %lu loopadd_base: %lu loopadd: %lu chop_limit: %lu\n", lpj_base, lpj, loopadd_base, loopadd, chop_limit);
 	while (loopadd > chop_limit) {
 		lpj += loopadd;
 		ticks = jiffies;
@@ -233,6 +234,7 @@ recalibrate:
 		if (jiffies != ticks)	/* longer than 1 tick */
 			lpj -= loopadd;
 		loopadd >>= 1;
+printk("2 lpj_base: %lu lpj: %lu loopadd_base: %lu loopadd: %lu chop_limit: %lu\n", lpj_base, lpj, loopadd_base, loopadd, chop_limit);
 	}
 	/*
 	 * If we incremented every single time possible, presume we've
@@ -240,8 +242,10 @@ recalibrate:
 	 * start, and larger range. (Only seen on x86_64, due to SMIs)
 	 */
 	if (lpj + loopadd * 2 == lpj_base + loopadd_base * 2) {
+printk("3 lpj_base: %lu lpj: %lu loopadd_base: %lu loopadd: %lu chop_limit: %lu\n", lpj_base, lpj, loopadd_base, loopadd, chop_limit);
 		lpj_base = lpj;
 		loopadd_base <<= 2;
+printk("4 lpj_base: %lu lpj: %lu loopadd_base: %lu loopadd: %lu chop_limit: %lu\n", lpj_base, lpj, loopadd_base, loopadd, chop_limit);
 		goto recalibrate;
 	}
 

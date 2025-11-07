@@ -389,8 +389,17 @@ void cpu_startup_entry(enum cpuhp_state state)
 	current->flags |= PF_IDLE;
 	arch_cpu_idle_prepare();
 	cpuhp_online_idle(state);
+
+		/* On Windows kernel the Windows kernel does the
+		 * scheduling. Returning here eventually will make
+		 * DriverEntry return control to the Windows kernel
+		 * which is how Windows drivers should behave.
+		 */
+
+#ifndef CONFIG_WINDOWS
 	while (1)
 		do_idle();
+#endif
 }
 
 /*

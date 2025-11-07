@@ -2,9 +2,13 @@
 #include <linux/slab.h>
 #include <linux/hashtable.h>
 #include <linux/mm.h>
+#include <windows/api.h>
 
 unsigned long memory_start;
 unsigned long memory_end;
+
+/* 128 MB for this Linux driver */
+#define NR_PAGES_AVAILABLE (128*1024*1024/PAGE_SIZE)
 
 /* Since both struct page and the virtual address of the page
  * are obtained by ExAllocatePool() (which returns unpredictable
@@ -46,7 +50,10 @@ void *win_page_to_virt(const struct page *page)
 
 void __init mem_init(void)
 {
-/* TODO: init hash table */
+	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
+
+	max_zone_pfn[ZONE_NORMAL] = NR_PAGES_AVAILABLE;
+	free_area_init(max_zone_pfn);
 }
 
 void __init pgtable_cache_init(void)
@@ -55,5 +62,5 @@ void __init pgtable_cache_init(void)
 
 void *vmalloc_huge(unsigned long size, gfp_t gfp_mask)
 {
-	return NULL;
+	return win_allocate_memory(size);
 }

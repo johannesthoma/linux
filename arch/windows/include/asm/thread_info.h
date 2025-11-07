@@ -39,13 +39,12 @@ struct thread_info {
         .task		= &tsk,			\
 }
 
+/* TODO: embed in struct task_struct and enable multithreading. */
 extern struct thread_info windows_thread_info;
 
 static inline struct thread_info *current_thread_info(void)
 {
-	DbgPrint("windows_thread_info->task is %p\n", windows_thread_info.task);
 	windows_thread_info.task = &init_task;
-	DbgPrint("windows_thread_info->task is now %p\n", windows_thread_info.task);
 
 	return &windows_thread_info;
 }

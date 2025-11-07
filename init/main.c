@@ -691,6 +691,10 @@ static void __init setup_command_line(char *command_line)
 
 static __initdata DECLARE_COMPLETION(kthreadd_done);
 
+#ifdef CONFIG_WINDOWS
+#define __noreturn /* nothing */
+#endif
+
 noinline void __ref __noreturn rest_init(void)
 {
 	struct task_struct *tsk;

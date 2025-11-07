@@ -27,3 +27,14 @@ void flush_thread(void)
 
 /* normally this is in linker, but now we have it here ... */
 unsigned long init_stack[THREAD_SIZE / sizeof(unsigned long)];
+
+	/* Do not start init. Do not start kthreadd. Do not
+	 * start an idle loop. Just return from DriverEntry
+	 * and let the host kernel (Windows) do the rest.
+	 */
+
+void __init arch_call_rest_init(void)
+{
+	DbgPrint("Doing the rest ... \n");
+}
+

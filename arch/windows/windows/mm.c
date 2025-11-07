@@ -3,5 +3,8 @@
 
 void *win_allocate_memory(unsigned long size)
 {
-	return ExAllocatePoolWithTag(NonPagedPool, size, 'XINU');
+	if (size == 0)
+		size = 1;	/* return something */
+
+	return ExAllocatePool(NonPagedPool, size);
 }

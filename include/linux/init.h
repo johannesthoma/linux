@@ -156,13 +156,13 @@ void poking_init(void);
 void pgtable_cache_init(void);
 
 extern initcall_entry_t __initcall_start[];
-extern initcall_entry_t ___initcall0_start[];
-extern initcall_entry_t ___initcall1_start[];
-extern initcall_entry_t ___initcall2_start[];
-extern initcall_entry_t ___initcall3_start[];
-extern initcall_entry_t _initcall4_start[];
-extern initcall_entry_t _initcall5_start[];
-extern initcall_entry_t _initcall6_start[];
+extern initcall_entry_t __initcall0_start[];
+extern initcall_entry_t __initcall1_start[];
+extern initcall_entry_t __initcall2_start[];
+extern initcall_entry_t __initcall3_start[];
+extern initcall_entry_t __initcall4_start[];
+extern initcall_entry_t __initcall5_start[];
+extern initcall_entry_t __initcall6_start[];
 extern initcall_entry_t __initcall7_start[];
 extern initcall_entry_t __initcall_end[];
 

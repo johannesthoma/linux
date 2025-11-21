@@ -189,8 +189,6 @@ static const char *argv_init[MAX_INIT_ARGS+2] = { "init", NULL, };
 const char *envp_init[MAX_INIT_ENVS+2] = { "HOME=/", "TERM=linux", NULL, };
 static const char *panic_later, *panic_param;
 
-#ifndef CONFIG_WINDOWS
-
 static bool __init obsolete_checksetup(char *line)
 {
 	const struct obs_kernel_param *p;
@@ -220,14 +218,6 @@ static bool __init obsolete_checksetup(char *line)
 	return had_early_param;
 }
 
-#else
-
-static bool __init obsolete_checksetup(char *line)
-{
-	return false;
-}
-
-#endif
 /*
  * This should be approx 2 Bo*oMips to start (note initial shift), and will
  * still work even if initially too large, it will just take slightly longer
@@ -692,7 +682,9 @@ static void __init setup_command_line(char *command_line)
 static __initdata DECLARE_COMPLETION(kthreadd_done);
 
 #ifdef CONFIG_WINDOWS
-#define __noreturn /* nothing */
+#define __noreturn /* nothing. On Windows start_kernel returns control
+                    * back to Windows.
+		    */
 #endif
 
 noinline void __ref __noreturn rest_init(void)
@@ -1279,8 +1271,6 @@ int __init_or_module do_one_initcall(initcall_t fn)
 }
 
 
-#ifndef CONFIG_WINDOWS
-
 static initcall_entry_t *initcall_levels[] __initdata = {
 	__initcall0_start,
 	__initcall1_start,
@@ -1345,8 +1335,6 @@ static void __init do_initcalls(void)
 	kfree(command_line);
 }
 
-#endif
-
 /*
  * Ok, the machine is now initialized. None of the devices
  * have been touched yet, but the CPU subsystem is up and
@@ -1360,12 +1348,8 @@ static void __init do_basic_setup(void)
 	driver_init();
 	init_irq_proc();
 	do_ctors();
-#ifndef CONFIG_WINDOWS
 	do_initcalls();
-#endif
 }
-
-#ifndef CONFIG_WINDOWS
 
 static void __init do_pre_smp_initcalls(void)
 {
@@ -1375,8 +1359,6 @@ static void __init do_pre_smp_initcalls(void)
 	for (fn = __initcall_start; fn < __initcall0_start; fn++)
 		do_one_initcall(initcall_from_entry(fn));
 }
-
-#endif
 
 static int run_init_process(const char *init_filename)
 {
@@ -1574,9 +1556,7 @@ static noinline void __init kernel_init_freeable(void)
 	init_mm_internals();
 
 	rcu_init_tasks_generic();
-#ifndef CONFIG_WINDOWS
 	do_pre_smp_initcalls();
-#endif
 	lockup_detector_init();
 
 	smp_init();

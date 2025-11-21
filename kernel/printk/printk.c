@@ -3680,7 +3680,6 @@ void __init console_init(void)
 	 * set up the console device so that later boot sequences can
 	 * inform about problems etc..
 	 */
-#ifndef CONFIG_WINDOWS
 	ce = __con_initcall_start;
 	trace_initcall_level("console");
 	while (ce < __con_initcall_end) {
@@ -3690,7 +3689,6 @@ void __init console_init(void)
 		trace_initcall_finish(call, ret);
 		ce++;
 	}
-#endif
 }
 
 /*

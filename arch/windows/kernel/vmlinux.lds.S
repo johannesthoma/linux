@@ -22,7 +22,7 @@ SECTIONS
 	.text : AT(0x10001000) { *(.text*) }
 	_etext = .;
 
-	__init_begin = .;
+	___init_begin = .;
 	. = ALIGN(PAGE_SIZE);
 	HEAD_TEXT_SECTION
 	. = ALIGN(PAGE_SIZE);
@@ -31,7 +31,7 @@ SECTIONS
 	INIT_DATA_SECTION(PAGE_SIZE)
 	. = ALIGN(PAGE_SIZE);
 	PERCPU_SECTION(PAGE_SIZE)
-	__init_end = .;
+	___init_end = .;
 
   .idata BLOCK(__section_alignment__) :
   {
@@ -42,9 +42,9 @@ SECTIONS
     /* These zeroes mark the end of the import list.  */
     LONG (0); LONG (0); LONG (0); LONG (0); LONG (0);
     KEEP (SORT(*)(.idata$4))
-    __IAT_start__ = .;
+    ___IAT_start__ = .;
     KEEP (SORT(*)(.idata$5))
-    __IAT_end__ = .;
+    ___IAT_end__ = .;
     KEEP (SORT(*)(.idata$6))
     KEEP (SORT(*)(.idata$7))
   }

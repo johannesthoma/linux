@@ -11,12 +11,12 @@
  * SECTIONS
  * {
  *	. = START;
- *	__init_begin = .;
+ *	___init_begin = .;
  *	HEAD_TEXT_SECTION
  *	INIT_TEXT_SECTION(PAGE_SIZE)
  *	INIT_DATA_SECTION(...)
  *	PERCPU_SECTION(CACHELINE_SIZE)
- *	__init_end = .;
+ *	___init_end = .;
  *
  *	_stext = .;
  *	TEXT_SECTION = 0
@@ -126,13 +126,13 @@
  */
 #define SCHED_DATA				\
 	STRUCT_ALIGN();				\
-	__sched_class_highest = .;		\
+	___sched_class_highest = .;		\
 	*(__stop_sched_class)			\
 	*(__dl_sched_class)			\
 	*(__rt_sched_class)			\
 	*(__fair_sched_class)			\
 	*(__idle_sched_class)			\
-	__sched_class_lowest = .;
+	___sched_class_lowest = .;
 
 /* The actual configuration determine if the init/exit sections
  * are handled as text/data or they can be discarded (which
@@ -177,10 +177,10 @@
  * but ftrace_ops_list_func() will have a single prototype.
  */
 #define MCOUNT_REC()	. = ALIGN(8);				\
-			__start_mcount_loc = .;			\
+			___start_mcount_loc = .;			\
 			KEEP(*(__mcount_loc))			\
 			KEEP_PATCHABLE				\
-			__stop_mcount_loc = .;			\
+			___stop_mcount_loc = .;			\
 			FTRACE_STUB_HACK			\
 			ftrace_ops_list_func = arch_ftrace_ops_list_func;
 #else
@@ -311,7 +311,7 @@
 #define _OF_TABLE_0(name)
 #define _OF_TABLE_1(name)						\
 	. = ALIGN(8);							\
-	__##name##_of_table = .;					\
+	___##name##_of_table = .;					\
 	KEEP(*(__##name##_of_table))					\
 	KEEP(*(__##name##_of_table_end))
 
@@ -342,9 +342,9 @@
 
 #define KERNEL_DTB()							\
 	STRUCT_ALIGN();							\
-	__dtb_start = .;						\
+	___dtb_start = .;						\
 	KEEP(*(.dtb.init.rodata))					\
-	__dtb_end = .;
+	___dtb_end = .;
 
 /*
  * .data section
@@ -357,9 +357,9 @@
 	*(.data..shared_aligned) /* percpu related */			\
 	MEM_KEEP(init.data*)						\
 	*(.data.unlikely)						\
-	__start_once = .;						\
+	___start_once = .;						\
 	*(.data.once)							\
-	__end_once = .;							\
+	___end_once = .;							\
 	STRUCT_ALIGN();							\
 	*(__tracepoints)						\
 	/* implement dynamic printk debug */				\
@@ -377,10 +377,10 @@
  */
 #define NOSAVE_DATA							\
 	. = ALIGN(PAGE_SIZE);						\
-	__nosave_begin = .;						\
+	___nosave_begin = .;						\
 	*(.data..nosave)						\
 	. = ALIGN(PAGE_SIZE);						\
-	__nosave_end = .;
+	___nosave_end = .;
 
 #define PAGE_ALIGNED_DATA(page_align)					\
 	. = ALIGN(page_align);						\
@@ -398,13 +398,13 @@
 
 #define INIT_TASK_DATA(align)						\
 	. = ALIGN(align);						\
-	__start_init_task = .;						\
+	___start_init_task = .;						\
 	init_thread_union = .;						\
 	init_stack = .;							\
 	KEEP(*(.data..init_task))					\
 	KEEP(*(.data..init_thread_info))				\
-	. = __start_init_task + THREAD_SIZE;				\
-	__end_init_task = .;
+	. = ___start_init_task + THREAD_SIZE;				\
+	___end_init_task = .;
 
 #define JUMP_TABLE_DATA							\
 	. = ALIGN(8);							\
@@ -426,11 +426,11 @@
 #ifndef RO_AFTER_INIT_DATA
 #define RO_AFTER_INIT_DATA						\
 	. = ALIGN(8);							\
-	__start_ro_after_init = .;					\
+	___start_ro_after_init = .;					\
 	*(.data..ro_after_init)						\
 	JUMP_TABLE_DATA							\
 	STATIC_CALL_DATA						\
-	__end_ro_after_init = .;
+	___end_ro_after_init = .;
 #endif
 
 /*
@@ -453,7 +453,7 @@
 #define RO_DATA(align)							\
 	. = ALIGN((align));						\
 	.rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {		\
-		__start_rodata = .;					\
+		___start_rodata = .;					\
 		*(.rodata) *(.rodata.*)					\
 		SCHED_DATA						\
 		RO_AFTER_INIT_DATA	/* Read only after init */	\
@@ -485,30 +485,30 @@
 									\
 	/* Kernel symbol table: Normal symbols */			\
 	__ksymtab         : AT(ADDR(__ksymtab) - LOAD_OFFSET) {		\
-		__start___ksymtab = .;					\
+		___start___ksymtab = .;					\
 		KEEP(*(SORT(___ksymtab+*)))				\
-		__stop___ksymtab = .;					\
+		___stop___ksymtab = .;					\
 	}								\
 									\
 	/* Kernel symbol table: GPL-only symbols */			\
 	__ksymtab_gpl     : AT(ADDR(__ksymtab_gpl) - LOAD_OFFSET) {	\
-		__start___ksymtab_gpl = .;				\
+		___start___ksymtab_gpl = .;				\
 		KEEP(*(SORT(___ksymtab_gpl+*)))				\
-		__stop___ksymtab_gpl = .;				\
+		___stop___ksymtab_gpl = .;				\
 	}								\
 									\
 	/* Kernel symbol table: Normal symbols */			\
 	__kcrctab         : AT(ADDR(__kcrctab) - LOAD_OFFSET) {		\
-		__start___kcrctab = .;					\
+		___start___kcrctab = .;					\
 		KEEP(*(SORT(___kcrctab+*)))				\
-		__stop___kcrctab = .;					\
+		___stop___kcrctab = .;					\
 	}								\
 									\
 	/* Kernel symbol table: GPL-only symbols */			\
 	__kcrctab_gpl     : AT(ADDR(__kcrctab_gpl) - LOAD_OFFSET) {	\
-		__start___kcrctab_gpl = .;				\
+		___start___kcrctab_gpl = .;				\
 		KEEP(*(SORT(___kcrctab_gpl+*)))				\
-		__stop___kcrctab_gpl = .;				\
+		___stop___kcrctab_gpl = .;				\
 	}								\
 									\
 	/* Kernel symbol table: strings */				\
@@ -541,7 +541,7 @@
 	BTF								\
 									\
 	. = ALIGN((align));						\
-	__end_rodata = .;
+	___end_rodata = .;
 
 
 /*
@@ -549,12 +549,12 @@
  */
 #define NOINSTR_TEXT							\
 		ALIGN_FUNCTION();					\
-		__noinstr_text_start = .;				\
+		___noinstr_text_start = .;				\
 		*(.noinstr.text)					\
-		__cpuidle_text_start = .;				\
+		___cpuidle_text_start = .;				\
 		*(.cpuidle.text)					\
-		__cpuidle_text_end = .;					\
-		__noinstr_text_end = .;
+		___cpuidle_text_end = .;					\
+		___noinstr_text_end = .;
 
 /*
  * .text section. Map to function alignment to avoid address changes
@@ -580,47 +580,47 @@
  * address even at second ld pass when generating System.map */
 #define SCHED_TEXT							\
 		ALIGN_FUNCTION();					\
-		__sched_text_start = .;					\
+		___sched_text_start = .;					\
 		*(.sched.text)						\
-		__sched_text_end = .;
+		___sched_text_end = .;
 
 /* spinlock.text is aling to function alignment to secure we have same
  * address even at second ld pass when generating System.map */
 #define LOCK_TEXT							\
 		ALIGN_FUNCTION();					\
-		__lock_text_start = .;					\
+		___lock_text_start = .;					\
 		*(.spinlock.text)					\
-		__lock_text_end = .;
+		___lock_text_end = .;
 
 #define KPROBES_TEXT							\
 		ALIGN_FUNCTION();					\
-		__kprobes_text_start = .;				\
+		___kprobes_text_start = .;				\
 		*(.kprobes.text)					\
-		__kprobes_text_end = .;
+		___kprobes_text_end = .;
 
 #define ENTRY_TEXT							\
 		ALIGN_FUNCTION();					\
-		__entry_text_start = .;					\
+		___entry_text_start = .;					\
 		*(.entry.text)						\
-		__entry_text_end = .;
+		___entry_text_end = .;
 
 #define IRQENTRY_TEXT							\
 		ALIGN_FUNCTION();					\
-		__irqentry_text_start = .;				\
+		___irqentry_text_start = .;				\
 		*(.irqentry.text)					\
-		__irqentry_text_end = .;
+		___irqentry_text_end = .;
 
 #define SOFTIRQENTRY_TEXT						\
 		ALIGN_FUNCTION();					\
-		__softirqentry_text_start = .;				\
+		___softirqentry_text_start = .;				\
 		*(.softirqentry.text)					\
-		__softirqentry_text_end = .;
+		___softirqentry_text_end = .;
 
 #define STATIC_CALL_TEXT						\
 		ALIGN_FUNCTION();					\
-		__static_call_text_start = .;				\
+		___static_call_text_start = .;				\
 		*(.static_call.text)					\
-		__static_call_text_end = .;
+		___static_call_text_end = .;
 
 /* Section used for early init (in .S files) */
 #define HEAD_TEXT  KEEP(*(.head.text))
@@ -666,12 +666,12 @@
 
 #ifdef CONFIG_CONSTRUCTORS
 #define KERNEL_CTORS()	. = ALIGN(8);			   \
-			__ctors_start = .;		   \
+			___ctors_start = .;		   \
 			KEEP(*(SORT(.ctors.*)))		   \
 			KEEP(*(.ctors))			   \
 			KEEP(*(SORT(.init_array.*)))	   \
 			KEEP(*(.init_array))		   \
-			__ctors_end = .;
+			___ctors_end = .;
 #else
 #define KERNEL_CTORS()
 #endif
@@ -900,7 +900,7 @@
 
 #define INIT_SETUP(initsetup_align)					\
 		. = ALIGN(initsetup_align);				\
-		BOUNDED_SECTION_POST_LABEL(.init.setup, __setup, _start, _end)
+		BOUNDED_SECTION_POST_LABEL(.init.setup, ___setup, _start, _end)
 
 #define INIT_CALLS_LEVEL(level)						\
 		___initcall##level##_start = .;				\
@@ -908,7 +908,7 @@
 		KEEP(*(.initcall##level##s.init))			\
 
 #define INIT_CALLS							\
-		__initcall_start = .;					\
+		___initcall_start = .;					\
 		KEEP(*(.initcallearly.init))				\
 		INIT_CALLS_LEVEL(0)					\
 		INIT_CALLS_LEVEL(1)					\
@@ -919,10 +919,10 @@
 		INIT_CALLS_LEVEL(rootfs)				\
 		INIT_CALLS_LEVEL(6)					\
 		INIT_CALLS_LEVEL(7)					\
-		__initcall_end = .;
+		___initcall_end = .;
 
 #define CON_INITCALL							\
-	BOUNDED_SECTION_POST_LABEL(.con_initcall.init, __con_initcall, _start, _end)
+	BOUNDED_SECTION_POST_LABEL(.con_initcall.init, ___con_initcall, _start, _end)
 
 /* Alignment must be consistent with (kunit_suite *) in include/kunit/test.h */
 #define KUNIT_TABLE()							\
@@ -932,7 +932,7 @@
 #ifdef CONFIG_BLK_DEV_INITRD
 #define INIT_RAM_FS							\
 	. = ALIGN(4);							\
-	__initramfs_start = .;						\
+	___initramfs_start = .;						\
 	KEEP(*(.init.ramfs))						\
 	. = ALIGN(8);							\
 	KEEP(*(.init.ramfs.info))
@@ -1028,7 +1028,7 @@
  * sharing between subsections for different purposes.
  */
 #define PERCPU_INPUT(cacheline)						\
-	__per_cpu_start = .;						\
+	___per_cpu_start = .;						\
 	*(.data..percpu..first)						\
 	. = ALIGN(PAGE_SIZE);						\
 	*(.data..percpu..page_aligned)					\
@@ -1038,7 +1038,7 @@
 	*(.data..percpu)						\
 	*(.data..percpu..shared_aligned)				\
 	PERCPU_DECRYPTED_SECTION					\
-	__per_cpu_end = .;
+	___per_cpu_end = .;
 
 /**
  * PERCPU_VADDR - define output section for percpu area
@@ -1065,7 +1065,7 @@
  * address, use PERCPU_SECTION.
  */
 #define PERCPU_VADDR(cacheline, vaddr, phdr)				\
-	__per_cpu_load = .;						\
+	___per_cpu_load = .;						\
 	.data..percpu vaddr : AT(__per_cpu_load - LOAD_OFFSET) {	\
 		PERCPU_INPUT(cacheline)					\
 	} phdr								\
@@ -1086,7 +1086,7 @@
 #define PERCPU_SECTION(cacheline)					\
 	. = ALIGN(PAGE_SIZE);						\
 	.data..percpu	: AT(ADDR(.data..percpu) - LOAD_OFFSET) {	\
-		__per_cpu_load = .;					\
+		___per_cpu_load = .;					\
 		PERCPU_INPUT(cacheline)					\
 	}
 
@@ -1141,8 +1141,8 @@
 
 #define BSS_SECTION(sbss_align, bss_align, stop_align)			\
 	. = ALIGN(sbss_align);						\
-	__bss_start = .;						\
+	___bss_start = .;						\
 	SBSS(sbss_align)						\
 	BSS(bss_align)							\
 	. = ALIGN(stop_align);						\
-	__bss_stop = .;
+	___bss_stop = .;

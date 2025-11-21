@@ -1,4 +1,5 @@
-#include <asm-generic/vmlinux.lds.h>
+// not asm-generic!
+#include <asm/vmlinux.lds.h>
 #include <asm/page.h>
 
 // OUTPUT_FORMAT(pe)

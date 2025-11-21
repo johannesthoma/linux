@@ -1272,13 +1272,13 @@ int __init_or_module do_one_initcall(initcall_t fn)
 
 
 static initcall_entry_t *initcall_levels[] __initdata = {
-	__initcall0_start,
-	__initcall1_start,
-	__initcall2_start,
-	__initcall3_start,
-	__initcall4_start,
-	__initcall5_start,
-	__initcall6_start,
+	___initcall0_start,
+	___initcall1_start,
+	___initcall2_start,
+	___initcall3_start,
+	_initcall4_start,
+	_initcall5_start,
+	_initcall6_start,
 	__initcall7_start,
 	__initcall_end,
 };
@@ -1356,7 +1356,7 @@ static void __init do_pre_smp_initcalls(void)
 	initcall_entry_t *fn;
 
 	trace_initcall_level("early");
-	for (fn = __initcall_start; fn < __initcall0_start; fn++)
+	for (fn = __initcall_start; fn < ___initcall0_start; fn++)
 		do_one_initcall(initcall_from_entry(fn));
 }
 

@@ -682,8 +682,11 @@ static void __init setup_command_line(char *command_line)
 static __initdata DECLARE_COMPLETION(kthreadd_done);
 
 #ifdef CONFIG_WINDOWS
+#undef __noreturn
 #define __noreturn /* nothing. On Windows start_kernel returns control
-                    * back to Windows.
+                    * back to Windows. Also arch_call_rest_init
+		    * must not have noreturn, since else gcc does not
+		    * emit the ret instruction at the end of start_kernel
 		    */
 #endif
 

@@ -19,6 +19,9 @@ void *__switch_to(struct task_struct *from, struct task_struct *to)
 
 int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
 {
+	p->thread_info.fn = args->fn;
+	p->thread_info.fn_arg = args->fn_arg;
+
 	return 0;
 }
 

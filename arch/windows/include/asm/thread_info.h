@@ -34,7 +34,10 @@ struct thread_info {
 	unsigned long flags;
 	struct task_struct *task;
 	struct _KTHREAD *windows_thread;
-	struct _KEVENT *start_event;
+	struct _KEVENT *task_queued_event;
+
+        int (*fn)(void *);
+        void *fn_arg;
 };
 
 #define INIT_THREAD_INFO(tsk)                   \

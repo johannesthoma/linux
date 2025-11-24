@@ -11,6 +11,7 @@
 // #include <ntddk.h>
 #include <wdm.h>
 
+/* TODO: spin lock !!!! */
 struct thread_info *win_find_current_thread_info(void)
 {
 	struct task_struct *t;
@@ -33,6 +34,10 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 	int ret;
 	NTSTATUS status;
 
+	int (*threadfn)(void *);
+	void *data;
+
+	printk(KERN_DEBUG "About to start thread %s\n", t->comm);
 		/* Linux never swaps out kernel stack areas. This
 		 * should fix a very rare list corruption in a
 		 * wake_up() call (the list contained an element
@@ -48,7 +53,7 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 		 * printk().
 		 */
 
-        status = KeWaitForSingleObject(t->thread_info.start_event, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
+        status = KeWaitForSingleObject(t->thread_info.task_queued_event, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
         if (!NT_SUCCESS(status)) {
 		printk("On waiting for start event: KeWaitForSingleObject failed with status %x\n", status);
 
@@ -57,18 +62,27 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 #endif
 		return;
 	}
+	printk(KERN_DEBUG "thread %s woken up ...\n", t->comm);
 
+	/* TODO: do we need this? */
+/*
 	int (*threadfn)(void *data) = kthread_func(t);
+	void *data = kthread_data(t);
+*/
+	threadfn = t->thread_info.fn;
+	data = t->thread_info.fn_arg;
+
 	if (threadfn) {
-		ret = threadfn(kthread_data(t));
+		ret = threadfn(data);
 
 		if (ret != 0)
 			printk(KERN_WARNING "Thread %s returned non-zero exit status. Ignored, since Windows threads are void.\n", t->comm);
 
 		if (KeGetCurrentIrql() > PASSIVE_LEVEL)
 			printk("Warning: IRQL is %d when exiting thread. System will posibly lockup.\n", KeGetCurrentIrql());
-	} else
-		printk("not a kthread function\n");
+	} else {
+		printk("not a kthread function, also no fn in thread_info, giving up ...\n");
+	}
 
 		/* According to Microsoft docs we must not exit a thread
 		 * with stack swapping disabled, so enable it here again.
@@ -84,11 +98,11 @@ int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread
 	NTSTATUS status;
 	int retries;
 
-	task->thread_info.start_event = win_allocate_memory(sizeof(struct _KEVENT));
-	if (task->thread_info.start_event == NULL)
+	task->thread_info.task_queued_event = win_allocate_memory(sizeof(struct _KEVENT));
+	if (task->thread_info.task_queued_event == NULL)
 		return -ENOMEM;
 
-	KeInitializeEvent(task->thread_info.start_event, SynchronizationEvent, FALSE);
+	KeInitializeEvent(task->thread_info.task_queued_event, SynchronizationEvent, FALSE);
 
 	retries = 0;
 	while (1) {
@@ -144,23 +158,26 @@ int win_cleanup_windows_thread(void *thread_object)
 	 * 0 is returned) or 1: task was started.
 	 */
 
-#if 0
-int wake_up_process(struct task_struct *t)
+void win_wake_up_task(struct task_struct *t)
 {
-	KIRQL flags;
-
-	spin_lock_irqsave(&t->thread_started_lock, flags);
-	if (t->thread_started) {
-		spin_unlock_irqrestore(&t->thread_started_lock, flags);
-		return 0;
-	}
-	t->thread_started = 1;
-	spin_unlock_irqrestore(&t->thread_started_lock, flags);
-	KeSetEvent(&t->start_event, 0, FALSE);
-
-	return 1;
+	printk("waking up %s ...\n", t->comm);
+	KeSetEvent(t->thread_info.task_queued_event, 0, FALSE);
 }
-#endif
+
+void win_put_task_to_sleep(struct task_struct *t)
+{
+	NTSTATUS status;
+
+	printk("putting %s to sleep ...\n", t->comm);
+	KeClearEvent(t->thread_info.task_queued_event);
+	/* sleep */
+        status = KeWaitForSingleObject(t->thread_info.task_queued_event, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
+        if (!NT_SUCCESS(status)) {
+		printk("KeWaitForSingleObject returned %08X\n", status);
+	}
+	printk("%s woken up, continuing ...\n", t->comm);
+	/* ok woken up, continue execution */
+}
 
 	/* Creates a new task_struct, but start the thread (by
 	 * calling PsCreateSystemThread()). Thread will wait for

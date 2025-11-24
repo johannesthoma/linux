@@ -1,4 +1,5 @@
 #include <linux/sched/task.h>
+#include <windows/api.h>
 
 struct thread_info windows_thread_info;
 
@@ -33,8 +34,24 @@ unsigned long init_stack[THREAD_SIZE / sizeof(unsigned long)];
 	 * and let the host kernel (Windows) do the rest.
 	 */
 
+#if 0
 void __init arch_call_rest_init(void)
 {
 	DbgPrint("Doing the rest ... \n");
+}
+#endif
+
+/*
+ * This is where the Windows thread is created. It is still 'stopped'
+ * until the start_event is signalled.
+ */
+int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
+{
+	int ret;
+
+	*dst = *src;
+	ret = win_create_windows_thread(dst, &dst->thread_info.windows_thread);
+
+	return ret;
 }
 

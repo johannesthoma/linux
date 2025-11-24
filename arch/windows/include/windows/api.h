@@ -21,4 +21,11 @@ struct win_timer_list *win_allocate_timer(void(*callback)(struct win_timer_list 
 void win_del_timer(struct win_timer_list *t);
 void win_mod_timer_relative(struct win_timer_list *timer, unsigned long long expires);
 
+struct thread_info;
+struct task_struct;
+struct _KTHREAD;
+
+struct thread_info *win_find_current_thread_info(void);
+int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread_object_p);
+
 #endif

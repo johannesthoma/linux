@@ -26,10 +26,15 @@
 struct task_struct;
 extern struct task_struct init_task;
 
+struct _KTHREAD;
+struct _KEVENT;
+
 struct thread_info {
 	int preempt_count;
 	unsigned long flags;
 	struct task_struct *task;
+	struct _KTHREAD *windows_thread;
+	struct _KEVENT *start_event;
 };
 
 #define INIT_THREAD_INFO(tsk)                   \
@@ -39,15 +44,16 @@ struct thread_info {
         .task		= &tsk,			\
 }
 
-/* TODO: embed in struct task_struct and enable multithreading. */
-extern struct thread_info windows_thread_info;
+#include <windows/api.h>
 
+/*
 static inline struct thread_info *current_thread_info(void)
 {
-	windows_thread_info.task = &init_task;
-
-	return &windows_thread_info;
+	return win_find_current_thread_info();
 }
+*/
+
+#define current ((struct task_struct*) win_find_current_thread_info())
 
 static __always_inline int user_mode(struct pt_regs *regs)
 {

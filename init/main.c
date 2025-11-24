@@ -735,8 +735,11 @@ noinline void __ref __noreturn rest_init(void)
 	 * at least once to get things moving:
 	 */
 	schedule_preempt_disabled();
+#ifndef CONFIG_WINDOWS
 	/* Call into cpu_idle with preempt disabled */
 	cpu_startup_entry(CPUHP_ONLINE);
+#endif
+	/* else return to Windows ... */
 }
 
 #ifndef CONFIG_WINDOWS

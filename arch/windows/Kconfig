@@ -46,4 +46,7 @@ config GENERIC_SCHED_CLOCK
 config GENERIC_IRQ_SHOW
 	def_bool y
 
+config THREAD_INFO_IN_TASK
+	def_bool y
+
 endmenu

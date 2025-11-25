@@ -12,8 +12,17 @@ extern void start_kernel(void);
 
 NTSTATUS __attribute__((stdcall)) DriverEntry(void *DriverObject, void *registry_path)
 {
+	KIRQL irql;
+
 	DbgPrint("Hallo Linux!!\n");
+
+		/* Linux expects interrupts to be disabled here.
+		 * It uses spin_lock() which expects irql at
+		 * DISPATCH_LEVEL (or higher).
+		 */
+	KeRaiseIrql(DISPATCH_LEVEL, &irql);
 	start_kernel();
+	KeLowerIrql(irql);
 
 	return STATUS_SUCCESS;
 }

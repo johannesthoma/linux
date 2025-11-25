@@ -1,4 +1,5 @@
 #include <linux/spinlock_types.h>
+#include <linux/printk.h>
 
 /* Those are defined in linux/types.h */
 #define _UINTPTR_T_DEFINED 1
@@ -65,7 +66,10 @@ void win_spin_unlock_irq(spinlock_t *lock)
 
 void win_spin_lock(spinlock_t *lock)
 {
-	KeAcquireSpinLockAtDpcLevel(&lock->rlock.raw_lock.windows_lock);
+	if (KeGetCurrentIrql() < DISPATCH_LEVEL)
+		printk("win_spin_lock: irql is %d\n", KeGetCurrentIrql());
+	else
+		KeAcquireSpinLockAtDpcLevel(&lock->rlock.raw_lock.windows_lock);
 }
 
 void win_spin_unlock(spinlock_t *lock)

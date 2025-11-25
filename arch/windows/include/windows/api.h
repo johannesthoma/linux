@@ -31,4 +31,39 @@ int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread
 void win_wake_up_task(struct task_struct *t);
 void win_put_task_to_sleep(struct task_struct *t);
 
+#include <linux/spinlock_types.h>
+
+bool win_arch_spin_is_locked(arch_spinlock_t *lock);
+bool win_arch_spin_is_contended(arch_spinlock_t *lock);
+bool win_arch_spin_is_locked(arch_spinlock_t *lock);
+bool win_arch_spin_value_unlocked(arch_spinlock_t *lock);
+void win_arch_spin_lock(arch_spinlock_t *lock);
+bool win_arch_spin_trylock(arch_spinlock_t *lock);
+void win_arch_spin_unlock(arch_spinlock_t *lock);
+
+unsigned long win_spin_lock_irqsave_ret(raw_spinlock_t *lock);
+void win_spin_unlock_irqrestore(raw_spinlock_t *lock, unsigned long flags);
+void win_spin_lock_irq(raw_spinlock_t *lock);
+void win_spin_unlock_irq(raw_spinlock_t *lock);
+void win_spin_lock(raw_spinlock_t *lock);
+void win_spin_unlock(raw_spinlock_t *lock);
+void win_spin_lock_bh(raw_spinlock_t *lock);
+void win_spin_unlock_bh(raw_spinlock_t *lock);
+void win_spin_lock_nested(raw_spinlock_t *lock, int level);
+
+void win_read_lock(rwlock_t *lock);
+void win_read_unlock(rwlock_t *lock);
+void win_read_lock_irq(rwlock_t *lock);
+void win_read_unlock_irq(rwlock_t *lock);
+unsigned long win_read_lock_irqsave_ret(rwlock_t *lock);
+void win_read_unlock_irqrestore(rwlock_t *lock, unsigned long flags);
+void win_write_lock(rwlock_t *lock);
+void win_write_unlock(rwlock_t *lock);
+void win_write_lock_bh(rwlock_t *lock);
+void win_write_unlock_bh(rwlock_t *lock);
+void win_write_lock_irq(rwlock_t *lock);
+void win_write_unlock_irq(rwlock_t *lock);
+unsigned long win_write_lock_irqsave_ret(rwlock_t *lock);
+void win_write_unlock_irqrestore(rwlock_t *lock, unsigned long flags);
+
 #endif

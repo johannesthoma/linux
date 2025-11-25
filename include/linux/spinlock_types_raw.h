@@ -3,7 +3,7 @@
 
 #include <linux/types.h>
 
-#if defined(CONFIG_SMP)
+#if defined(CONFIG_SMP) || defined(CONFIG_WINDOWS)
 # include <asm/spinlock_types.h>
 #else
 # include <linux/spinlock_types_up.h>

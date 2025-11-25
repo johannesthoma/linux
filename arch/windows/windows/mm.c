@@ -1,4 +1,6 @@
 #include <windows/api.h>
+
+#define _INTPTR_T_DEFINED
 #include <wdm.h>
 
 void *win_allocate_memory(unsigned long size)

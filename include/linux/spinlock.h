@@ -91,7 +91,7 @@
 /*
  * Pull the arch_spin*() functions/declarations (UP-nondebug doesn't need them):
  */
-#ifdef CONFIG_SMP
+#if (defined CONFIG_SMP) || (defined CONFIG_WINDOWS)
 # include <asm/spinlock.h>
 #else
 # include <linux/spinlock_up.h>
@@ -310,6 +310,8 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
  */
 #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
 # include <linux/spinlock_api_smp.h>
+#elif defined(CONFIG_WINDOWS)
+# include <asm/spinlock.h>
 #else
 # include <linux/spinlock_api_up.h>
 #endif

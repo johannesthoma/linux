@@ -4,7 +4,7 @@
 
 #ifndef __ASSEMBLY__
 
-#include <crt/mingw32/intrin_x86.h>
+/* TODO: move this to a irqflags_x86.h and conditionally compile */
 
 /*
  * Interrupt control:
@@ -14,29 +14,40 @@
 extern inline unsigned long native_save_fl(void);
 extern __always_inline unsigned long native_save_fl(void)
 {
-	return __readeflags();
+	unsigned long flags;
+
+	/*
+	 * "=rm" is safe here, because "pop" adjusts the stack before
+	 * it evaluates its effective address -- this is part of the
+	 * documented behavior of the "pop" instruction.
+	 */
+	asm volatile("# __raw_save_flags\n\t"
+		     "pushf ; pop %0"
+		     : "=rm" (flags)
+		     : /* no input */
+		     : "memory");
+
+	return flags;
 }
 
 static __always_inline void native_irq_disable(void)
 {
-	_disable();
+	asm volatile("cli": : :"memory");
 }
 
 static __always_inline void native_irq_enable(void)
 {
-	_enable();
+	asm volatile("sti": : :"memory");
 }
 
 static __always_inline void native_safe_halt(void)
 {
-	__halt();
-//	asm volatile("sti; hlt": : :"memory");
+	asm volatile("sti; hlt": : :"memory");
 }
 
 static __always_inline void native_halt(void)
 {
-	__halt();
-//	asm volatile("hlt": : :"memory");
+	asm volatile("hlt": : :"memory");
 }
 
 #include <linux/types.h>

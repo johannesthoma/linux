@@ -12,15 +12,6 @@ unsigned int arch_dynirq_lower_bound(unsigned int from)
 	return from;
 }
 
-unsigned long arch_local_save_flags(void)
-{
-	return 0;
-}
-
-void arch_local_irq_restore(unsigned long flags)
-{
-}
-
 int arch_prctl_spec_ctrl_get(struct task_struct *t, unsigned long which)
 {
         return -EINVAL;

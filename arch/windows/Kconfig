@@ -49,18 +49,19 @@ config GENERIC_IRQ_SHOW
 config THREAD_INFO_IN_TASK
 	def_bool y
 
-# did this with menuconfig:
-# CONFIG_PREEMPT_BUILD=y
-## CONFIG_PREEMPT_NONE is not set
-## CONFIG_PREEMPT_VOLUNTARY is not set
-# CONFIG_PREEMPT=y
-# CONFIG_PREEMPT_COUNT=y
-# CONFIG_PREEMPTION=y
+config PREEMPT_BUILD
+	def_bool y
 
-# config PREEMPT
-# 	def_bool y
+config PREEMPT
+	def_bool y
 
-# TODO: explain why:
+config PREEMPT_COUNT
+	def_bool y
+
+config PREEMPTION
+	def_bool y
+
+# Windows does the (SMP-)scheduling for us, no need to set this
 config SMP
 	def_bool n
 

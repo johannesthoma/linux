@@ -3,6 +3,8 @@
 
 #include <windows/api.h>
 
+zak
+
 #define in_lock_functions(ADDR)         0
 #define assert_raw_spin_locked(lock)    do { (void)(lock); } while (0)
 

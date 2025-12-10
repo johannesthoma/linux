@@ -170,13 +170,19 @@ void win_put_task_to_sleep(struct task_struct *t)
 
 	printk("putting %s to sleep ...\n", t->comm);
 	KeClearEvent(t->thread_info.task_queued_event);
+	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
+	if (t->thread_info.preempt_count != 0)
+		win_enable_preemption();
 	/* sleep */
         status = KeWaitForSingleObject(t->thread_info.task_queued_event, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
         if (!NT_SUCCESS(status)) {
 		printk("KeWaitForSingleObject returned %08X\n", status);
 	}
 	printk("%s woken up, continuing ...\n", t->comm);
+	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
 	/* ok woken up, continue execution */
+	if (t->thread_info.preempt_count != 0)
+		win_disable_preemption();
 }
 
 	/* Creates a new task_struct, but start the thread (by

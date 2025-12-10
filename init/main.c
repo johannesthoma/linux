@@ -730,16 +730,25 @@ noinline void __ref __noreturn rest_init(void)
 
 	complete(&kthreadd_done);
 
+#ifndef CONFIG_WINDOWS
 	/*
 	 * The boot idle thread must execute schedule()
 	 * at least once to get things moving:
 	 */
 	schedule_preempt_disabled();
-#ifndef CONFIG_WINDOWS
 	/* Call into cpu_idle with preempt disabled */
 	cpu_startup_entry(CPUHP_ONLINE);
+#else
+	/*
+	 * On Windows, preemption must be enabled when
+	 * returning control to the Windows kernel.
+         * We know that preempt_count is 1 here (see
+	 * comment at schedule_preempt_disabled()),
+         * so enable it here.
+	 */
+
+	sched_preempt_enable_no_resched();
 #endif
-	/* else return to Windows ... */
 }
 
 #ifndef CONFIG_WINDOWS

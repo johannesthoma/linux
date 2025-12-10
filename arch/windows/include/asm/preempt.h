@@ -35,7 +35,7 @@ static __always_inline int __preempt_count_modify(int val, enum __PREEMPT_MOD_OP
 	default: printk("op is %d, don't know what to do ...\n", op);
 	}
 
-printk("old preemptcount is %d new preempt count is %d\n", old_preempt_count, *p);
+printk("old preemptcount is %d new preempt count is %d p is %p\n", old_preempt_count, *p, p);
 	if (old_preempt_count == PREEMPT_ENABLED && *p != PREEMPT_ENABLED)
 		win_disable_preemption();
 	if (old_preempt_count != PREEMPT_ENABLED && *p == PREEMPT_ENABLED)
@@ -52,7 +52,6 @@ static __always_inline void preempt_count_set(int pc)
 /*
  * must be macros to avoid header recursion hell
  */
-/*
 #define init_task_preempt_count(p) do { \
 	task_thread_info(p)->preempt_count = FORK_PREEMPT_COUNT; \
 } while (0)
@@ -60,8 +59,8 @@ static __always_inline void preempt_count_set(int pc)
 #define init_idle_preempt_count(p, cpu) do { \
 	task_thread_info(p)->preempt_count = PREEMPT_DISABLED; \
 } while (0)
-*/
 
+/*
 #define init_task_preempt_count(p) do { \
 	task_thread_info(p)->preempt_count = PREEMPT_ENABLED; \
 } while (0)
@@ -69,6 +68,7 @@ static __always_inline void preempt_count_set(int pc)
 #define init_idle_preempt_count(p, cpu) do { \
 	task_thread_info(p)->preempt_count = PREEMPT_ENABLED; \
 } while (0)
+*/
 
 static __always_inline void set_preempt_need_resched(void)
 {

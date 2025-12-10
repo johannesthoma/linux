@@ -66,4 +66,7 @@ void win_write_unlock_irq(rwlock_t *lock);
 unsigned long win_write_lock_irqsave_ret(rwlock_t *lock);
 void win_write_unlock_irqrestore(rwlock_t *lock, unsigned long flags);
 
+void win_disable_preemption(void);
+void win_enable_preemption(void);
+
 #endif

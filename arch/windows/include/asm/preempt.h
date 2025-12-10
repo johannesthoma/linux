@@ -20,10 +20,10 @@ static __always_inline volatile int *preempt_count_ptr(void)
 enum __PREEMPT_MOD_OPT {
 	PREEMPT_SET,
 	PREEMPT_ADD,
-	PREEMPT_DEL
+	PREEMPT_SUB
 };
 
-static __always_inline void __preempt_count_modify(int val, enum __PREEMPT_MOD_OPT op)
+static __always_inline int __preempt_count_modify(int val, enum __PREEMPT_MOD_OPT op)
 {
 	volatile int *p = preempt_count_ptr();
 	int old_preempt_count = *p;
@@ -31,14 +31,17 @@ static __always_inline void __preempt_count_modify(int val, enum __PREEMPT_MOD_O
 	switch (op) {
 	case PREEMPT_SET: *p = val; break;
 	case PREEMPT_ADD: *p += val; break;
-	case PREEMPT_DEL: *p -= val; break;
+	case PREEMPT_SUB: *p -= val; break;
 	default: printk("op is %d, don't know what to do ...\n", op);
 	}
 
+printk("old preemptcount is %d new preempt count is %d\n", old_preempt_count, *p);
 	if (old_preempt_count == PREEMPT_ENABLED && *p != PREEMPT_ENABLED)
 		win_disable_preemption();
 	if (old_preempt_count != PREEMPT_ENABLED && *p == PREEMPT_ENABLED)
 		win_enable_preemption();
+
+	return *p;
 }
 
 static __always_inline void preempt_count_set(int pc)
@@ -49,12 +52,22 @@ static __always_inline void preempt_count_set(int pc)
 /*
  * must be macros to avoid header recursion hell
  */
+/*
 #define init_task_preempt_count(p) do { \
 	task_thread_info(p)->preempt_count = FORK_PREEMPT_COUNT; \
 } while (0)
 
 #define init_idle_preempt_count(p, cpu) do { \
 	task_thread_info(p)->preempt_count = PREEMPT_DISABLED; \
+} while (0)
+*/
+
+#define init_task_preempt_count(p) do { \
+	task_thread_info(p)->preempt_count = PREEMPT_ENABLED; \
+} while (0)
+
+#define init_idle_preempt_count(p, cpu) do { \
+	task_thread_info(p)->preempt_count = PREEMPT_ENABLED; \
 } while (0)
 
 static __always_inline void set_preempt_need_resched(void)
@@ -81,7 +94,7 @@ static __always_inline void __preempt_count_add(int val)
 
 static __always_inline void __preempt_count_sub(int val)
 {
-	__preempt_count_modify(val, PREEMPT_DEL);
+	__preempt_count_modify(val, PREEMPT_SUB);
 }
 
 static __always_inline bool __preempt_count_dec_and_test(void)
@@ -91,7 +104,7 @@ static __always_inline bool __preempt_count_dec_and_test(void)
 	 * operations; we cannot use PREEMPT_NEED_RESCHED because it might get
 	 * lost.
 	 */
-	return !--*preempt_count_ptr() && tif_need_resched();
+	return !__preempt_count_modify(1, PREEMPT_SUB) && tif_need_resched();
 }
 
 /*

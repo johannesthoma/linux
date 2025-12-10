@@ -20,9 +20,9 @@ NTSTATUS __attribute__((stdcall)) DriverEntry(void *DriverObject, void *registry
 		 * It uses spin_lock() which expects irql at
 		 * DISPATCH_LEVEL (or higher).
 		 */
-	KeRaiseIrql(DISPATCH_LEVEL, &irql);
+//	KeRaiseIrql(DISPATCH_LEVEL, &irql);
 	start_kernel();
-	KeLowerIrql(irql);
+//	KeLowerIrql(irql);
 
 	return STATUS_SUCCESS;
 }

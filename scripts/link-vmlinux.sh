@@ -85,7 +85,8 @@ vmlinux_link()
 		ld="${LD}"
 		ldflags="${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}"
 		# ldlibs="-shared --subsystem native --image-base 0x40000000 --dynamicbase --nxcompat --file-alignment 0x200 --section-alignment 0x1000 --stack 0x100000 --gc-sections --exclude-all-symbols -L/home/johannes/.zeranoe/mingw-w64/i686/i686-w64-mingw32/lib -lntoskrnl -lhal -lntdll -lnetio"
-		ldlibs="-L/home/johannes/.zeranoe/mingw-w64/i686/i686-w64-mingw32/lib -lntoskrnl -lhal -lntdll -lnetio"
+#		ldlibs="-L/home/johannes/.zeranoe/mingw-w64/i686/i686-w64-mingw32/lib -lntoskrnl -lhal -lntdll -lnetio"
+		ldlibs="-L/usr/i686-w64-mingw32/sys-root/mingw/lib -lntoskrnl -lhal -lntdll -lnetio"
 	else
 		wl=
 		ld="${LD}"

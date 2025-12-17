@@ -10,7 +10,7 @@ void __init setup_arch(char **cmdline_p)
 	if (initial_memory == NULL) {
 		DbgPrint("Oops I don't even have memory for the early booting...\n");
 	} else {
-		memblock_add(initial_memory, INIT_MEMBLOCK_SIZE);
+		memblock_add((unsigned long) initial_memory, INIT_MEMBLOCK_SIZE);
 	}
 	/* TODO: read from Windows registry ... */
 	*cmdline_p = "lpj=1000";

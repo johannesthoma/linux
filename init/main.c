@@ -739,6 +739,7 @@ noinline void __ref __noreturn rest_init(void)
 	/* Call into cpu_idle with preempt disabled */
 	cpu_startup_entry(CPUHP_ONLINE);
 #else
+	schedule_preempt_disabled();
 	/*
 	 * On Windows, preemption must be enabled when
 	 * returning control to the Windows kernel.

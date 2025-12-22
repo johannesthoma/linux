@@ -19,11 +19,11 @@ struct thread_info *find_current_thread_info(struct _KTHREAD *windows_thread)
 	list_for_each_entry(t, &init_task.tasks, tasks) {
 		if (t->thread_info.windows_thread == windows_thread)
 {
-printk("returning thread %s@%p ...\n", t->comm, t);
+// printk("returning thread %s@%p ...\n", t->comm, t);
 			return &t->thread_info;
 }
 	}
-printk("returning init_task ...\n");
+// printk("returning init_task ...\n");
 	return &init_task.thread_info;
 }
 
@@ -70,7 +70,7 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 #endif
 		return;
 	}
-	printk(KERN_DEBUG "thread %s woken up ...\n", t->comm);
+//	printk(KERN_DEBUG "thread %s woken up ...\n", t->comm);
 
 	/* TODO: do we need this? */
 /*
@@ -179,7 +179,7 @@ int win_cleanup_windows_thread(void *thread_object)
 
 void win_wake_up_task(struct task_struct *t)
 {
-	printk("waking up %s ...\n", t->comm);
+//	printk("waking up %s ...\n", t->comm);
 	KeSetEvent(t->thread_info.task_queued_event, 0, FALSE);
 }
 
@@ -187,9 +187,9 @@ void win_put_task_to_sleep(struct task_struct *t)
 {
 	NTSTATUS status;
 
-	printk("putting %s to sleep ...\n", t->comm);
+//	printk("putting %s to sleep ...\n", t->comm);
 //	KeClearEvent(t->thread_info.task_queued_event);
-	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
+//	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
 	if (t->thread_info.preempt_count != 0)
 		win_enable_preemption();
 	/* sleep */
@@ -197,11 +197,11 @@ void win_put_task_to_sleep(struct task_struct *t)
         if (!NT_SUCCESS(status)) {
 		printk("KeWaitForSingleObject returned %08X\n", status);
 	}
-	printk("%s woken up, continuing ...\n", t->comm);
+//	printk("%s woken up, continuing ...\n", t->comm);
 	/* Clear event here, in case we got woken up while we are running ... */
-	printk("%s clearing event ...\n", t->comm);
+//	printk("%s clearing event ...\n", t->comm);
 	KeClearEvent(t->thread_info.task_queued_event);
-	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
+//	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
 	/* ok woken up, continue execution */
 	if (t->thread_info.preempt_count != 0)
 		win_disable_preemption();

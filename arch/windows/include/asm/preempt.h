@@ -35,7 +35,7 @@ static __always_inline int __preempt_count_modify(int val, enum __PREEMPT_MOD_OP
 	default: printk("op is %d, don't know what to do ...\n", op);
 	}
 
-printk("old preemptcount is %d new preempt count is %d p is %p\n", old_preempt_count, *p, p);
+// printk("old preemptcount is %d new preempt count is %d p is %p\n", old_preempt_count, *p, p);
 	if (old_preempt_count == PREEMPT_ENABLED && *p != PREEMPT_ENABLED)
 		win_disable_preemption();
 	if (old_preempt_count != PREEMPT_ENABLED && *p == PREEMPT_ENABLED)

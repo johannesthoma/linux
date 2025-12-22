@@ -734,8 +734,8 @@ noinline void __ref __noreturn rest_init(void)
 		/* so we can sleep ... */
 	win_initialize_task_queued_event(&init_task);
 #endif
-// #ifndef CONFIG_WINDOWS
-#if 1
+
+#ifndef CONFIG_WINDOWS
 	/*
 	 * The boot idle thread must execute schedule()
 	 * at least once to get things moving:

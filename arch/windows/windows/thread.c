@@ -12,10 +12,9 @@
 #include <wdm.h>
 
 /* TODO: spin lock !!!! */
-struct thread_info *win_find_current_thread_info(void)
+struct thread_info *find_current_thread_info(struct _KTHREAD *windows_thread)
 {
 	struct task_struct *t;
-	struct _KTHREAD *windows_thread = KeGetCurrentThread();
 
 	list_for_each_entry(t, &init_task.tasks, tasks) {
 		if (t->thread_info.windows_thread == windows_thread)
@@ -26,6 +25,11 @@ printk("returning thread %s@%p ...\n", t->comm, t);
 	}
 printk("returning init_task ...\n");
 	return &init_task.thread_info;
+}
+
+struct thread_info *win_find_current_thread_info(void)
+{
+	return find_current_thread_info(KeGetCurrentThread());
 }
 
 #ifdef CONFIG_HAVE_KERNEL_STACKSWAP_ENABLE
@@ -184,7 +188,7 @@ void win_put_task_to_sleep(struct task_struct *t)
 	NTSTATUS status;
 
 	printk("putting %s to sleep ...\n", t->comm);
-	KeClearEvent(t->thread_info.task_queued_event);
+//	KeClearEvent(t->thread_info.task_queued_event);
 	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
 	if (t->thread_info.preempt_count != 0)
 		win_enable_preemption();
@@ -194,6 +198,9 @@ void win_put_task_to_sleep(struct task_struct *t)
 		printk("KeWaitForSingleObject returned %08X\n", status);
 	}
 	printk("%s woken up, continuing ...\n", t->comm);
+	/* Clear event here, in case we got woken up while we are running ... */
+	printk("%s clearing event ...\n", t->comm);
+	KeClearEvent(t->thread_info.task_queued_event);
 	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
 	/* ok woken up, continue execution */
 	if (t->thread_info.preempt_count != 0)

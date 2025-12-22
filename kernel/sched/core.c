@@ -4205,6 +4205,9 @@ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
  */
 int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 {
+#ifdef CONFIG_WINDOWS
+        win_wake_up_task(p);
+#endif
 	guard(preempt)();
 	int cpu, success = 0;
 
@@ -4264,10 +4267,8 @@ int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 		 * A similar smp_rmb() lives in __task_needs_rq_lock().
 		 */
 		smp_rmb();
-// #ifndef CONFIG_WINDOWS
 		if (READ_ONCE(p->on_rq) && ttwu_runnable(p, wake_flags))
 			break;
-// #endif
 
 #ifdef CONFIG_SMP
 		/*

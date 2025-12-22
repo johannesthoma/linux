@@ -27,6 +27,7 @@ struct _KTHREAD;
 
 struct thread_info *win_find_current_thread_info(void);
 int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread_object_p);
+int win_initialize_task_queued_event(struct task_struct *task);
 
 void win_wake_up_task(struct task_struct *t);
 void win_put_task_to_sleep(struct task_struct *t);

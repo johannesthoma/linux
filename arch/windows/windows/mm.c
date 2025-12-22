@@ -10,3 +10,9 @@ void *win_allocate_memory(unsigned long size)
 
 	return ExAllocatePool(NonPagedPool, size);
 }
+
+	/* Useful for calling functions in gdb. */
+void *malloc(size_t size)
+{
+	return win_allocate_memory(size);
+}

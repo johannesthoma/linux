@@ -730,7 +730,12 @@ noinline void __ref __noreturn rest_init(void)
 
 	complete(&kthreadd_done);
 
-#ifndef CONFIG_WINDOWS
+#ifdef CONFIG_WINDOWS
+		/* so we can sleep ... */
+	win_initialize_task_queued_event(&init_task);
+#endif
+// #ifndef CONFIG_WINDOWS
+#if 1
 	/*
 	 * The boot idle thread must execute schedule()
 	 * at least once to get things moving:

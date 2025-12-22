@@ -399,6 +399,11 @@ void cpu_startup_entry(enum cpuhp_state state)
 #ifndef CONFIG_WINDOWS
 	while (1)
 		do_idle();
+#else
+	while (1) {
+		win_enable_preemption();
+		win_put_task_to_sleep(current);
+	}
 #endif
 }
 

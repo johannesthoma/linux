@@ -19,8 +19,12 @@ struct thread_info *win_find_current_thread_info(void)
 
 	list_for_each_entry(t, &init_task.tasks, tasks) {
 		if (t->thread_info.windows_thread == windows_thread)
+{
+printk("returning thread %s@%p ...\n", t->comm, t);
 			return &t->thread_info;
+}
 	}
+printk("returning init_task ...\n");
 	return &init_task.thread_info;
 }
 
@@ -92,17 +96,28 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 #endif
 }
 
-int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread_object_p)
-{
-	HANDLE h;
-	NTSTATUS status;
-	int retries;
+	/* This has to be called (at least) on the init_task struct */
 
+int win_initialize_task_queued_event(struct task_struct *task)
+{
 	task->thread_info.task_queued_event = win_allocate_memory(sizeof(struct _KEVENT));
 	if (task->thread_info.task_queued_event == NULL)
 		return -ENOMEM;
 
 	KeInitializeEvent(task->thread_info.task_queued_event, SynchronizationEvent, FALSE);
+	return 0;
+}
+
+int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread_object_p)
+{
+	HANDLE h;
+	NTSTATUS status;
+	int retries;
+	int ret;
+
+	ret = win_initialize_task_queued_event(task);
+	if (ret < 0)
+		return ret;
 
 	retries = 0;
 	while (1) {

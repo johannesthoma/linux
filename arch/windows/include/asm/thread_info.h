@@ -34,7 +34,6 @@ struct thread_info {
 	unsigned long flags;
 	struct task_struct *task;
 	struct _KTHREAD *windows_thread;
-	struct _KEVENT *task_start_event;
 	struct _KEVENT *task_queued_event;
 
         int (*fn)(void *);

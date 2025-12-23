@@ -4894,9 +4894,6 @@ void wake_up_new_task(struct task_struct *p)
 	}
 #endif
 	task_rq_unlock(rq, p, &rf);
-#ifdef CONFIG_WINDOWS
-	win_wake_up_new_task(p);
-#endif
 }
 
 #ifdef CONFIG_PREEMPT_NOTIFIERS

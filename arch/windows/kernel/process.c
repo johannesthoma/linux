@@ -54,6 +54,7 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src)
 	int ret;
 
 	*dst = *src;
+	dst->thread_info.task = dst;
 	ret = win_create_windows_thread(dst, &dst->thread_info.windows_thread);
 
 	return ret;

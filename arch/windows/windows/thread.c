@@ -61,7 +61,7 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 		 * printk().
 		 */
 
-        status = KeWaitForSingleObject(t->thread_info.task_queued_event, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
+        status = KeWaitForSingleObject(t->thread_info.task_start_event, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
         if (!NT_SUCCESS(status)) {
 		printk("On waiting for start event: KeWaitForSingleObject failed with status %x\n", status);
 
@@ -71,7 +71,7 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 		return;
 	}
 		/* TODO: needed? It is "auto-clear" (SynchronizationEvent) */
-	KeClearEvent(t->thread_info.task_queued_event);
+//	KeClearEvent(t->thread_info.task_start_event);
 //	printk(KERN_DEBUG "thread %s woken up ...\n", t->comm);
 
 	/* TODO: do we need this? */
@@ -111,6 +111,12 @@ int win_initialize_task_queued_event(struct task_struct *task)
 		return -ENOMEM;
 
 	KeInitializeEvent(task->thread_info.task_queued_event, SynchronizationEvent, FALSE);
+
+	task->thread_info.task_start_event = win_allocate_memory(sizeof(struct _KEVENT));
+	if (task->thread_info.task_start_event == NULL)
+		return -ENOMEM;
+
+	KeInitializeEvent(task->thread_info.task_start_event, SynchronizationEvent, FALSE);
 	return 0;
 }
 
@@ -185,6 +191,12 @@ void win_wake_up_task(struct task_struct *t)
 	KeSetEvent(t->thread_info.task_queued_event, 0, FALSE);
 }
 
+void win_wake_up_new_task(struct task_struct *t)
+{
+//	printk("waking up %s ...\n", t->comm);
+	KeSetEvent(t->thread_info.task_start_event, 0, FALSE);
+}
+
 void win_put_task_to_sleep(struct task_struct *t)
 {
 	NTSTATUS status;
@@ -201,6 +213,7 @@ void win_put_task_to_sleep(struct task_struct *t)
 	}
 //	printk("%s woken up, continuing ...\n", t->comm);
 	/* Clear event here, in case we got woken up while we are running ... */
+	/* is auto-clear ... */
 //	printk("%s clearing event ...\n", t->comm);
 	KeClearEvent(t->thread_info.task_queued_event);
 //	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);

@@ -14,6 +14,7 @@ void *__switch_to(struct task_struct *from, struct task_struct *to)
 
    ... or so ...
  */
+printk("switching from %s(%d) to %s(%d) ...\n", from->comm, from->pid, to->comm, to->pid);
 	return from;
 }
 

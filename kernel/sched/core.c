@@ -6663,7 +6663,14 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 		switch_count = &prev->nvcsw;
 	}
 
+#ifdef CONFIG_WINDOWS
+	/* We never switch context by ourselves. This should be
+	 * done by the Windows dispatcher instead.
+	 */
+	next = prev;
+#else
 	next = pick_next_task(rq, prev, &rf);
+#endif
 	clear_tsk_need_resched(prev);
 	clear_preempt_need_resched();
 #ifdef CONFIG_SCHED_DEBUG

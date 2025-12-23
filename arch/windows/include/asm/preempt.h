@@ -52,7 +52,13 @@ static __always_inline void preempt_count_set(int pc)
 /*
  * must be macros to avoid header recursion hell
  */
-#define init_task_preempt_count(p) do { } while (0)
+/* TODO: or just do nothing? */
+/* TODO: or set it PREEMPT_ENABLED, then preempt_disable?
+ * so we tell windows not to interrupt us ...
+ */
+#define init_task_preempt_count(p) do { \
+	task_thread_info(p)->preempt_count = PREEMPT_ENABLED; \
+} while (0)
 
 /*
 #define init_task_preempt_count(p) do { \
@@ -63,6 +69,13 @@ static __always_inline void preempt_count_set(int pc)
 #define init_idle_preempt_count(p, cpu) do { \
 	task_thread_info(p)->preempt_count = PREEMPT_DISABLED; \
 } while (0)
+
+/*
+#define init_idle_preempt_count(p, cpu) do { \
+	task_thread_info(p)->preempt_count = PREEMPT_ENABLED; \
+	preempt_disable(); \
+} while (0)
+*/
 
 /*
 #define init_task_preempt_count(p) do { \

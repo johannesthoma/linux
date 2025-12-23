@@ -189,7 +189,13 @@ static __always_inline unsigned char interrupt_context_level(void)
  * Check whether we were atomic before we did preempt_disable():
  * (used by the scheduler)
  */
+/*
+#ifdef CONFIG_WINDOWS
+#define in_atomic_preempt_off() (preempt_count() != 2*PREEMPT_DISABLE_OFFSET)
+#else
+*/
 #define in_atomic_preempt_off() (preempt_count() != PREEMPT_DISABLE_OFFSET)
+// #endif
 
 #if defined(CONFIG_DEBUG_PREEMPT) || defined(CONFIG_TRACE_PREEMPT_TOGGLE)
 extern void preempt_count_add(int val);

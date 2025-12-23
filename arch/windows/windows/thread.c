@@ -70,6 +70,8 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 #endif
 		return;
 	}
+		/* TODO: needed? It is "auto-clear" (SynchronizationEvent) */
+	KeClearEvent(t->thread_info.task_queued_event);
 //	printk(KERN_DEBUG "thread %s woken up ...\n", t->comm);
 
 	/* TODO: do we need this? */

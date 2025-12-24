@@ -167,6 +167,16 @@ int win_cleanup_windows_thread(void *thread_object)
 	return 0;
 }
 
+void win_set_runnable(struct task_struct *t, int r)
+{
+	t->thread_info.runnable = r;
+}
+
+int win_is_runnable(struct task_struct *t)
+{
+	return t->thread_info.runnable;
+}
+
 
 	/* Again, we try to be more close to the Linux kernel API.
 	 * This really creates and starts the thread created earlier
@@ -181,7 +191,7 @@ int win_cleanup_windows_thread(void *thread_object)
 
 void win_wake_up_task(struct task_struct *t)
 {
-//	printk("waking up %s ...\n", t->comm);
+	printk("waking up %s(%d) ...\n", t->comm, t->pid);
 	KeSetEvent(t->thread_info.task_queued_event, 0, FALSE);
 }
 
@@ -189,9 +199,9 @@ void win_put_task_to_sleep(struct task_struct *t)
 {
 	NTSTATUS status;
 
-//	printk("putting %s to sleep ...\n", t->comm);
+	printk("putting %s(%d) to sleep ...\n", t->comm, t->pid);
 //	KeClearEvent(t->thread_info.task_queued_event);
-//	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
+	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
 	if (t->thread_info.preempt_count != 0)
 		win_enable_preemption();
 	/* sleep */
@@ -199,10 +209,10 @@ void win_put_task_to_sleep(struct task_struct *t)
         if (!NT_SUCCESS(status)) {
 		printk("KeWaitForSingleObject returned %08X\n", status);
 	}
-//	printk("%s woken up, continuing ...\n", t->comm);
+	printk("%s(%d) woken up, continuing ...\n", t->comm, t->pid);
 	/* Clear event here, in case we got woken up while we are running ... */
 //	printk("%s clearing event ...\n", t->comm);
-	KeClearEvent(t->thread_info.task_queued_event);
+//	KeClearEvent(t->thread_info.task_queued_event);
 //	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
 	/* ok woken up, continue execution */
 	if (t->thread_info.preempt_count != 0)

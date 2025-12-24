@@ -2094,12 +2094,9 @@ static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
 	uclamp_rq_inc(rq, p);
 	p->sched_class->enqueue_task(rq, p, flags);
 
-/*
 #ifdef CONFIG_WINDOWS
-	extern void win_wake_up_task(struct task_struct *t);
-	win_wake_up_task(p);
+	win_set_runnable(p, 1);
 #endif
-*/
 
 	if (sched_core_enabled(rq))
 		sched_core_enqueue(rq, p);
@@ -2121,13 +2118,9 @@ static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
 	uclamp_rq_dec(rq, p);
 	p->sched_class->dequeue_task(rq, p, flags);
 
-/*
 #ifdef CONFIG_WINDOWS
-	extern void win_put_task_to_sleep(struct task_struct *t);
-	win_put_task_to_sleep(p);
+	win_set_runnable(p, 0);
 #endif
-*/
-
 }
 
 void activate_task(struct rq *rq, struct task_struct *p, int flags)
@@ -6721,7 +6714,8 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 	}
 #ifdef CONFIG_WINDOWS
 	/* Wait until woken up */
-	win_put_task_to_sleep(next);
+	if (!win_is_runnable(next))
+		win_put_task_to_sleep(next);
 #endif
 }
 

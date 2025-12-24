@@ -2094,10 +2094,12 @@ static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
 	uclamp_rq_inc(rq, p);
 	p->sched_class->enqueue_task(rq, p, flags);
 
+/*
 #ifdef CONFIG_WINDOWS
 	extern void win_wake_up_task(struct task_struct *t);
 	win_wake_up_task(p);
 #endif
+*/
 
 	if (sched_core_enabled(rq))
 		sched_core_enqueue(rq, p);
@@ -4894,6 +4896,9 @@ void wake_up_new_task(struct task_struct *p)
 	}
 #endif
 	task_rq_unlock(rq, p, &rf);
+#ifdef CONFIG_WINDOWS
+        win_wake_up_task(p);
+#endif
 }
 
 #ifdef CONFIG_PREEMPT_NOTIFIERS
@@ -6712,6 +6717,10 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 		__balance_callbacks(rq);
 		raw_spin_rq_unlock_irq(rq);
 	}
+#ifdef CONFIG_WINDOWS
+	/* Wait until woken up */
+	win_put_task_to_sleep(next);
+#endif
 }
 
 void __noreturn do_task_dead(void)

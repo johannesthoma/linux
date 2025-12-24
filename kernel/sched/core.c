@@ -2121,10 +2121,12 @@ static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
 	uclamp_rq_dec(rq, p);
 	p->sched_class->dequeue_task(rq, p, flags);
 
+/*
 #ifdef CONFIG_WINDOWS
 	extern void win_put_task_to_sleep(struct task_struct *t);
 	win_put_task_to_sleep(p);
 #endif
+*/
 
 }
 

@@ -6667,7 +6667,8 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 	/* We never switch context by ourselves. This should be
 	 * done by the Windows dispatcher instead.
 	 */
-	next = prev;
+	printk("prev is %p %s(pid is %d)\n", prev, prev->comm, prev->pid);
+	next = current;
 #else
 	next = pick_next_task(rq, prev, &rf);
 #endif
@@ -6714,6 +6715,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 	}
 #ifdef CONFIG_WINDOWS
 	/* Wait until woken up */
+printk("next is %p (%s pid is %d)\n", next, next->comm, next->pid);
 	if (!win_is_runnable(next))
 		win_put_task_to_sleep(next);
 #endif

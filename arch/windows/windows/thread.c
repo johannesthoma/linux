@@ -19,11 +19,11 @@ struct thread_info *find_current_thread_info(struct _KTHREAD *windows_thread)
 	list_for_each_entry(t, &init_task.tasks, tasks) {
 		if (t->thread_info.windows_thread == windows_thread)
 {
-// printk("returning thread %s@%p ...\n", t->comm, t);
+printk("returning thread %s@%p pid is %d...\n", t->comm, t, t->pid);
 			return &t->thread_info;
 }
 	}
-// printk("returning init_task ...\n");
+printk("returning init_task ...\n");
 	return &init_task.thread_info;
 }
 

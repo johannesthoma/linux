@@ -2280,6 +2280,11 @@ unsigned long wait_task_inactive(struct task_struct *p, unsigned int match_state
 	unsigned long ncsw;
 	struct rq *rq;
 
+#ifdef CONFIG_WINDOWS
+printk("wait_task_inactive: current is %p %s(pid is %d) p is %p %s(pid is %d)\n", current, current->comm, current->pid, p, p->comm, p->pid);
+	return 1;
+#endif
+
 	for (;;) {
 		/*
 		 * We do the initial early heuristics without holding
@@ -6669,6 +6674,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 	 */
 	printk("prev is %p %s(pid is %d)\n", prev, prev->comm, prev->pid);
 	next = current;
+	printk("after assignment prev is %p %s(pid is %d)\n", prev, prev->comm, prev->pid);
 #else
 	next = pick_next_task(rq, prev, &rf);
 #endif
@@ -6678,6 +6684,9 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 	rq->last_seen_need_resched_ns = 0;
 #endif
 
+#ifdef CONFIG_WINDOWS
+	prev = next;
+#endif
 	if (likely(prev != next)) {
 		rq->nr_switches++;
 		/*
@@ -6716,8 +6725,8 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 #ifdef CONFIG_WINDOWS
 	/* Wait until woken up */
 printk("next is %p (%s pid is %d)\n", next, next->comm, next->pid);
-	if (!win_is_runnable(next))
-		win_put_task_to_sleep(next);
+//	if (!win_is_runnable(next))
+	win_put_task_to_sleep(next);
 #endif
 }
 

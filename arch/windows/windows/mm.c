@@ -1,6 +1,9 @@
 #include <windows/api.h>
 
-#define _INTPTR_T_DEFINED
+/* Those are defined in linux/types.h */
+#define _UINTPTR_T_DEFINED 1
+#define _INTPTR_T_DEFINED 1
+
 #include <wdm.h>
 
 void *win_allocate_memory(unsigned long size)
@@ -16,3 +19,4 @@ void *malloc(size_t size)
 {
 	return win_allocate_memory(size);
 }
+

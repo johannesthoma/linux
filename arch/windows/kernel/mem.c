@@ -64,3 +64,30 @@ void *vmalloc_huge(unsigned long size, gfp_t gfp_mask)
 {
 	return win_allocate_memory(size);
 }
+
+struct page *win_alloc_pages(int gfp, unsigned int order)
+{
+	int i;
+	struct page *page;
+	struct page *first_page = NULL;
+
+	void *mem = win_allocate_memory(PAGE_SIZE << order);
+	if (mem == NULL)
+		return NULL;
+
+	for (i=0;i<(1<<order);i++) {
+		page = win_allocate_memory(sizeof(*page));
+		if (page == NULL) {
+			/* TODO: free again */
+			return NULL;
+		}
+		if (first_page == NULL)
+			first_page = page;
+
+		set_page_address(page, mem);
+		win_add_page(page);
+
+		mem += PAGE_SIZE;
+	}
+	return first_page;
+}

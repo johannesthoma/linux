@@ -4538,17 +4538,7 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
 							nodemask_t *nodemask)
 {
 #ifdef CONFIG_WINDOWS
-	struct page *page = win_allocate_memory(sizeof(*page));
-	if (page == NULL)
-		return NULL;
-
-	set_page_address(page, win_allocate_memory(PAGE_SIZE << order));
-	if (page_address(page) == NULL) {
-		/* free page */
-		return NULL;
-	}
-	win_add_page(page);
-	return page;
+	return win_alloc_pages((int) gfp, order);
 #else
 
 	struct page *page;

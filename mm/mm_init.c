@@ -1570,7 +1570,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
 			if (freesize >= memmap_pages) {
 				freesize -= memmap_pages;
 				if (memmap_pages)
-					pr_debug("  %s zone: %lu pages used for memmap\n",
+					pr_info("  %s zone: %lu pages used for memmap\n",
 						 zone_names[j], memmap_pages);
 			} else
 				pr_warn("  %s zone: %lu memmap pages exceeds freesize %lu\n",
@@ -1580,15 +1580,17 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
 		/* Account for reserved pages */
 		if (j == 0 && freesize > dma_reserve) {
 			freesize -= dma_reserve;
-			pr_debug("  %s zone: %lu pages reserved\n", zone_names[0], dma_reserve);
+			pr_info("  %s zone: %lu pages reserved\n", zone_names[0], dma_reserve);
 		}
 
+		printk("nr_kernel_pages before: %lu", nr_kernel_pages);
 		if (!is_highmem_idx(j))
 			nr_kernel_pages += freesize;
 		/* Charge for highmem memmap if there are enough kernel pages */
 		else if (nr_kernel_pages > memmap_pages * 2)
 			nr_kernel_pages -= memmap_pages;
 		nr_all_pages += freesize;
+		printk("nr_kernel_pages after: %lu", nr_kernel_pages);
 
 		/*
 		 * Set an approximate value for lowmem here, it will be adjusted

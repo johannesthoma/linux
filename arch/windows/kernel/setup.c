@@ -14,5 +14,7 @@ void __init setup_arch(char **cmdline_p)
 	}
 	/* TODO: read from Windows registry ... */
 	*cmdline_p = "lpj=1000";
+
+	paging_init();
 }
 

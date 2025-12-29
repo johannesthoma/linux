@@ -48,12 +48,16 @@ void *win_page_to_virt(const struct page *page)
 	return page_address(page);
 }
 
-void __init mem_init(void)
+void __init paging_init(void)
 {
 	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
 
 	max_zone_pfn[ZONE_NORMAL] = NR_PAGES_AVAILABLE;
 	free_area_init(max_zone_pfn);
+}
+
+void __init mem_init(void)
+{
 }
 
 void __init pgtable_cache_init(void)

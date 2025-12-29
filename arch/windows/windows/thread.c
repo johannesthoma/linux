@@ -45,7 +45,7 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 	int (*threadfn)(void *);
 	void *data;
 
-	printk(KERN_DEBUG "About to start thread %s\n", t->comm);
+//	printk(KERN_DEBUG "About to start thread %s\n", t->comm);
 		/* Linux never swaps out kernel stack areas. This
 		 * should fix a very rare list corruption in a
 		 * wake_up() call (the list contained an element
@@ -167,6 +167,7 @@ int win_cleanup_windows_thread(void *thread_object)
 	return 0;
 }
 
+/* TODO: remove those two again: */
 void win_set_runnable(struct task_struct *t, int r)
 {
 	t->thread_info.runnable = r;
@@ -191,7 +192,7 @@ int win_is_runnable(struct task_struct *t)
 
 void win_wake_up_task(struct task_struct *t)
 {
-	printk("waking up %s(%d) ...\n", t->comm, t->pid);
+//	printk("waking up %s(%d) ...\n", t->comm, t->pid);
 	KeSetEvent(t->thread_info.task_queued_event, 0, FALSE);
 }
 
@@ -199,9 +200,9 @@ void win_put_task_to_sleep(struct task_struct *t)
 {
 	NTSTATUS status;
 
-	printk("putting %s(%d) to sleep ...\n", t->comm, t->pid);
+//	printk("putting %s(%d) to sleep ...\n", t->comm, t->pid);
 //	KeClearEvent(t->thread_info.task_queued_event);
-	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
+//	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
 	if (t->thread_info.preempt_count != 0)
 		win_enable_preemption();
 	/* sleep */
@@ -209,7 +210,7 @@ void win_put_task_to_sleep(struct task_struct *t)
         if (!NT_SUCCESS(status)) {
 		printk("KeWaitForSingleObject returned %08X\n", status);
 	}
-	printk("%s(%d) woken up, continuing ...\n", t->comm, t->pid);
+//	printk("%s(%d) woken up, continuing ...\n", t->comm, t->pid);
 	/* Clear event here, in case we got woken up while we are running ... */
 //	printk("%s clearing event ...\n", t->comm);
 //	KeClearEvent(t->thread_info.task_queued_event);

@@ -1707,14 +1707,22 @@ phys_addr_t __init_memblock memblock_reserved_size(void)
 /* lowest address */
 phys_addr_t __init_memblock memblock_start_of_DRAM(void)
 {
+#ifdef CONFIG_WINDOWS
+	return 0;
+#else
 	return memblock.memory.regions[0].base;
+#endif
 }
 
 phys_addr_t __init_memblock memblock_end_of_DRAM(void)
 {
+#ifdef CONFIG_WINDOWS
+	return 128*1024*1024;
+#else
 	int idx = memblock.memory.cnt - 1;
 
 	return (memblock.memory.regions[idx].base + memblock.memory.regions[idx].size);
+#endif
 }
 
 static phys_addr_t __init_memblock __find_max_addr(phys_addr_t limit)

@@ -9,4 +9,7 @@
 
 #define swapper_pg_dir ((pgd_t *) 0)
 
+/* Must be called early - from arch_setup() */
+void __init paging_init(void);
+
 #endif

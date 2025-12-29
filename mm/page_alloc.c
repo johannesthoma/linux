@@ -5848,7 +5848,11 @@ static void __setup_per_zone_wmarks(void)
 	/* Calculate total number of !ZONE_HIGHMEM and !ZONE_MOVABLE pages */
 	for_each_zone(zone) {
 		if (!is_highmem(zone) && zone_idx(zone) != ZONE_MOVABLE)
+{
+printk("hacking managed_pages ...\n");
+atomic_long_set(&zone->managed_pages, 128*1024*1024/PAGE_SIZE);
 			lowmem_pages += zone_managed_pages(zone);
+}
 	}
 
 	for_each_zone(zone) {

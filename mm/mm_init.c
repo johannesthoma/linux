@@ -1834,11 +1834,19 @@ void __init free_area_init(unsigned long *max_zone_pfn)
 				arch_zone_highest_possible_pfn[i])
 			pr_cont("empty\n");
 		else
+#if 0
 			pr_cont("[mem %#018Lx-%#018Lx]\n",
 				(u64)arch_zone_lowest_possible_pfn[i]
 					<< PAGE_SHIFT,
 				((u64)arch_zone_highest_possible_pfn[i]
 					<< PAGE_SHIFT) - 1);
+#else
+			pr_cont("[mem 32-bit: %08x-%08x]",
+				arch_zone_lowest_possible_pfn[i]
+					<< PAGE_SHIFT,
+				(arch_zone_highest_possible_pfn[i]
+					<< PAGE_SHIFT) - 1);
+#endif
 	}
 
 	/* Print out the PFNs ZONE_MOVABLE begins at in each node */

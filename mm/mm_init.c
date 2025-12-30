@@ -1176,6 +1176,9 @@ static unsigned long __init zone_absent_pages_in_node(int nid,
 					unsigned long zone_start_pfn,
 					unsigned long zone_end_pfn)
 {
+#ifdef CONFIG_WINDOWS
+	return 0;
+#else
 	unsigned long nr_absent;
 
 	/* zone is empty, we don't have any absent pages */
@@ -1210,6 +1213,7 @@ static unsigned long __init zone_absent_pages_in_node(int nid,
 	}
 
 	return nr_absent;
+#endif
 }
 
 /*

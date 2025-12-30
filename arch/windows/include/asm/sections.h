@@ -33,6 +33,11 @@ static inline int init_section_contains(void *virt, size_t size)
 	return false;
 }
 
+static inline bool is_kernel_core_data(unsigned long addr)
+{
+	return false;
+}
+
 /* nix */
 
 #endif

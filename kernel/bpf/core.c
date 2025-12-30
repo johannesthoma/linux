@@ -37,9 +37,15 @@
 #include <linux/nospec.h>
 #include <linux/bpf_mem_alloc.h>
 #include <linux/memcontrol.h>
+#include <linux/compiler_attributes.h>
 
 #include <asm/barrier.h>
 #include <asm/unaligned.h>
+
+#ifdef CONFIG_WINDOWS
+#undef __weak 
+#define __weak
+#endif
 
 /* Registers */
 #define BPF_R0	regs[BPF_REG_0]
@@ -2859,10 +2865,12 @@ void __weak bpf_jit_compile(struct bpf_prog *prog)
 {
 }
 
+/*
 bool __weak bpf_helper_changes_pkt_data(void *func)
 {
 	return false;
 }
+*/
 
 /* Return TRUE if the JIT backend wants verifier to enable sub-register usage
  * analysis code and wants explicit zero extension inserted by verifier.
@@ -2896,11 +2904,13 @@ bool __weak bpf_jit_supports_far_kfunc_call(void)
 /* To execute LD_ABS/LD_IND instructions __bpf_prog_run() may call
  * skb_copy_bits(), so provide a weak definition of it for NET-less config.
  */
+/*
 int __weak skb_copy_bits(const struct sk_buff *skb, int offset, void *to,
 			 int len)
 {
 	return -EFAULT;
 }
+*/
 
 int __weak bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
 			      void *addr1, void *addr2)

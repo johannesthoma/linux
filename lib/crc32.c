@@ -33,6 +33,11 @@
 #include <linux/sched.h>
 #include "crc32defs.h"
 
+#ifdef CONFIG_WINDOWS
+#undef __weak
+#define __weak
+#endif
+
 #if CRC_LE_BITS > 8
 # define tole(x) ((__force u32) cpu_to_le32(x))
 #else

@@ -1226,6 +1226,13 @@ static unsigned long __init zone_spanned_pages_in_node(int nid,
 	unsigned long zone_low = arch_zone_lowest_possible_pfn[zone_type];
 	unsigned long zone_high = arch_zone_highest_possible_pfn[zone_type];
 
+#ifdef CONFIG_WINDOWS
+		/* We have some allocated memory as init memblock,
+		 * just for allocating init memory. For the purpose
+		 * here (computing total pages), assume it is 0.
+		 */
+	node_start_pfn = 0;
+#endif
 	/* Get the start and end of the zone */
 	*zone_start_pfn = clamp(node_start_pfn, zone_low, zone_high);
 	*zone_end_pfn = clamp(node_end_pfn, zone_low, zone_high);

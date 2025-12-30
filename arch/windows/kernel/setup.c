@@ -3,6 +3,8 @@
 #include <windows/api.h>
 
 #define INIT_MEMBLOCK_SIZE 1024*1024
+// Allocating this fails (at least on ReactOS):
+// #define INIT_MEMBLOCK_SIZE 1024*1024*128
 
 void __init setup_arch(char **cmdline_p)
 {

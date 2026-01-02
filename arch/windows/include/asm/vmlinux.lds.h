@@ -529,6 +529,7 @@
 	}								\
 									\
 	/* Built-in module versions. */					\
+	. = ALIGN((align));						\
 	__modver : AT(ADDR(__modver) - LOAD_OFFSET) {			\
 		BOUNDED_SECTION_BY(__modver, ___modver)			\
 	}								\

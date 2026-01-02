@@ -732,7 +732,7 @@ noinline void __ref __noreturn rest_init(void)
 
 #ifdef CONFIG_WINDOWS
 		/* so we can sleep ... */
-	win_initialize_task_queued_event(&init_task);
+//	win_initialize_task_queued_event(&init_task);
 #endif
 
 #ifndef CONFIG_WINDOWS
@@ -744,7 +744,7 @@ noinline void __ref __noreturn rest_init(void)
 	/* Call into cpu_idle with preempt disabled */
 	cpu_startup_entry(CPUHP_ONLINE);
 #else
-	schedule_preempt_disabled();
+//	schedule_preempt_disabled();
 	/*
 	 * On Windows, preemption must be enabled when
 	 * returning control to the Windows kernel.
@@ -1600,7 +1600,7 @@ static noinline void __init kernel_init_freeable(void)
 	 */
 	if (init_eaccess(ramdisk_execute_command) != 0) {
 		ramdisk_execute_command = NULL;
-		prepare_namespace();
+//		prepare_namespace();
 	}
 
 	/*

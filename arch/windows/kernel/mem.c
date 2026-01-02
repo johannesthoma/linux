@@ -69,6 +69,7 @@ void *vmalloc_huge(unsigned long size, gfp_t gfp_mask)
 	return win_allocate_memory(size);
 }
 
+#if 0
 /* Those 3 functions are taken from mm/internal.h: */
 
 static void win_folio_set_order(struct folio *folio, unsigned int order)
@@ -99,41 +100,34 @@ static void win_prep_compound_tail(struct page *p, struct page *head, int tail_i
         set_page_private(p, 0);
 }
 
+#endif
+
+extern void prep_compound_page(struct page *page, unsigned int order);
+
 struct page *win_alloc_pages(int gfp, unsigned int order)
 {
 	int i;
-	struct page *page;
-	struct page *first_page = NULL;
-
+	struct page *pages;
 	void *mem = win_allocate_memory(PAGE_SIZE << order);
+
 	if (mem == NULL)
 		return NULL;
 
-	for (i=0;i<(1<<order);i++) {
-		if (first_page == NULL && order > 0)
-			page = win_allocate_memory(sizeof(struct folio));
-		else 
-			page = win_allocate_memory(sizeof(*page));
-
-		if (page == NULL) {
-			/* TODO: free again */
-			return NULL;
-		}
-		memset(page, 0, sizeof(*page));
-		if (first_page == NULL) {
-			first_page = page;
-		        __SetPageHead(page);
-		} else {
-			win_prep_compound_tail(page, first_page, order);
-		}
-
-		set_page_address(page, mem);
-		win_add_page(page);
-
-		mem += PAGE_SIZE;
+	pages = win_allocate_memory(sizeof(pages[0]) * (1 << order));
+	if (pages == NULL) {
+		/* TODO: free mem */
+		return NULL;
 	}
-	if (order > 0)
-		win_prep_compound_head(first_page, order);
+	memset(pages, 0, sizeof(pages[0]) * (1 << order));
 
-	return first_page;
+	for (i = 0; i < (1 << order); i++) {
+		set_page_address(&pages[i], mem + PAGE_SIZE*i);
+		win_add_page(&pages[i]);
+	}
+
+		/* see mm/page_alloc.c */
+	if (order && (gfp & __GFP_COMP))
+		prep_compound_page(pages, order);
+
+	return pages;
 }

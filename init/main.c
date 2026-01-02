@@ -1325,7 +1325,6 @@ static int __init ignore_unknown_bootoption(char *param, char *val,
 static void __init do_initcall_level(int level, char *command_line)
 {
 	initcall_entry_t *fn;
-	int i=0;
 
 	parse_args(initcall_level_names[level],
 		   command_line, __start___param,
@@ -1334,13 +1333,8 @@ static void __init do_initcall_level(int level, char *command_line)
 		   NULL, ignore_unknown_bootoption);
 
 	trace_initcall_level(initcall_level_names[level]);
-
 	for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
-	{
-		printk("initcall %d\n", i);
-		i++;
 		do_one_initcall(initcall_from_entry(fn));
-	}
 }
 
 static void __init do_initcalls(void)
@@ -1354,7 +1348,6 @@ static void __init do_initcalls(void)
 		panic("%s: Failed to allocate %zu bytes\n", __func__, len);
 
 	for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++) {
-		printk("initcall level %d\n", level);
 		/* Parser modifies command_line, restore it each time */
 		strcpy(command_line, saved_command_line);
 		do_initcall_level(level, command_line);

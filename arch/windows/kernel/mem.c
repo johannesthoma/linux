@@ -69,39 +69,6 @@ void *vmalloc_huge(unsigned long size, gfp_t gfp_mask)
 	return win_allocate_memory(size);
 }
 
-#if 0
-/* Those 3 functions are taken from mm/internal.h: */
-
-static void win_folio_set_order(struct folio *folio, unsigned int order)
-{
-        if (WARN_ON_ONCE(!order || !folio_test_large(folio)))
-                return;
-
-        folio->_flags_1 = (folio->_flags_1 & ~0xffUL) | order;
-#ifdef CONFIG_64BIT
-        folio->_folio_nr_pages = 1U << order;
-#endif
-}
-
-static void win_prep_compound_head(struct page *page, unsigned int order)
-{
-        struct folio *folio = (struct folio *)page;
-
-        win_folio_set_order(folio, order);
-        atomic_set(&folio->_entire_mapcount, -1);
-        atomic_set(&folio->_nr_pages_mapped, 0);
-        atomic_set(&folio->_pincount, 0);
-}
-
-static void win_prep_compound_tail(struct page *p, struct page *head, int tail_idx)
-{
-        p->mapping = TAIL_MAPPING;
-        set_compound_head(p, head);
-        set_page_private(p, 0);
-}
-
-#endif
-
 extern void prep_compound_page(struct page *page, unsigned int order);
 
 struct page *win_alloc_pages(int gfp, unsigned int order)

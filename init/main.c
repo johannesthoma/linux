@@ -1539,8 +1539,22 @@ static int __ref kernel_init(void *unused)
 	    !try_to_run_init_process("/bin/sh"))
 		return 0;
 
+#ifdef CONFIG_WINDOWS
+	printk("No working init found. This is expected, since we are\n");
+	printk("not supporting (for now) exec() and a Linux system call\n");
+	printk("interface. So everything ok now :)\n");
+	printk("This means you cannot run Linux binaries directly on the\n");
+	printk("host. Use cygwin or WSL2 for that purpose instead\n");
+	printk("You can, however, use certain Linux drivers natively on your\n");
+	printk("host Windows OS now.\n");
+
+	while (1) {
+		schedule();
+	}
+#else
 	panic("No working init found.  Try passing init= option to kernel. "
 	      "See Linux Documentation/admin-guide/init.rst for guidance.");
+#endif
 }
 
 /* Open /dev/console, for stdin/stdout/stderr, this should never fail */

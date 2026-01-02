@@ -1540,13 +1540,13 @@ static int __ref kernel_init(void *unused)
 		return 0;
 
 #ifdef CONFIG_WINDOWS
-	printk("No working init found. This is expected, since we are\n");
-	printk("not supporting (for now) exec() and a Linux system call\n");
-	printk("interface. So everything ok now :)\n");
-	printk("This means you cannot run Linux binaries directly on the\n");
-	printk("host. Use cygwin or WSL2 for that purpose instead\n");
-	printk("You can, however, use certain Linux drivers natively on your\n");
-	printk("host Windows OS now.\n");
+	printk("No working init found. This is expected, since we are");
+	printk(" not supporting\n(for now) exec() and a Linux system call");
+	printk(" interface. So everything ok now :)\n");
+	printk("This means you cannot run Linux binaries directly on the");
+	printk(" host. Use cygwin\nor WSL2 for that purpose instead.\n");
+	printk("You can, however, use certain Linux drivers natively on your");
+	printk(" host Windows\nOS now.\n");
 
 	while (1) {
 		schedule();

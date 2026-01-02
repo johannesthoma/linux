@@ -1598,14 +1598,12 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
 			pr_info("  %s zone: %lu pages reserved\n", zone_names[0], dma_reserve);
 		}
 
-		printk("nr_kernel_pages before: %lu", nr_kernel_pages);
 		if (!is_highmem_idx(j))
 			nr_kernel_pages += freesize;
 		/* Charge for highmem memmap if there are enough kernel pages */
 		else if (nr_kernel_pages > memmap_pages * 2)
 			nr_kernel_pages -= memmap_pages;
 		nr_all_pages += freesize;
-		printk("nr_kernel_pages after: %lu", nr_kernel_pages);
 
 		/*
 		 * Set an approximate value for lowmem here, it will be adjusted

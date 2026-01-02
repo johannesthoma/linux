@@ -122,6 +122,7 @@ struct page *win_alloc_pages(int gfp, unsigned int order)
 		memset(page, 0, sizeof(*page));
 		if (first_page == NULL) {
 			first_page = page;
+		        __SetPageHead(page);
 		} else {
 			win_prep_compound_tail(page, first_page, order);
 		}

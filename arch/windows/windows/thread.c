@@ -7,11 +7,11 @@
 #define _UINTPTR_T_DEFINED 1
 #define _INTPTR_T_DEFINED 1
 
-// #include <ntdef.h>
-// #include <ntddk.h>
 #include <wdm.h>
 
 /* TODO: spin lock !!!! */
+/* TODO: hashmap !!!! */
+
 struct thread_info *find_current_thread_info(struct _KTHREAD *windows_thread)
 {
 	struct task_struct *t;

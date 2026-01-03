@@ -760,45 +760,75 @@
  * the beginning of the section so we begin them at 0.
  */
 #define DWARF_DEBUG							\
+		. = _end;						\
 		/* DWARF 1 */						\
-		.debug          0 : { *(.debug) }			\
-		.line           0 : { *(.line) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug          . : { *(.debug) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.line           . : { *(.line) }			\
 		/* GNU DWARF 1 extensions */				\
-		.debug_srcinfo  0 : { *(.debug_srcinfo) }		\
-		.debug_sfnames  0 : { *(.debug_sfnames) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_srcinfo  . : { *(.debug_srcinfo) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_sfnames  . : { *(.debug_sfnames) }		\
 		/* DWARF 1.1 and DWARF 2 */				\
-		.debug_aranges  0 : { *(.debug_aranges) }		\
-		.debug_pubnames 0 : { *(.debug_pubnames) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_aranges  . : { *(.debug_aranges) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_pubnames . : { *(.debug_pubnames) }		\
 		/* DWARF 2 */						\
-		.debug_info     0 : { *(.debug_info			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_info     . : { *(.debug_info			\
 				.gnu.linkonce.wi.*) }			\
-		.debug_abbrev   0 : { *(.debug_abbrev) }		\
-		.debug_line     0 : { *(.debug_line) }			\
-		.debug_frame    0 : { *(.debug_frame) }			\
-		.debug_str      0 : { *(.debug_str) }			\
-		.debug_loc      0 : { *(.debug_loc) }			\
-		.debug_macinfo  0 : { *(.debug_macinfo) }		\
-		.debug_pubtypes 0 : { *(.debug_pubtypes) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_abbrev   . : { *(.debug_abbrev) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_line     . : { *(.debug_line) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_frame    . : { *(.debug_frame) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_str      . : { *(.debug_str) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_loc      . : { *(.debug_loc) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_macinfo  . : { *(.debug_macinfo) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_pubtypes . : { *(.debug_pubtypes) }		\
 		/* DWARF 3 */						\
-		.debug_ranges	0 : { *(.debug_ranges) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_ranges	. : { *(.debug_ranges) }		\
 		/* SGI/MIPS DWARF 2 extensions */			\
-		.debug_weaknames 0 : { *(.debug_weaknames) }		\
-		.debug_funcnames 0 : { *(.debug_funcnames) }		\
-		.debug_typenames 0 : { *(.debug_typenames) }		\
-		.debug_varnames  0 : { *(.debug_varnames) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_weaknames . : { *(.debug_weaknames) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_funcnames . : { *(.debug_funcnames) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_typenames . : { *(.debug_typenames) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_varnames  . : { *(.debug_varnames) }		\
 		/* GNU DWARF 2 extensions */				\
-		.debug_gnu_pubnames 0 : { *(.debug_gnu_pubnames) }	\
-		.debug_gnu_pubtypes 0 : { *(.debug_gnu_pubtypes) }	\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_gnu_pubnames . : { *(.debug_gnu_pubnames) }	\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_gnu_pubtypes . : { *(.debug_gnu_pubtypes) }	\
 		/* DWARF 4 */						\
-		.debug_types	0 : { *(.debug_types) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_types	. : { *(.debug_types) }			\
 		/* DWARF 5 */						\
-		.debug_addr	0 : { *(.debug_addr) }			\
-		.debug_line_str	0 : { *(.debug_line_str) }		\
-		.debug_loclists	0 : { *(.debug_loclists) }		\
-		.debug_macro	0 : { *(.debug_macro) }			\
-		.debug_names	0 : { *(.debug_names) }			\
-		.debug_rnglists	0 : { *(.debug_rnglists) }		\
-		.debug_str_offsets	0 : { *(.debug_str_offsets) }
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_addr	. : { *(.debug_addr) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_line_str	. : { *(.debug_line_str) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_loclists	. : { *(.debug_loclists) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_macro	. : { *(.debug_macro) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_names	. : { *(.debug_names) }			\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_rnglists	. : { *(.debug_rnglists) }		\
+		. = ALIGN(PAGE_SIZE);					\
+		.debug_str_offsets	. : { *(.debug_str_offsets) }
 
 /* Stabs debugging sections. */
 #define STABS_DEBUG							\

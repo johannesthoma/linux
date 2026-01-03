@@ -61,12 +61,14 @@ SECTIONS
 	BSS_SECTION(0, 0, 0)
 	_end = .;
 
-//	STABS_DEBUG
-//	DWARF_DEBUG
-//	ELF_DETAILS
+	STABS_DEBUG
+	DWARF_DEBUG
+	ELF_DETAILS
 
-//	DISCARDS		// must be the last
+	DISCARDS		// must be the last
 }
 
 // SEARCH_DIR(/home/johannes/.zeranoe/mingw-w64/i686/i686-w64-mingw32/lib)
 // INPUT(-lntoskrnl -lhal -lntdll -lnetio)
+
+

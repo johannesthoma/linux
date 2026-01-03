@@ -18,12 +18,8 @@ struct thread_info *find_current_thread_info(struct _KTHREAD *windows_thread)
 
 	list_for_each_entry(t, &init_task.tasks, tasks) {
 		if (t->thread_info.windows_thread == windows_thread)
-{
-// printk("returning thread %s@%p pid is %d...\n", t->comm, t, t->pid);
 			return &t->thread_info;
-}
 	}
-// printk("returning init_task ...\n");
 	return &init_task.thread_info;
 }
 
@@ -45,7 +41,6 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 	int (*threadfn)(void *);
 	void *data;
 
-//	printk(KERN_DEBUG "About to start thread %s\n", t->comm);
 		/* Linux never swaps out kernel stack areas. This
 		 * should fix a very rare list corruption in a
 		 * wake_up() call (the list contained an element
@@ -167,32 +162,8 @@ int win_cleanup_windows_thread(void *thread_object)
 	return 0;
 }
 
-/* TODO: remove those two again: */
-void win_set_runnable(struct task_struct *t, int r)
-{
-	t->thread_info.runnable = r;
-}
-
-int win_is_runnable(struct task_struct *t)
-{
-	return t->thread_info.runnable;
-}
-
-
-	/* Again, we try to be more close to the Linux kernel API.
-	 * This really creates and starts the thread created earlier
-	 * by kthread_create() as a windows kernel thread. If the
-	 * start process should fail, -1 is returned (which is
-	 * different from the Linux kernel API, sorry for that...)
-	 * Else same as in Linux: 0: task is already running (yes,
-	 * you can call this multiple times, but since there is no
-	 * way to temporarily stop a windows kernel thread, always
-	 * 0 is returned) or 1: task was started.
-	 */
-
 void win_wake_up_task(struct task_struct *t)
 {
-//	printk("waking up %s(%d) ...\n", t->comm, t->pid);
 	KeSetEvent(t->thread_info.task_queued_event, 0, FALSE);
 }
 
@@ -200,115 +171,16 @@ void win_put_task_to_sleep(struct task_struct *t)
 {
 	NTSTATUS status;
 
-//	printk("putting %s(%d) to sleep ...\n", t->comm, t->pid);
-//	KeClearEvent(t->thread_info.task_queued_event);
-//	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
 	if (t->thread_info.preempt_count != 0)
 		win_enable_preemption();
-	/* sleep */
+
         status = KeWaitForSingleObject(t->thread_info.task_queued_event, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
-        if (!NT_SUCCESS(status)) {
-		printk("KeWaitForSingleObject returned %08X\n", status);
-	}
-//	printk("%s(%d) woken up, continuing ...\n", t->comm, t->pid);
-	/* Clear event here, in case we got woken up while we are running ... */
-//	printk("%s clearing event ...\n", t->comm);
-//	KeClearEvent(t->thread_info.task_queued_event);
-//	printk("task %s preempt_count is %d...\n", t->comm, t->thread_info.preempt_count);
+	WARN_ONCE(!NT_SUCCESS(status), "KeWaitForSingleObject returned %08X\n", status);
+
 	/* ok woken up, continue execution */
 	if (t->thread_info.preempt_count != 0)
 		win_disable_preemption();
 }
-
-	/* Creates a new task_struct, but start the thread (by
-	 * calling PsCreateSystemThread()). Thread will wait for
-	 * start event which is signalled by wake_up_process(struct
-	 * task_struct) later.
-	 *
-	 * If PsCreateSystemThread should fail this returns an
-	 * ERR_PTR(-ENOMEM)
-	 *
-	 * This now 'emulates' Linux behaviour such that no changes
-	 * to driver code should be neccessary (at least not in the
-	 * DRBD code).
-	 */
-
-#if 0
-	/* Use this to create a task_struct for a Windows thread
-	 * This is needed so we can call wait_event_XXX functions
-	 * within those threads.
-	 */
-
-struct task_struct *make_me_a_windrbd_thread(const char *name, ...)
-{
-	struct task_struct *t;
-	KIRQL flags;
-	va_list args;
-	int i;
-
-	if ((t = kzalloc(sizeof(*t), GFP_KERNEL)) == NULL)
-		return ERR_PTR(-ENOMEM);
-
-		/* The thread will be created later in wake_up_process(),
-		 * since Windows doesn't know of threads that are stopped
-		 * when created.
-		 */
-
-	t->windows_thread = KeGetCurrentThread();
-	spin_lock_init(&t->thread_started_lock);
-
-//	KeInitializeEvent(&t->sig_event, NotificationEvent, FALSE);
-	KeInitializeEvent(&t->sig_event, SynchronizationEvent, FALSE);
-	KeInitializeEvent(&t->start_event, SynchronizationEvent, FALSE);
-	t->has_sig_event = TRUE;
-	t->sig = -1;
-	t->is_root = 0;
-
-	va_start(args, name);
-	i = _vsnprintf(t->comm, sizeof(t->comm)-1, name, args);
-	va_end(args);
-	if (i == -1) {
-		kfree(t);
-		return ERR_PTR(-ERANGE);
-	}
-
-	spin_lock_irqsave(&next_pid_lock, flags);
-	next_pid++;
-	t->pid = next_pid;
-	spin_unlock_irqrestore(&next_pid_lock, flags);
-
-#ifdef CONFIG_HAVE_KERNEL_STACKSWAP_ENABLE
-	KeSetKernelStackSwapEnable(FALSE);
-#endif
-
-	spin_lock_irqsave(&thread_list_lock, flags);
-	list_add(&t->list, &thread_list);
-	spin_unlock_irqrestore(&thread_list_lock, flags);
-
-	return t;
-}
-
-	/* Call this when a thread returns to the calling Windows
-	 * kernel function. This is mandatory since we enable
-	 * stack swapping in here again.
-	 */
-
-void return_to_windows(struct task_struct *t)
-{
-	KIRQL flags;
-
-#ifdef CONFIG_HAVE_KERNEL_STACKSWAP_ENABLE
-	KeSetKernelStackSwapEnable(TRUE);
-#endif
-
-
-	spin_lock_irqsave(&thread_list_lock, flags);
-	list_del(&t->list);
-	spin_unlock_irqrestore(&thread_list_lock, flags);
-	kfree(t);
-}
-
-#endif
 
 void win_set_realtime_priority(struct task_struct *t)
 {
@@ -317,12 +189,3 @@ void win_set_realtime_priority(struct task_struct *t)
 
 	KeSetPriorityThread(t->thread_info.windows_thread, LOW_REALTIME_PRIORITY);
 }
-
-#if 0
-void sudo(void)
-{
-	if (is_windrbd_thread(current))
-		current->is_root = 1;
-}
-#endif
-

@@ -1,4 +1,5 @@
 #include <windows/api.h>
+#include <linux/types.h>
 
 /* Those are defined in linux/types.h */
 #define _UINTPTR_T_DEFINED 1

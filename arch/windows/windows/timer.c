@@ -14,17 +14,6 @@ struct win_timer_list {
     void (*function)(struct win_timer_list *data);
 };
 
-unsigned long long win_jiffies(void)
-{
-	LARGE_INTEGER tick;
-
-	KeQueryTickCount(&tick);
-	tick.QuadPart *= KeQueryTimeIncrement();
-	do_div(tick.QuadPart, 10000);	/* TODO: HZ */
-
-	return tick.QuadPart;
-}
-
 static void __attribute__((stdcall)) win_timer_callback(PKDPC dpc, void *context, void *arg1_unused, void *arg2_unused)
 {
 	struct win_timer_list *timer = (struct win_timer_list *) context;

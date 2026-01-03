@@ -52,43 +52,24 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 	KeSetKernelStackSwapEnable(FALSE);
 #endif
 
-		/* t->windows_thread may be still invalid here, do not
-		 * printk().
-		 */
-
         status = KeWaitForSingleObject(t->thread_info.task_queued_event, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
         if (!NT_SUCCESS(status)) {
-		printk("On waiting for start event: KeWaitForSingleObject failed with status %x\n", status);
-
-#ifdef CONFIG_HAVE_KERNEL_STACKSWAP_ENABLE
-		KeSetKernelStackSwapEnable(TRUE);
-#endif
-		return;
+		WARN_ONCE(1, "win_thread_setup: KeWaitForSingleObject returned %08X\n", status);
+		goto out;
 	}
-		/* TODO: needed? It is "auto-clear" (SynchronizationEvent) */
-	KeClearEvent(t->thread_info.task_queued_event);
-//	printk(KERN_DEBUG "thread %s woken up ...\n", t->comm);
-
-	/* TODO: do we need this? */
-/*
-	int (*threadfn)(void *data) = kthread_func(t);
-	void *data = kthread_data(t);
-*/
 	threadfn = t->thread_info.fn;
 	data = t->thread_info.fn_arg;
 
 	if (threadfn) {
 		ret = threadfn(data);
 
-		if (ret != 0)
-			printk(KERN_WARNING "Thread %s returned non-zero exit status. Ignored, since Windows threads are void.\n", t->comm);
-
-		if (KeGetCurrentIrql() > PASSIVE_LEVEL)
-			printk("Warning: IRQL is %d when exiting thread. System will posibly lockup.\n", KeGetCurrentIrql());
+		WARN_ONCE(ret != 0, "Thread %s returned non-zero exit status. Ignored, since Windows threads are void.\n", t->comm);
+		WARN_ONCE(KeGetCurrentIrql() > PASSIVE_LEVEL, "Warning: IRQL is %d when exiting thread. System will posibly lockup.\n", KeGetCurrentIrql());
 	} else {
-		printk("not a kthread function, also no fn in thread_info, giving up ...\n");
+		WARN_ONCE(1, "not a kthread function, also no fn in thread_info, giving up ...\n");
 	}
 
+out:
 		/* According to Microsoft docs we must not exit a thread
 		 * with stack swapping disabled, so enable it here again.
 		 */
@@ -147,6 +128,7 @@ int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread
 }
 
 	/* TODO: call this somewhere ... free_task or so */
+	/* Update: call this in kthread_join() */
 int win_cleanup_windows_thread(void *thread_object)
 {
 	NTSTATUS status;
@@ -175,7 +157,8 @@ void win_put_task_to_sleep(struct task_struct *t)
 		win_enable_preemption();
 
         status = KeWaitForSingleObject(t->thread_info.task_queued_event, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
-	WARN_ONCE(!NT_SUCCESS(status), "KeWaitForSingleObject returned %08X\n", status);
+	if (!NT_SUCCESS(status))
+		WARN_ONCE(1, "win_put_task_to_sleep: KeWaitForSingleObject returned %08X\n", status);
 
 	/* ok woken up, continue execution */
 	if (t->thread_info.preempt_count != 0)

@@ -2,6 +2,7 @@
 #include <linux/slab.h>
 #include <linux/hashtable.h>
 #include <linux/mm.h>
+#include <linux/memblock.h>
 #include <windows/api.h>
 
 unsigned long memory_start;
@@ -58,6 +59,15 @@ void __init paging_init(void)
 
 void __init mem_init(void)
 {
+		/* This should 'release the pages to the buddy
+		 * allocator'
+		 */
+
+#if 0
+	memblock_free_all();
+#endif
+		/* fake 128 MB RAM for now ... */
+	totalram_pages_add(128*1024*1024 / PAGE_SIZE);
 }
 
 void __init pgtable_cache_init(void)

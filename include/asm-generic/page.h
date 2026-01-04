@@ -6,6 +6,10 @@
  * This provides the dummy definitions for the memory management.
  */
 
+/* TODO: in newer kernels (6.18+) this file does not
+ * exist any more, so move everything to arch/windows/include/asm/page.h
+ */
+
 #ifdef CONFIG_MMU
 #error need to provide a real asm/page.h
 #endif
@@ -85,7 +89,6 @@ static inline void *pfn_to_virt(unsigned long pfn)
 }
 #define pfn_to_virt pfn_to_virt
 
-/* TODO: ARCH_HAS_VIRT_TO_PAGE or something ... */
 #ifdef CONFIG_WINDOWS
 #define virt_to_page(addr)	win_virt_to_page(addr)
 #define page_to_virt(page)	win_page_to_virt(page)

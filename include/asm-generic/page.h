@@ -6,10 +6,6 @@
  * This provides the dummy definitions for the memory management.
  */
 
-/* TODO: in newer kernels (6.18+) this file does not
- * exist any more, so move everything to arch/windows/include/asm/page.h
- */
-
 #ifdef CONFIG_MMU
 #error need to provide a real asm/page.h
 #endif
@@ -85,17 +81,12 @@ static inline unsigned long virt_to_pfn(const void *kaddr)
 #define virt_to_pfn virt_to_pfn
 static inline void *pfn_to_virt(unsigned long pfn)
 {
-	return __va(pfn << PAGE_SHIFT);
+	return __va(pfn) << PAGE_SHIFT;
 }
 #define pfn_to_virt pfn_to_virt
 
-#ifdef CONFIG_WINDOWS
-#define virt_to_page(addr)	win_virt_to_page(addr)
-#define page_to_virt(page)	win_page_to_virt(page)
-#else
 #define virt_to_page(addr)	pfn_to_page(virt_to_pfn(addr))
 #define page_to_virt(page)	pfn_to_virt(page_to_pfn(page))
-#endif
 
 #ifndef page_to_phys
 #define page_to_phys(page)      ((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)

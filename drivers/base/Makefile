@@ -11,9 +11,9 @@ obj-$(CONFIG_AUXILIARY_BUS) += auxiliary.o
 obj-$(CONFIG_DEVTMPFS)	+= devtmpfs.o
 obj-y			+= power/
 obj-$(CONFIG_ISA_BUS_API)	+= isa.o
-ifneq ($(CONFIG_WINDOWS),y)
+# ifneq ($(CONFIG_WINDOWS),y)
 obj-y				+= firmware_loader/
-endif
+# endif
 obj-$(CONFIG_NUMA)	+= node.o
 obj-$(CONFIG_MEMORY_HOTPLUG) += memory.o
 ifeq ($(CONFIG_SYSFS),y)

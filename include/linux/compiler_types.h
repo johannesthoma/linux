@@ -2,14 +2,6 @@
 #ifndef __LINUX_COMPILER_TYPES_H
 #define __LINUX_COMPILER_TYPES_H
 
-#if 0
-/* Windows headers should be included *only* here: */
-
-#include <ntdef.h>
-#include <ntddk.h>
-#include <ntdddisk.h>
-#endif
-
 /*
  * __has_builtin is supported on gcc >= 10, clang >= 3 and icc >= 21.
  * In the meantime, to support gcc < 10, we implement __has_builtin
@@ -20,17 +12,6 @@
 #endif
 
 #ifndef __ASSEMBLY__
-
-/*
-#ifdef CONFIG_32BIT
-typedef unsigned long ULONG_PTR;
-typedef long LONG_PTR;
-#else
-typedef unsigned long long ULONG_PTR;
-typedef long long LONG_PTR;
-#endif
-typedef char KIRQL;
-*/
 
 /*
  * Skipped when running bindgen due to a libclang issue;
@@ -382,8 +363,7 @@ struct ftrace_likely_data {
 #endif
 
 #ifndef asm_volatile_goto
-// #define asm_volatile_goto(x...) asm goto(x)
-#define asm_volatile_goto(x...) /* nix */
+#define asm_volatile_goto(x...) asm goto(x)
 #endif
 
 #ifdef CONFIG_CC_HAS_ASM_INLINE
@@ -451,7 +431,6 @@ struct ftrace_likely_data {
  * supplied condition is *false*, emitting the supplied error message if the
  * compiler has support to do so.
  */
-
 #define compiletime_assert(condition, msg) \
 	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
 

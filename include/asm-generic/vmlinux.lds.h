@@ -523,7 +523,6 @@
 	}								\
 									\
 	/* Built-in module parameters. */				\
-	. = ALIGN((align));						\
 	__param : AT(ADDR(__param) - LOAD_OFFSET) {			\
 		BOUNDED_SECTION_BY(__param, ___param)			\
 	}								\
@@ -536,7 +535,6 @@
 	KCFI_TRAPS							\
 									\
 	RO_EXCEPTION_TABLE						\
-	. = ALIGN((align));						\
 	NOTES								\
 	BTF								\
 									\
@@ -815,8 +813,7 @@
 		.strtab 0 : { *(.strtab) }				\
 		.shstrtab 0 : { *(.shstrtab) }
 
-// #ifdef CONFIG_GENERIC_BUG
-#if 0
+#ifdef CONFIG_GENERIC_BUG
 #define BUG_TABLE							\
 	. = ALIGN(8);							\
 	__bug_table : AT(ADDR(__bug_table) - LOAD_OFFSET) {		\

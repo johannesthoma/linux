@@ -68,4 +68,8 @@ config SMP
 config GENERIC_CSUM
 	def_bool y
 
+# does not work yet ...
+config KALLSYMS
+	def_bool n
+
 endmenu

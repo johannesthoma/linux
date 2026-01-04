@@ -203,7 +203,7 @@
 	_label_##_END_ = .;
 
 #define BOUNDED_SECTION_BY(_sec_, _label_)				\
-	BOUNDED_SECTION_PRE_LABEL(_sec_, _label_, __start, __stop)
+	BOUNDED_SECTION_PRE_LABEL(_sec_, _label_, ___start, ___stop)
 
 #define BOUNDED_SECTION(_sec)	 BOUNDED_SECTION_BY(_sec, _sec)
 
@@ -1156,9 +1156,9 @@
 #define INIT_TEXT_SECTION(inittext_align)				\
 	. = ALIGN(inittext_align);					\
 	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET) {		\
-		_sinittext = .;						\
+		__sinittext = .;						\
 		INIT_TEXT						\
-		_einittext = .;						\
+		__einittext = .;						\
 	}
 
 #define INIT_DATA_SECTION(initsetup_align)				\

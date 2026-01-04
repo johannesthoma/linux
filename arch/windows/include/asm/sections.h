@@ -1,6 +1,9 @@
 #ifndef _WINDOWS_SECTION_H
 #define _WINDOWS_SECTION_H
 
+#include <asm-generic/sections.h>
+
+#if 0
 /* TODO: get addr passed via DriverEntry and check it here */
 
 static inline int __is_kernel_text(unsigned long addr)
@@ -39,5 +42,7 @@ static inline bool is_kernel_core_data(unsigned long addr)
 }
 
 /* nix */
+
+#endif
 
 #endif

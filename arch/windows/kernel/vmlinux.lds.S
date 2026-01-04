@@ -17,10 +17,10 @@ SECTIONS
 {
 	. = 0x10001000;
 
-	_stext = .;
+	__stext = .;
 	TEXT_SECTION = 0x10001000;
 	.text : AT(0x10001000) { *(.text*) }
-	_etext = .;
+	__etext = .;
 
 	___init_begin = .;
 	. = ALIGN(PAGE_SIZE);
@@ -49,12 +49,12 @@ SECTIONS
     KEEP (SORT(*)(.idata$7))
   }
 
-	_sdata = .;
+	__sdata = .;
 	. = ALIGN(PAGE_SIZE);
 	RO_DATA(PAGE_SIZE)
 	. = ALIGN(PAGE_SIZE);
 	RW_DATA(PAGE_SIZE, PAGE_SIZE, THREAD_SIZE)
-	_edata = .;
+	__edata = .;
 
 	EXCEPTION_TABLE(PAGE_SIZE)
 
@@ -65,7 +65,7 @@ SECTIONS
 	DWARF_DEBUG
 	ELF_DETAILS
 
-	DISCARDS		// must be the last
+/*	DISCARDS		// must be the last */
 }
 
 // SEARCH_DIR(/home/johannes/.zeranoe/mingw-w64/i686/i686-w64-mingw32/lib)

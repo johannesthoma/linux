@@ -91,7 +91,7 @@
 /*
  * Pull the arch_spin*() functions/declarations (UP-nondebug doesn't need them):
  */
-#if (defined CONFIG_SMP)
+#ifdef CONFIG_SMP
 # include <asm/spinlock.h>
 #else
 # include <linux/spinlock_up.h>

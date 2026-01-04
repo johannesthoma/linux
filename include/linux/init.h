@@ -253,8 +253,7 @@ extern bool initcall_debug;
 	__ADDRESSABLE(fn)
 #endif
 
-// #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
-#if 0
+#ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
 #define ____define_initcall(fn, __stub, __name, __sec)		\
 	__define_initcall_stub(__stub, fn)			\
 	asm(".section	\"" __sec "\", \"a\"		\n"	\

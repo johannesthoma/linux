@@ -3136,6 +3136,10 @@ static inline unsigned long free_initmem_default(int poison)
 
 #else
 
+/* On Windows there is no may to free kernel __init text.
+ * The system will crash on booting if the __init section
+ * is attempted to be freed.
+ */
 static inline unsigned long free_initmem_default(int poison)
 {
 	return 0;

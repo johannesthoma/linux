@@ -1023,7 +1023,10 @@ KBUILD_RUSTFLAGS += $(KRUSTFLAGS)
 KBUILD_LDFLAGS_MODULE += --build-id=sha1
 LDFLAGS_vmlinux += --build-id=sha1
 
-# KBUILD_LDFLAGS	+= -z noexecstack
+ifneq ($(CONFIG_WINDOWS),y)
+KBUILD_LDFLAGS	+= -z noexecstack
+endif
+
 ifeq ($(CONFIG_LD_IS_BFD),y)
 KBUILD_LDFLAGS	+= $(call ld-option,--no-warn-rwx-segments)
 endif

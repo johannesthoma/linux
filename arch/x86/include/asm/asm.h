@@ -23,11 +23,8 @@
 # define __ASM_SEL_RAW(a,b)	__ASM_FORM_RAW(a)
 #else
 /* 64 bit */
-/* # define __ASM_SEL(a,b)		__ASM_FORM(b)
+# define __ASM_SEL(a,b)		__ASM_FORM(b)
 # define __ASM_SEL_RAW(a,b)	__ASM_FORM_RAW(b)
-*/
-# define __ASM_SEL(a,b)		__ASM_FORM(a)
-# define __ASM_SEL_RAW(a,b)	__ASM_FORM_RAW(a)
 #endif
 
 #define __ASM_SIZE(inst, ...)	__ASM_SEL(inst##l##__VA_ARGS__, \

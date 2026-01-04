@@ -174,10 +174,6 @@
  */
 #define u32 unsigned int
 
-#ifdef __reserved
-#undef __reserved
-#endif
-
 struct local_apic {
 
 /*000*/	struct { u32 __reserved[4]; } __reserved_01;

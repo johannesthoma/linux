@@ -171,7 +171,6 @@ static __always_inline __must_check unsigned long __clear_user(void __user *addr
 	 * No memory constraint because it doesn't change any memory gcc
 	 * knows about.
 	 */
-/*
 	asm volatile(
 		"1:\n\t"
 		ALTERNATIVE("rep stosb",
@@ -180,7 +179,6 @@ static __always_inline __must_check unsigned long __clear_user(void __user *addr
 	       _ASM_EXTABLE_UA(1b, 2b)
 	       : "+c" (size), "+D" (addr), ASM_CALL_CONSTRAINT
 	       : "a" (0));
-*/
 
 	clac();
 

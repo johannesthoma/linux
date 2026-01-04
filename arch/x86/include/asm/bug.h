@@ -13,7 +13,7 @@
 #define INSN_UD2	0x0b0f
 #define LEN_UD2		2
 
-#if 0
+#ifdef CONFIG_GENERIC_BUG
 
 #ifdef CONFIG_X86_32
 # define __BUG_REL(val)	".long " __stringify(val)

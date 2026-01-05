@@ -887,6 +887,7 @@
 #if 1
 #define FW_LOADER_BUILT_IN_DATA						\
 	.builtin_fw : AT(ADDR(.builtin_fw) - LOAD_OFFSET) ALIGN(8) {	\
+		. = .;							\
 		BOUNDED_SECTION_PRE_LABEL(.builtin_fw, _builtin_fw, ___start, ___end) \
 	}
 #else

@@ -684,7 +684,7 @@ static __initdata DECLARE_COMPLETION(kthreadd_done);
 #ifdef CONFIG_WINDOWS
 #undef __noreturn
 #define __noreturn /* nothing. On Windows start_kernel returns control
-                    * back to Windows. Also arch_call_rest_init
+		    * back to Windows. Also arch_call_rest_init
 		    * must not have noreturn, since else gcc does not
 		    * emit the ret instruction at the end of start_kernel
 		    */
@@ -742,9 +742,9 @@ noinline void __ref __noreturn rest_init(void)
 	/*
 	 * On Windows, preemption must be enabled when
 	 * returning control to the Windows kernel.
-         * We know that preempt_count is 1 here (see
+	 * We know that preempt_count is 1 here (see
 	 * comment at schedule_preempt_disabled()),
-         * so enable it here.
+	 * so enable it here.
 	 */
 
 	sched_preempt_enable_no_resched();
@@ -1598,7 +1598,7 @@ static noinline void __init kernel_init_freeable(void)
 	 */
 	if (init_eaccess(ramdisk_execute_command) != 0) {
 		ramdisk_execute_command = NULL;
-//		prepare_namespace();
+		prepare_namespace();
 	}
 
 	/*

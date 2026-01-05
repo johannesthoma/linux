@@ -26,8 +26,6 @@
  */
 DEFINE_MUTEX(text_mutex);
 
-#ifndef CONFIG_WINDOWS
-
 extern struct exception_table_entry __start___ex_table[];
 extern struct exception_table_entry __stop___ex_table[];
 
@@ -52,19 +50,6 @@ struct exception_table_entry *search_kernel_exception_table(unsigned long addr)
 			      __stop___ex_table - __start___ex_table, addr);
 }
 
-#else
-
-void __init sort_main_extable(void)
-{
-}
-
-const
-struct exception_table_entry *search_kernel_exception_table(unsigned long addr)
-{
-	return NULL;
-}
-
-#endif
 /* Given an address, look for it in the exception tables. */
 const struct exception_table_entry *search_exception_tables(unsigned long addr)
 {
@@ -175,13 +160,6 @@ void *dereference_kernel_function_descriptor(void *ptr)
 }
 #endif
 
-#ifdef CONFIG_WINDOWS
-int func_ptr_is_kernel_text(void *ptr)
-{
-	return 0;
-}
-
-#else
 int func_ptr_is_kernel_text(void *ptr)
 {
 	unsigned long addr;
@@ -190,4 +168,3 @@ int func_ptr_is_kernel_text(void *ptr)
 		return 1;
 	return is_module_text_address(addr);
 }
-#endif

@@ -108,3 +108,9 @@ struct page *win_alloc_pages(int gfp, unsigned int order)
 
 	return pages;
 }
+
+void free_initmem(void)
+{
+	printk("Would free initmem now, but this is not supported on Windows.\n");
+}
+

@@ -730,11 +730,6 @@ noinline void __ref __noreturn rest_init(void)
 
 	complete(&kthreadd_done);
 
-#ifdef CONFIG_WINDOWS
-		/* so we can sleep ... */
-//	win_initialize_task_queued_event(&init_task);
-#endif
-
 #ifndef CONFIG_WINDOWS
 	/*
 	 * The boot idle thread must execute schedule()
@@ -744,7 +739,6 @@ noinline void __ref __noreturn rest_init(void)
 	/* Call into cpu_idle with preempt disabled */
 	cpu_startup_entry(CPUHP_ONLINE);
 #else
-//	schedule_preempt_disabled();
 	/*
 	 * On Windows, preemption must be enabled when
 	 * returning control to the Windows kernel.
@@ -754,10 +748,10 @@ noinline void __ref __noreturn rest_init(void)
 	 */
 
 	sched_preempt_enable_no_resched();
+
+	/* And return control to the Windows kernel. */
 #endif
 }
-
-#ifndef CONFIG_WINDOWS
 
 /* Check for early params. */
 static int __init do_early_param(char *param, char *val,
@@ -777,16 +771,6 @@ static int __init do_early_param(char *param, char *val,
 	/* We accept everything at this stage. */
 	return 0;
 }
-
-#else
-
-static int __init do_early_param(char *param, char *val,
-				 const char *unused, void *arg)
-{
-	return 0;
-}
-
-#endif
 
 void __init parse_early_options(char *cmdline)
 {

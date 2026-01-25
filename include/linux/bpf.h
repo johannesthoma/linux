@@ -1807,7 +1807,7 @@ typedef u32 (*bpf_convert_ctx_access_t)(enum bpf_access_type type,
 					struct bpf_prog *prog,
 					u32 *target_size);
 
-u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+u64 __weak bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
 		     void *ctx, u64 ctx_size, bpf_ctx_copy_t ctx_copy);
 
 /* an array of programs to be executed under rcu_lock.

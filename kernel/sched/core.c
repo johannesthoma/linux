@@ -2273,7 +2273,6 @@ unsigned long wait_task_inactive(struct task_struct *p, unsigned int match_state
 	struct rq *rq;
 
 #ifdef CONFIG_WINDOWS
-// printk("wait_task_inactive: current is %p %s(pid is %d) p is %p %s(pid is %d)\n", current, current->comm, current->pid, p, p->comm, p->pid);
 	return 1;
 #endif
 
@@ -9878,23 +9877,12 @@ void __init sched_init_smp(void)
 }
 #endif /* CONFIG_SMP */
 
-#ifndef CONFIG_WINDOWS
-
 int in_sched_functions(unsigned long addr)
 {
 	return in_lock_functions(addr) ||
 		(addr >= (unsigned long)__sched_text_start
 		&& addr < (unsigned long)__sched_text_end);
 }
-
-#else
-
-int in_sched_functions(unsigned long addr)
-{
-	return 0;
-}
-
-#endif
 
 #ifdef CONFIG_CGROUP_SCHED
 /*

@@ -730,23 +730,12 @@ EXPORT_SYMBOL(__warn_printk);
 
 /* Support resetting WARN*_ONCE state */
 
-#ifdef CONFIG_WINDOWS
-
-static int clear_warn_once_set(void *data, u64 val)
-{
-	return 0;
-}
-
-#else
-
 static int clear_warn_once_set(void *data, u64 val)
 {
 	generic_bug_clear_once();
 	memset(__start_once, 0, __end_once - __start_once);
 	return 0;
 }
-
-#endif
 
 DEFINE_DEBUGFS_ATTRIBUTE(clear_warn_once_fops, NULL, clear_warn_once_set,
 			 "%lld\n");

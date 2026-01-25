@@ -19,7 +19,10 @@ SECTIONS
 
 	__stext = .;
 	TEXT_SECTION = 0x10001000;
-	.text : AT(0x10001000) { *(.text*) }
+	.text : AT(0x10001000) {
+		*(.text*)
+		SCHED_TEXT
+	}
 	__etext = .;
 
 	___init_begin = .;

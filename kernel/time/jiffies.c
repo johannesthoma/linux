@@ -68,7 +68,17 @@ static int __init init_jiffies_clocksource(void)
 
 core_initcall(init_jiffies_clocksource);
 
+#ifndef CONFIG_WINDOWS
+struct clocksource * __init __weak clocksource_default_clock(void)
+#else
+	/* currently, MinGW gets confused when there is a
+	 * non-weak declaration in the header and a weak
+	 * definition (undefined symbol).
+	 * We could also implement this in arch/windows but
+	 * unfortunately clocksource_jiffies is static.
+	 */
 struct clocksource * __init clocksource_default_clock(void)
+#endif
 {
 	return &clocksource_jiffies;
 }

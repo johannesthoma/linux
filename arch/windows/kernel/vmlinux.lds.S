@@ -21,6 +21,7 @@ SECTIONS
 	TEXT_SECTION = 0x10001000;
 	.text : AT(0x10001000) {
 		*(.text*)
+		TEXT_TEXT
 		SCHED_TEXT
 	}
 	__etext = .;

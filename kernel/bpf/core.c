@@ -37,15 +37,17 @@
 #include <linux/nospec.h>
 #include <linux/bpf_mem_alloc.h>
 #include <linux/memcontrol.h>
-#include <linux/compiler_attributes.h>
+// #include <linux/compiler_attributes.h>
 
 #include <asm/barrier.h>
 #include <asm/unaligned.h>
 
+/*
 #ifdef CONFIG_WINDOWS
 #undef __weak 
 #define __weak
 #endif
+*/
 
 /* Registers */
 #define BPF_R0	regs[BPF_REG_0]
@@ -2802,15 +2804,15 @@ const struct bpf_func_proto bpf_spin_unlock_proto __weak;
 const struct bpf_func_proto bpf_jiffies64_proto __weak;
 
 const struct bpf_func_proto bpf_get_prandom_u32_proto __weak;
-const struct bpf_func_proto bpf_get_smp_processor_id_proto __weak;
+const struct bpf_func_proto bpf_get_smp_processor_id_proto /* __weak */;
 const struct bpf_func_proto bpf_get_numa_node_id_proto __weak;
-const struct bpf_func_proto bpf_ktime_get_ns_proto __weak;
+const struct bpf_func_proto bpf_ktime_get_ns_proto /* __weak */;
 const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
-const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto __weak;
+const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto /* __weak */;
 const struct bpf_func_proto bpf_ktime_get_tai_ns_proto __weak;
 
-const struct bpf_func_proto bpf_get_current_pid_tgid_proto __weak;
-const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
+const struct bpf_func_proto bpf_get_current_pid_tgid_proto /* __weak */;
+const struct bpf_func_proto bpf_get_current_uid_gid_proto /* __weak */;
 const struct bpf_func_proto bpf_get_current_comm_proto __weak;
 const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
 const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto __weak;
@@ -2831,13 +2833,13 @@ const struct bpf_func_proto * __weak bpf_get_trace_vprintk_proto(void)
 	return NULL;
 }
 
-u64 __weak
+u64 /* __weak */
 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
 		 void *ctx, u64 ctx_size, bpf_ctx_copy_t ctx_copy)
 {
 	return -ENOTSUPP;
 }
-EXPORT_SYMBOL_GPL(bpf_event_output);
+ EXPORT_SYMBOL_GPL(bpf_event_output);
 
 /* Always built-in helper functions. */
 const struct bpf_func_proto bpf_tail_call_proto = {

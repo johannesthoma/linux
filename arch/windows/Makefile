@@ -3,7 +3,8 @@
 
 # WINDOWS_ARCH ?= x86_64
 WINDOWS_ARCH ?= i686
-CROSS_COMPILE = $(WINDOWS_ARCH)-w64-mingw32-
+# CROSS_COMPILE = $(WINDOWS_ARCH)-w64-mingw32-
+# CROSS_COMPILE = "clang --target=$(WINDOWS_ARCH)-pc-mingw32-w64"
 # ?? shouldn't that be the subarch?
 SRCARCH = $(ARCH)
 

@@ -2726,6 +2726,7 @@ static void __init report_meminit(void)
 		pr_info("mem auto-init: clearing system memory may take some time...\n");
 }
 
+/*
 #ifdef CONFIG_WINDOWS
 
 static void __init mem_init_print_info(void)
@@ -2734,6 +2735,7 @@ static void __init mem_init_print_info(void)
 }
 
 #else
+*/
 
 static void __init mem_init_print_info(void)
 {
@@ -2786,7 +2788,7 @@ static void __init mem_init_print_info(void)
 		);
 }
 
-#endif
+// #endif
 
 /*
  * Set up kernel memory allocators

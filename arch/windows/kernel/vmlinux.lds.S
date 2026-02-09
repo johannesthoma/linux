@@ -15,11 +15,11 @@ OUTPUT_ARCH(i386)
 ENTRY(_DriverEntry)
 SECTIONS
 {
-	. = 0x10001000;
+	. = 0xc0001000;
 
 	__stext = .;
-	TEXT_SECTION = 0x10001000;
-	.text : AT(0x10001000) {
+	TEXT_SECTION = 0xc0001000;
+	.text : AT(0xc0001000) {
 		*(.text*)
 		TEXT_TEXT
 		SCHED_TEXT

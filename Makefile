@@ -473,6 +473,12 @@ CPP		= $(CC) -E
 ifneq ($(LLVM),)
 CC		= $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
 LD		= $(LLVM_PREFIX)ld.lld$(LLVM_SUFFIX)
+# LD		= $(LLVM_PREFIX)clang -fuse-ld=ld-lld$(LLVM_SUFFIX)
+# TODO: for windows this should be the linker but it
+# does not support GNU style linker scripts (which
+# are required by Linux in order to define some
+# additional symbols.
+# LD		= $(LLVM_PREFIX)lld-link$(LLVM_SUFFIX)
 AR		= $(LLVM_PREFIX)llvm-ar$(LLVM_SUFFIX)
 NM		= $(LLVM_PREFIX)llvm-nm$(LLVM_SUFFIX)
 OBJCOPY		= $(LLVM_PREFIX)llvm-objcopy$(LLVM_SUFFIX)

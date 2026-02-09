@@ -46,6 +46,7 @@ BUILD_LTO_INFO;
  * They are compiled with __weak first, and without __weak later.
  */
 
+/* To make it link with clang, remove the weak here: */
 struct uts_namespace init_uts_ns __weak;
 const char linux_banner[] __weak;
 

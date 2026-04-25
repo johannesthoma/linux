@@ -9540,8 +9540,12 @@ KdChangeOption(
 #define KI_USER_SHARED_DATA     0xffdf0000
 #define SharedUserData          ((KUSER_SHARED_DATA * CONST)KI_USER_SHARED_DATA)
 
+#ifndef PAGE_SIZE
 #define PAGE_SIZE               0x1000
+#endif
+#ifndef PAGE_SHIFT
 #define PAGE_SHIFT              12L
+#endif
 #define KeGetDcacheFillSize()   1L
 
 #define EFLAG_SIGN              0x8000
@@ -13222,8 +13226,10 @@ RTLVERLIB_DDI(RtlIsServicePackVersionInstalled)(
 #define ALIGN_UP_POINTER_BY(ptr, align) \
     ((PVOID)ALIGN_UP_BY(ptr, align))
 
+#ifndef ALIGN_DOWN
 #define ALIGN_DOWN(size, type) \
     ALIGN_DOWN_BY(size, sizeof(type))
+#endif
 
 #define ALIGN_UP(size, type) \
     ALIGN_UP_BY(size, sizeof(type))

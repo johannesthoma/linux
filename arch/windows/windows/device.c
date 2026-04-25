@@ -19,12 +19,12 @@
 	the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "internal.h"
+
 #include <linux/types.h>
 #include <linux/workqueue.h>
 #include <linux/printk.h>
 #include <linux/slab.h>
-
-#include "internal.h"
 
 #include <ntifs.h>
 #include <rtltypes.h>

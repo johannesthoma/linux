@@ -1,11 +1,11 @@
 #include <linux/panic.h>
 
-/* Those are defined in linux/types.h */
-#define _UINTPTR_T_DEFINED 1
-#define _INTPTR_T_DEFINED 1
+#include "internal.h"
 
+/*
 #include <ntdef.h>
 #include <ntddk.h>
+*/
 
 void __attribute__((stdcall)) unload_driver(IN PDRIVER_OBJECT DriverObject)
 {

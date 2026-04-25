@@ -3,11 +3,14 @@
 #include <linux/kthread.h>
 #include <windows/api.h>
 
+#include "internal.h"
+#if 0
 /* Those are defined in linux/types.h */
 #define _UINTPTR_T_DEFINED 1
 #define _INTPTR_T_DEFINED 1
 
 #include <wdm.h>
+#endif
 
 /* TODO: spin lock !!!! */
 /* TODO: hashmap !!!! */

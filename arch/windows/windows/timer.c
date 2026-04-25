@@ -1,12 +1,16 @@
 #include <asm-generic/div64.h>
 #include <windows/api.h>
 
+#include "internal.h"
+
+#if 0
 /* Those are defined in linux/types.h */
 #define _UINTPTR_T_DEFINED 1
 #define _INTPTR_T_DEFINED 1
 
 #include <ntdef.h>
 #include <ntddk.h>
+#endif
 
 struct win_timer_list {
     KTIMER ktimer;

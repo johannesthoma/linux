@@ -36,11 +36,11 @@
 typedef NTSTATUS (*irp_handler_fn_t)(struct _DEVICE_OBJECT *device, struct _IRP *irp, void *user_data);
 
 struct device_extension {
-	irp_handler_fn_t *dispatch_table[IRP_MJ_MAXIMUM_FUNCTION];
+	irp_handler_fn_t (*dispatch_table)[IRP_MJ_MAXIMUM_FUNCTION];
 	void *user_data;
 };
 
-static NTSTATUS set_admin_only_permission(struct _DEVICE_OBJECT *obj)
+NTSTATUS set_admin_only_permission(struct _DEVICE_OBJECT *obj)
 {
 	HANDLE h;
 	NTSTATUS status;
@@ -127,12 +127,13 @@ static NTSTATUS set_admin_only_permission(struct _DEVICE_OBJECT *obj)
 	return status;
 }
 
-static NTSTATUS create_device(const wchar_t *name, const UNICODE_STRING *sddl_perms, struct _DEVICE_OBJECT **d)
+NTSTATUS create_device(const wchar_t *name, irp_handler_fn_t (*dispatch_table)[IRP_MJ_MAXIMUM_FUNCTION], void *user_data, struct _DEVICE_OBJECT **d)
 {
 	NTSTATUS status;
 	PDEVICE_OBJECT deviceObject;
 	UNICODE_STRING nameUnicode, linkUnicode;
 	wchar_t tmp[100], tmp2[100];
+	struct device_extension *ext;
 
 	_snwprintf(tmp, ARRAY_SIZE(tmp), L"\\Device\\%s", name);
 	tmp[99] = 0;
@@ -159,6 +160,10 @@ static NTSTATUS create_device(const wchar_t *name, const UNICODE_STRING *sddl_pe
 		IoDeleteDevice(deviceObject);
 		return status;
 	}
+	ext = deviceObject->DeviceExtension;
+	ext->dispatch_table = dispatch_table;
+	ext->user_data = user_data;
+
 	if (d)
 		*d = deviceObject;
 

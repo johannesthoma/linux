@@ -25,11 +25,14 @@ static int create_mapper_device(void)
 	NTSTATUS status;
 
 	printk("create_mapper_device()\n");
-	status = create_device(L"device-mapper", FILE_DEVICE_UNKNOWN, &dispatch_mapper, NULL, &mapper);
+	status = create_device(L"device_mapper", FILE_DEVICE_UNKNOWN, &dispatch_mapper, NULL, &mapper);
 	if (!NT_SUCCESS(status)) {
 		printk("could not create device-mapper object, status is %08x\n", status);
 		return -EINVAL;
 	}
+	/* Do init here ... */
+	mapper->Flags &= ~DO_DEVICE_INITIALIZING;
+
 	return 0;
 
 }

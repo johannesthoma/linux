@@ -1,8 +1,6 @@
 ﻿/*
-        Copyright(C) 2017-2018, Johannes Thoma <johannes@johannesthoma.com>
-        Copyright(C) 2017-2018, LINBIT HA-Solutions GmbH  <office@linbit.com>
-	Copyright(C) 2007-2016, ManTechnology Co., LTD.
-	Copyright(C) 2007-2016, wdrbd@mantech.co.kr
+        Copyright(C) 2025-2026, Johannes Khoshnazar-Thoma <johannes@johannesthoma.com>
+        Copyright(C) 2025-2026, LINBIT HA-Solutions GmbH  <office@linbit.com>
 
 	Windows DRBD is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -25,6 +23,7 @@
 #include <linux/workqueue.h>
 #include <linux/printk.h>
 #include <linux/slab.h>
+#include <linux/module.h>
 
 #include <ntifs.h>
 #include <rtltypes.h>
@@ -163,3 +162,42 @@ NTSTATUS create_device(const wchar_t *name, DEVICE_TYPE device_type, irp_handler
 	return STATUS_SUCCESS;
 }
 
+static NTSTATUS __attribute__((stdcall)) linux_dispatch(struct _DEVICE_OBJECT *device, struct _IRP *irp)
+{
+	struct _IO_STACK_LOCATION *s = IoGetCurrentIrpStackLocation(irp);
+	unsigned int major = s->MajorFunction;
+	struct device_extension *ext;
+
+	printk("got major %x\n", major);
+
+	ext = device->DeviceExtension;
+	/* sanity checks */
+	if (WARN_ON_ONCE(ext->dispatch_table == NULL) ||
+	    WARN_ON_ONCE(major > IRP_MJ_MAXIMUM_FUNCTION))
+		return STATUS_INVALID_DEVICE_REQUEST;
+
+	if (*ext->dispatch_table[major])
+		return (*ext->dispatch_table[major])(device, irp, ext->user_data);
+
+	/* TODO: except MJ_POWER: */
+	return STATUS_SUCCESS;
+}
+
+static int init_dispatcher(void)
+{
+	int i;
+
+	printk("init dispatcher\n");
+	for (i=0; i<=IRP_MJ_MAXIMUM_FUNCTION; i++)
+		driver_object->MajorFunction[i] = linux_dispatch;
+
+	return 0;
+}
+
+static void fini_dispatcher(void)
+{
+	printk("nothing for now\n");
+}
+
+module_init(init_dispatcher);
+module_exit(fini_dispatcher);

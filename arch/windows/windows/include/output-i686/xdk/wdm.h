@@ -397,7 +397,7 @@ inline int IsEqualGUIDAligned(REFGUID guid1, REFGUID guid2)
 /* No release here */
 #define InterlockedExchangeNoFence __NF_(_InterlockedExchange)
 
-#if (_MSC_VER >= 1600)
+#if (defined _MSC_VER) && (_MSC_VER >= 1600)
 #define InterlockedExchange8 _InterlockedExchange8
 #endif // (_MSC_VER >= 1600)
 
@@ -2239,7 +2239,7 @@ typedef struct _MDL {
   ULONG ByteCount;
   ULONG ByteOffset;
 } MDL, *PMDL;
-#if (_MSC_VER >= 1600)
+#if (defined _MSC_VER) && (_MSC_VER >= 1600)
 typedef _Readable_bytes_(_Inexpressible_(polymorphism)) MDL *PMDLX;
 #else
 typedef MDL *PMDLX;
@@ -9479,7 +9479,7 @@ NTSTATUS
 NTAPI
 KdEnableDebugger(VOID);
 
-#if (_MSC_FULL_VER >= 150030729) && !defined(IMPORT_NATIVE_DBG_BREAK)
+#if (defined _MSC_FULL_VER) &&  (_MSC_FULL_VER >= 150030729) && !defined(IMPORT_NATIVE_DBG_BREAK)
 #define DbgBreakPoint __debugbreak
 #else
 __analysis_noreturn

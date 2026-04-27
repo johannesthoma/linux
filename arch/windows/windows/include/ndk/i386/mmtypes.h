@@ -30,8 +30,12 @@ extern "C" {
 //
 // Page-related Macros
 //
+#ifndef PAGE_SIZE
 #define PAGE_SIZE                         0x1000
+#endif
+#ifndef PAGE_SHIFT
 #define PAGE_SHIFT                        12L
+#endif
 #define MM_ALLOCATION_GRANULARITY         0x10000
 #define MM_ALLOCATION_GRANULARITY_SHIFT   16L
 #define MM_PAGE_FRAME_NUMBER_SIZE         20

@@ -1,4 +1,6 @@
 #include <linux/types.h>
+#include <asm/page.h>
+#include <linux/align.h>
 
 /* Those are defined in linux/types.h */
 #define _UINTPTR_T_DEFINED 1
@@ -8,6 +10,7 @@
  * different values) do not use the ReactOS header's errno.h.
  */
 #define _INC_ERRNO 1
+#define NOMINMAX 1
 
 #define DBG 0
 #define DEVL 0

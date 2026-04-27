@@ -195,7 +195,7 @@
 *
 ************************************************************************/
 
-#if (_MSC_VER >= 1400) && !defined(__midl) && !defined(_PREFAST_) && (__SPECSTRINGS_STRICT_LEVEL > 0)
+#if (defined _MSC_VER) && (_MSC_VER >= 1400) && !defined(__midl) && !defined(_PREFAST_) && (__SPECSTRINGS_STRICT_LEVEL > 0)
 #pragma once
 #include <specstrings_undef.h>
 #define __ecount(size)                                _SAL_VERSION_CHECK(__ecount)

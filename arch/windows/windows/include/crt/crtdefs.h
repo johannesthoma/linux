@@ -56,7 +56,7 @@
 #endif
 
 #ifndef _W64
- #if !defined(_midl) && defined(_X86_) && _MSC_VER >= 1300
+ #if (defined _MSC_VER) && !defined(_midl) && defined(_X86_) && _MSC_VER >= 1300
   #define _W64 __w64
  #else
   #define _W64

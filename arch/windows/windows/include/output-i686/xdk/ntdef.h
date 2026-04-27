@@ -327,7 +327,7 @@ extern "C" {
 #endif /* FORCEINLINE */
 
 #ifndef DECLSPEC_NOINLINE
- #if (_MSC_VER >= 1300)
+ #if (defined _MSC_VER) && (_MSC_VER >= 1300)
   #define DECLSPEC_NOINLINE  __declspec(noinline)
  #elif defined(__GNUC__)
   #define DECLSPEC_NOINLINE __attribute__((noinline))

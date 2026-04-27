@@ -27,7 +27,7 @@
 * See specstrings_strict.h for documentation of all user visible macros.
 *************************************************************************/
 
-#if _MSC_VER
+#ifdef _MSC_VER
 #pragma once
 #endif
 
@@ -215,7 +215,7 @@ __ANNOTATION(SAL_failureDefault(enum __SAL_failureKind));
  New extensions to sal.h follow here.
 *************************************************************************/
 
-#if (_MSC_VER >= 1000) && !defined(__midl) && defined(_PREFAST_)
+#if !defined(__midl) && defined(_PREFAST_) && (_MSC_VER >= 1000)
 
 #define __file_parser(typ)                  _SA_annotes2(SAL_file_parser,"function",typ)
 #define __file_parser_class(typ)            _SA_annotes2(SAL_file_parser,"class",typ)
@@ -520,7 +520,7 @@ void __pfx_assume(int, const char *);
  or we will end up referencing SAL 2 implementation symbols and cause
  build failures.
 */
-#if (!defined(_Outptr_) || _MSC_VER <= 1600) && !( defined( MIDL_PASS ) || defined(__midl) || defined(RC_INVOKED) ) /*IFSTRIP=IGN*/
+#if (defined _MSC_VER) && (!defined(_Outptr_) || _MSC_VER <= 1600) && !( defined( MIDL_PASS ) || defined(__midl) || defined(RC_INVOKED) ) /*IFSTRIP=IGN*/
 #undef __ANNOTATION
 #define __ANNOTATION(fun) /* fun */
 #undef __PRIMOP

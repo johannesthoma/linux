@@ -25,4 +25,18 @@
 
 #include <wdm.h>
 
+#undef __reserved
+
+/* TODO: -> device.h ? */
 extern PDRIVER_OBJECT driver_object;
+
+typedef NTSTATUS (*irp_handler_fn_t)(struct _DEVICE_OBJECT *device, struct _IRP *irp, void *user_data);
+
+struct device_extension {
+        irp_handler_fn_t (*dispatch_table)[IRP_MJ_MAXIMUM_FUNCTION];
+        void *user_data;
+};
+
+NTSTATUS set_admin_only_permission(struct _DEVICE_OBJECT *obj);
+NTSTATUS create_device(const wchar_t *name, DEVICE_TYPE device_type, irp_handler_fn_t (*dispatch_table)[IRP_MJ_MAXIMUM_FUNCTION], void *user_data, struct _DEVICE_OBJECT **d);
+

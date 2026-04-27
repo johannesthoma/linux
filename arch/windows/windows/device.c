@@ -33,13 +33,6 @@
 #define TO_UNICODE(s) WIDEN2(s)
 #define WIDEN2(s) L##s
 
-typedef NTSTATUS (*irp_handler_fn_t)(struct _DEVICE_OBJECT *device, struct _IRP *irp, void *user_data);
-
-struct device_extension {
-	irp_handler_fn_t (*dispatch_table)[IRP_MJ_MAXIMUM_FUNCTION];
-	void *user_data;
-};
-
 NTSTATUS set_admin_only_permission(struct _DEVICE_OBJECT *obj)
 {
 	HANDLE h;
@@ -127,7 +120,7 @@ NTSTATUS set_admin_only_permission(struct _DEVICE_OBJECT *obj)
 	return status;
 }
 
-NTSTATUS create_device(const wchar_t *name, irp_handler_fn_t (*dispatch_table)[IRP_MJ_MAXIMUM_FUNCTION], void *user_data, struct _DEVICE_OBJECT **d)
+NTSTATUS create_device(const wchar_t *name, DEVICE_TYPE device_type, irp_handler_fn_t (*dispatch_table)[IRP_MJ_MAXIMUM_FUNCTION], void *user_data, struct _DEVICE_OBJECT **d)
 {
 	NTSTATUS status;
 	PDEVICE_OBJECT deviceObject;
@@ -141,7 +134,7 @@ NTSTATUS create_device(const wchar_t *name, irp_handler_fn_t (*dispatch_table)[I
 
 	printk("About to create device %S with default permissions\n", nameUnicode.Buffer);
 	status = IoCreateDevice(driver_object, sizeof(struct device_extension),
-		        &nameUnicode, FILE_DEVICE_UNKNOWN,
+		        &nameUnicode, device_type,
 			FILE_DEVICE_SECURE_OPEN, FALSE, &deviceObject);
 
 	if (!NT_SUCCESS(status))

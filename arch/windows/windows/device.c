@@ -176,8 +176,8 @@ static NTSTATUS __attribute__((stdcall)) linux_dispatch(struct _DEVICE_OBJECT *d
 	    WARN_ON_ONCE(major > IRP_MJ_MAXIMUM_FUNCTION))
 		return STATUS_INVALID_DEVICE_REQUEST;
 
-	if (*ext->dispatch_table[major])
-		return (*ext->dispatch_table[major])(device, irp, ext->user_data);
+	if ((*ext->dispatch_table)[major])
+		return ((*ext->dispatch_table)[major])(device, irp, ext->user_data);
 
 	/* TODO: except MJ_POWER: */
 	return STATUS_SUCCESS;

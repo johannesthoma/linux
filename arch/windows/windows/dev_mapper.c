@@ -15,16 +15,9 @@ static NTSTATUS close_mapper(PDEVICE_OBJECT device, PIRP irp, void *user_data)
 	return STATUS_SUCCESS;
 }
 
-static NTSTATUS x(PDEVICE_OBJECT device, PIRP irp, void *user_data)
-{
-	printk("x()\n");
-	return STATUS_SUCCESS;
-}
-
 static irp_handler_fn_t dispatch_mapper[IRP_MJ_MAXIMUM_FUNCTION] = {
 	[IRP_MJ_CREATE] create_mapper,
 	[IRP_MJ_CLOSE] close_mapper,
-	x,
 };
 
 static int create_mapper_device(void)

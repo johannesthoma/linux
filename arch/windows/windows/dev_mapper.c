@@ -2,6 +2,7 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/atomic.h>
+#include <uapi/linux/dm-ioctl.h>
 
 static PDEVICE_OBJECT mapper;
 static atomic_t num_open;
@@ -44,6 +45,8 @@ static NTSTATUS close_mapper(PDEVICE_OBJECT device, PIRP irp, void *user_data)
 static NTSTATUS ioctl_mapper(PDEVICE_OBJECT device, PIRP irp, void *user_data)
 {
 	printk("ioctl_mapper()\n");
+	/* vfs_ioctl(dev_mapper_control, command, i/o buffers) */
+	/* And take a look on ((struct dm_ioctl *) buf) -> data_size */
 	return STATUS_SUCCESS;
 }
 

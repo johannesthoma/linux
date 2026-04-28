@@ -1,11 +1,26 @@
 #include "internal.h"
 #include <linux/module.h>
+#include <linux/fs.h>
 
 static PDEVICE_OBJECT mapper;
+
+struct file *dev_mapper_control;
 
 static NTSTATUS create_mapper(PDEVICE_OBJECT device, PIRP irp, void *user_data)
 {
 	printk("create_mapper()\n");
+
+	// dev_mapper_control = filp_open("/dev/console", O_RDWR, 0);
+	// dev_mapper_control = filp_open("/karin/zak", O_RDWR, 0);
+	// dev_mapper_control = filp_open("/dev/lebt", O_RDWR, 0);
+	dev_mapper_control = filp_open("/dev/mapper/control", O_RDWR, 0);
+		/* TODO: have a linux_to_windows error func */
+printk("dev_mapper_control is %p\n", dev_mapper_control);
+	if (IS_ERR(dev_mapper_control)) {
+printk("is err...\n");
+		return STATUS_OBJECT_NAME_NOT_FOUND; /* or so ... */
+	}
+printk("is ok...\n");
 	return STATUS_SUCCESS;
 }
 

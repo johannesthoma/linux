@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0-only
+# This is a very simple, default initramfs
+# Put any device nodes needed in here
+
+dir /dev 0755 0 0
+nod /dev/console 0600 0 0 c 5 1
+dir /dev/mapper 0755 0 0
+nod /dev/mapper/control 0600 0 0 c 10 236
+dir /root 0700 0 0

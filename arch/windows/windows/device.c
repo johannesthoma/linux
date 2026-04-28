@@ -167,6 +167,7 @@ static NTSTATUS __attribute__((stdcall)) linux_dispatch(struct _DEVICE_OBJECT *d
 	struct _IO_STACK_LOCATION *s = IoGetCurrentIrpStackLocation(irp);
 	unsigned int major = s->MajorFunction;
 	struct device_extension *ext;
+	NTSTATUS status;
 
 	printk("got major %x\n", major);
 
@@ -177,10 +178,14 @@ static NTSTATUS __attribute__((stdcall)) linux_dispatch(struct _DEVICE_OBJECT *d
 		return STATUS_INVALID_DEVICE_REQUEST;
 
 	if ((*ext->dispatch_table)[major])
-		return ((*ext->dispatch_table)[major])(device, irp, ext->user_data);
+		status = ((*ext->dispatch_table)[major])(device, irp, ext->user_data);
+	else
+	/* TODO: except MJ_POWER: there it must not change the status ... */
+		status = STATUS_NOT_IMPLEMENTED;
 
-	/* TODO: except MJ_POWER: */
-	return STATUS_SUCCESS;
+	irp->IoStatus.Status = status;
+	IoCompleteRequest(irp, IO_NO_INCREMENT);
+	return status;
 }
 
 static int init_dispatcher(void)

@@ -44,9 +44,33 @@ static NTSTATUS close_mapper(PDEVICE_OBJECT device, PIRP irp, void *user_data)
 
 static NTSTATUS ioctl_mapper(PDEVICE_OBJECT device, PIRP irp, void *user_data)
 {
-	printk("ioctl_mapper()\n");
-	/* vfs_ioctl(dev_mapper_control, command, i/o buffers) */
-	/* And take a look on ((struct dm_ioctl *) buf) -> data_size */
+	struct _IO_STACK_LOCATION *s = IoGetCurrentIrpStackLocation(irp);
+
+printk("1\n");
+	if (!dev_mapper_control)
+		return STATUS_NO_SUCH_FILE;
+
+printk("1a\n");
+	if (irp->AssociatedIrp.SystemBuffer == NULL)
+		return STATUS_INVALID_DEVICE_REQUEST;
+
+printk("2\n");
+	if (s->Parameters.DeviceIoControl.InputBufferLength < sizeof(struct dm_ioctl) || s->Parameters.DeviceIoControl.OutputBufferLength < sizeof(struct dm_ioctl))
+		return STATUS_BUFFER_TOO_SMALL;
+
+printk("3\n");
+	struct dm_ioctl *d = (struct dm_ioctl*) irp->AssociatedIrp.SystemBuffer;
+	if (s->Parameters.DeviceIoControl.InputBufferLength < d->data_size || s->Parameters.DeviceIoControl.OutputBufferLength < d->data_size)
+		return STATUS_BUFFER_TOO_SMALL;
+
+printk("4\n");
+	unsigned int linux_command = _IOWR(DM_IOCTL, (s->Parameters.DeviceIoControl.IoControlCode >> 2) & 0xff, struct dm_ioctl);
+printk("linux_command is %x\n", linux_command);
+	if (vfs_ioctl(dev_mapper_control, linux_command, (unsigned long) d) < 0)
+		return STATUS_INVALID_DEVICE_REQUEST;
+
+printk("5\n");
+	irp->IoStatus.Information = d->data_size;
 	return STATUS_SUCCESS;
 }
 

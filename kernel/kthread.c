@@ -309,7 +309,11 @@ EXPORT_SYMBOL_GPL(kthread_parkme);
  *
  * Does not return.
  */
+#ifdef CONFIG_WINDOWS
+void kthread_exit(long result)
+#else
 void __noreturn kthread_exit(long result)
+#endif
 {
 	struct kthread *kthread = to_kthread(current);
 	kthread->result = result;

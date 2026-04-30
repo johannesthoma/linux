@@ -6717,7 +6717,11 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 #endif
 }
 
+#ifdef CONFIG_WINDOWS
+void do_task_dead(void)
+#else
 void __noreturn do_task_dead(void)
+#endif
 {
 	/* Causes final put_task_struct in finish_task_switch(): */
 	set_special_state(TASK_DEAD);
@@ -6725,12 +6729,15 @@ void __noreturn do_task_dead(void)
 	/* Tell freezer to ignore us: */
 	current->flags |= PF_NOFREEZE;
 
+#ifndef CONFIG_WINDOWS
 	__schedule(SM_NONE);
 	BUG();
 
 	/* Avoid "noreturn function does return" - but don't continue if BUG() is a NOP: */
 	for (;;)
 		cpu_relax();
+#endif
+	/* Else return. win_thread_setup will exit the Windows thread */
 }
 
 static inline void sched_submit_work(struct task_struct *tsk)

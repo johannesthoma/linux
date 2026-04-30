@@ -121,6 +121,8 @@ out:
 	if (!retval)
 		return 0;
 	do_exit(0);
+
+	return 0;
 }
 
 /* Handles UMH_WAIT_PROC.  */

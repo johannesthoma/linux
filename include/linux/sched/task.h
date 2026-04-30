@@ -65,8 +65,13 @@ extern void sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *k
 extern void sched_post_fork(struct task_struct *p);
 extern void sched_dead(struct task_struct *p);
 
+#ifdef CONFIG_WINDOWS
+void do_task_dead(void);
+void make_task_dead(int signr);
+#else
 void __noreturn do_task_dead(void);
 void __noreturn make_task_dead(int signr);
+#endif
 
 extern void mm_cache_init(void);
 extern void proc_caches_init(void);
@@ -86,7 +91,11 @@ static inline void exit_thread(struct task_struct *tsk)
 {
 }
 #endif
+#ifdef CONFIG_WINDOWS
+extern void do_group_exit(int);
+#else
 extern __noreturn void do_group_exit(int);
+#endif
 
 extern void exit_files(struct task_struct *);
 extern void exit_itimers(struct task_struct *);

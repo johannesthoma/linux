@@ -24,6 +24,7 @@
 #include <linux/printk.h>
 #include <linux/slab.h>
 #include <linux/module.h>
+#include <linux/workqueue.h>
 
 #include <ntifs.h>
 #include <rtltypes.h>
@@ -162,9 +163,21 @@ NTSTATUS create_device(const wchar_t *name, DEVICE_TYPE device_type, irp_handler
 	return STATUS_SUCCESS;
 }
 
-static NTSTATUS __attribute__((stdcall)) linux_dispatch(struct _DEVICE_OBJECT *device, struct _IRP *irp)
+struct io_work {
+	struct work_struct work;
+	PDEVICE_OBJECT device;
+	PIRP irp;
+	NTSTATUS retval;
+	KEVENT completed;
+};
+
+static void run_io_request(struct work_struct *the_work)
 {
-	struct _IO_STACK_LOCATION *s = IoGetCurrentIrpStackLocation(irp);
+	struct io_work *io_work = container_of(the_work, struct io_work, work);
+	PIRP irp = io_work->irp;
+	PDEVICE_OBJECT device = io_work->device;
+
+	PIO_STACK_LOCATION s = IoGetCurrentIrpStackLocation(irp);
 	unsigned int major = s->MajorFunction;
 	struct device_extension *ext;
 	NTSTATUS status;
@@ -174,8 +187,10 @@ static NTSTATUS __attribute__((stdcall)) linux_dispatch(struct _DEVICE_OBJECT *d
 	ext = device->DeviceExtension;
 	/* sanity checks */
 	if (WARN_ON_ONCE(ext->dispatch_table == NULL) ||
-	    WARN_ON_ONCE(major > IRP_MJ_MAXIMUM_FUNCTION))
-		return STATUS_INVALID_DEVICE_REQUEST;
+	    WARN_ON_ONCE(major > IRP_MJ_MAXIMUM_FUNCTION)) {
+		status = STATUS_INVALID_DEVICE_REQUEST;
+		goto err;
+	}
 
 	if ((*ext->dispatch_table)[major])
 		status = ((*ext->dispatch_table)[major])(device, irp, ext->user_data);
@@ -183,9 +198,30 @@ static NTSTATUS __attribute__((stdcall)) linux_dispatch(struct _DEVICE_OBJECT *d
 	/* TODO: except MJ_POWER: there it must not change the status ... */
 		status = STATUS_NOT_IMPLEMENTED;
 
+err:
 	irp->IoStatus.Status = status;
 	IoCompleteRequest(irp, IO_NO_INCREMENT);
-	return status;
+	io_work->retval = status;
+
+	KeSetEvent(&io_work->completed, 0, FALSE);
+}
+
+static NTSTATUS __attribute__((stdcall)) linux_dispatch(struct _DEVICE_OBJECT *device, struct _IRP *irp)
+{
+	struct io_work w;
+	NTSTATUS status;
+	
+	INIT_WORK(&w.work, run_io_request);
+	w.device = device;
+	w.irp = irp;
+	w.retval = STATUS_INVALID_DEVICE_REQUEST;
+	KeInitializeEvent(&w.completed, SynchronizationEvent, FALSE);
+
+	schedule_work(&w.work);
+	status = KeWaitForSingleObject(&w.completed, Executive, KernelMode, FALSE, NULL);
+	WARN_ON_ONCE(!NT_SUCCESS(status));
+
+	return w.retval;
 }
 
 static int init_dispatcher(void)

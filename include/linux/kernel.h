@@ -197,7 +197,11 @@ void __might_fault(const char *file, int line);
 static inline void might_fault(void) { }
 #endif
 
+#ifdef CONFIG_WINDOWS
+void do_exit(long error_code);
+#else
 void do_exit(long error_code) __noreturn;
+#endif
 
 extern int get_option(char **str, int *pint);
 extern char *get_options(const char *str, int nints, int *ints);

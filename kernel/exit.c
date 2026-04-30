@@ -806,7 +806,12 @@ static void synchronize_group_exit(struct task_struct *tsk, long code)
 	spin_unlock_irq(&sighand->siglock);
 }
 
+/* We should have an ARCH_NO_RETURN macro or so ... */
+#ifdef CONFIG_WINDOWS
+void do_exit(long code)
+#else
 void __noreturn do_exit(long code)
+#endif
 {
 	struct task_struct *tsk = current;
 	int group_dead;
@@ -923,7 +928,11 @@ void __noreturn do_exit(long code)
 	do_task_dead();
 }
 
+#ifdef CONFIG_WINDOWS
+void make_task_dead(int signr)
+#else
 void __noreturn make_task_dead(int signr)
+#endif
 {
 	/*
 	 * Take the task off the cpu after something catastrophic has
@@ -986,14 +995,20 @@ void __noreturn make_task_dead(int signr)
 SYSCALL_DEFINE1(exit, int, error_code)
 {
 	do_exit((error_code&0xff)<<8);
+	return 0;
 }
 
 /*
  * Take down every thread in the group.  This is called by fatal signals
  * as well as by sys_exit_group (below).
  */
+#ifdef CONFIG_WINDOWS
+void 
+do_group_exit(int exit_code)
+#else
 void __noreturn
 do_group_exit(int exit_code)
+#endif
 {
 	struct signal_struct *sig = current->signal;
 

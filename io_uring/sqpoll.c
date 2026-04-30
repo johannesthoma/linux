@@ -313,6 +313,7 @@ static int io_sq_thread(void *data)
 
 	complete(&sqd->exited);
 	do_exit(0);
+	return 0;
 }
 
 void io_sqpoll_wait_sq(struct io_ring_ctx *ctx)

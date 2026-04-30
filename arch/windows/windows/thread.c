@@ -23,6 +23,9 @@ struct thread_info *find_current_thread_info(struct _KTHREAD *windows_thread)
 		if (t->thread_info.windows_thread == windows_thread)
 			return &t->thread_info;
 	}
+	WARN(1, "current called outside a valid Linux kthread! (windows_thread is %p", windows_thread);
+
+	/* We also can let it RIP. */
 	return &init_task.thread_info;
 }
 

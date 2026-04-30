@@ -14,7 +14,27 @@
 
 /* TODO: spin lock !!!! */
 /* TODO: hashmap !!!! */
+/* TODO: do NOT use the init_task.tasks task list. It causes
+ * problems when a task is deleted. A task will be taken from
+ * the list in __unhash_process but current is called after
+ * that from within the unhashed task. Instead have a hashmap,
+ * add to hashmap in win_thread_setup(). Need special case
+ * when booting (return init_task()) and should not use 
+ * printk (calls current) in the I/O dispatcher (I think
+ * this is the only interface to Windows, maybe one day
+ * there will be interrupt handlers and maybe system traps
+ * as well ...). Update: add to hashmap in win_create_windows_thread()
+ * there we have the struct task_struct parameter.
+ */
 
+/*
+struct a_thread {
+	struct task_struct *t;
+	struct hlist_node hlist;
+}
+
+and hash by task_struct * or so ...
+*/
 struct thread_info *find_current_thread_info(struct _KTHREAD *windows_thread)
 {
 	struct task_struct *t;
@@ -23,9 +43,12 @@ struct thread_info *find_current_thread_info(struct _KTHREAD *windows_thread)
 		if (t->thread_info.windows_thread == windows_thread)
 			return &t->thread_info;
 	}
-	WARN(1, "current called outside a valid Linux kthread! (windows_thread is %p", windows_thread);
+	/* No printk here, seems to call current() */
+DbgPrint("current called outside a valid Linux kthread! (windows_thread is %p)\n", windows_thread);
 
 	/* We also can let it RIP. */
+	/* Update: no, this is valid when booting: */
+	/* or also when printk() is called from outside a Linux context */
 	return &init_task.thread_info;
 }
 

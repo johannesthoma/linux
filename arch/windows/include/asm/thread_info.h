@@ -38,6 +38,7 @@ struct thread_info {
 
         int (*fn)(void *);
         void *fn_arg;
+	/* a hash ? */
 };
 
 #define INIT_THREAD_INFO(tsk)                   \

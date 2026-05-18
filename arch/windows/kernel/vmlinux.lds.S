@@ -65,6 +65,11 @@ SECTIONS
 	BSS_SECTION(0, 0, 0)
 	_end = .;
 
+  .reloc BLOCK(PAGE_SIZE) :
+   {
+     *(.reloc)
+   }
+
 	STABS_DEBUG
 	DWARF_DEBUG
 	ELF_DETAILS

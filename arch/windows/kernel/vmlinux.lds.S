@@ -62,16 +62,18 @@ SECTIONS
 
 	EXCEPTION_TABLE(PAGE_SIZE)
 
-	BSS_SECTION(0, 0, 0)
-	_end = .;
-
   .reloc BLOCK(PAGE_SIZE) :
    {
      *(.reloc)
    }
 
+	BSS_SECTION(PAGE_SIZE, PAGE_SIZE, PAGE_SIZE)
+	_end = .;
+
+
 	STABS_DEBUG
 	DWARF_DEBUG
+
 	ELF_DETAILS
 
 	DISCARDS		// must be the last */

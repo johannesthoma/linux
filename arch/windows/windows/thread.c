@@ -2,6 +2,7 @@
 #include <linux/list.h>
 #include <linux/kthread.h>
 #include <windows/api.h>
+#include <linux/hashtable.h>
 
 #include "internal.h"
 #if 0
@@ -27,34 +28,48 @@
  * there we have the struct task_struct parameter.
  */
 
-/*
 struct a_thread {
-	struct task_struct *t;
+	struct task_struct *task_struct;
+	struct _KTHREAD *windows_thread;
 	struct hlist_node hlist;
-}
+};
 
-and hash by task_struct * or so ...
-*/
+DEFINE_HASHTABLE(winthread_to_task_struct, 11);
+
 struct thread_info *find_current_thread_info(struct _KTHREAD *windows_thread)
 {
-	struct task_struct *t;
+	struct a_thread *a_thread;
 
-	list_for_each_entry(t, &init_task.tasks, tasks) {
-		if (t->thread_info.windows_thread == windows_thread)
-			return &t->thread_info;
-	}
+	hash_for_each_possible(winthread_to_task_struct, a_thread, hlist, (unsigned long) windows_thread) {
+		if (a_thread->windows_thread == windows_thread)
+			return &a_thread->task_struct->thread_info;
+        }
+
 	/* No printk here, seems to call current() */
-DbgPrint("current called outside a valid Linux kthread! (windows_thread is %p)\n", windows_thread);
+// DbgPrint("current called outside a valid Linux kthread! (windows_thread is %p)\n", windows_thread);
 
 	/* We also can let it RIP. */
 	/* Update: no, this is valid when booting: */
 	/* or also when printk() is called from outside a Linux context */
+	/* Or also: init_task is not hashed (only threads created via
+	 * win_thread_setup().
+	 */
 	return &init_task.thread_info;
 }
 
 struct thread_info *win_find_current_thread_info(void)
 {
 	return find_current_thread_info(KeGetCurrentThread());
+}
+
+static void add_thread(struct a_thread *t)
+{
+	hash_add(winthread_to_task_struct, &t->hlist, (unsigned long) t->windows_thread);
+}
+
+static void del_thread(struct a_thread *t)
+{
+	hash_del(&t->hlist);
 }
 
 #ifdef CONFIG_HAVE_KERNEL_STACKSWAP_ENABLE
@@ -64,11 +79,19 @@ extern BOOLEAN KeSetKernelStackSwapEnable(BOOLEAN Enable);
 static void __attribute__((stdcall)) win_thread_setup(void *targ)
 {
 	struct task_struct *t = targ;
+	struct a_thread a_thread;	/* yes this is on the stack */
 	int ret;
 	NTSTATUS status;
 
 	int (*threadfn)(void *);
 	void *data;
+
+	a_thread.task_struct = t;
+	a_thread.windows_thread = KeGetCurrentThread();
+	INIT_HLIST_NODE(&a_thread.hlist);
+	add_thread(&a_thread);
+
+	/* From here on, current should be working ... */
 
 		/* Linux never swaps out kernel stack areas. This
 		 * should fix a very rare list corruption in a
@@ -105,6 +128,9 @@ out:
 #ifdef CONFIG_HAVE_KERNEL_STACKSWAP_ENABLE
 	KeSetKernelStackSwapEnable(TRUE);
 #endif
+
+	/* We're not calling current any more */
+	del_thread(&a_thread);
 }
 
 	/* This has to be called (at least) on the init_task struct */

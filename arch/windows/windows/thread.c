@@ -115,8 +115,7 @@ static void __attribute__((stdcall)) win_thread_setup(void *targ)
 	if (threadfn) {
 		ret = threadfn(data);
 
-		WARN_ONCE(ret != 0, "Thread %s returned non-zero exit status. Ignored, since Windows threads are void.\n", t->comm);
-		WARN_ONCE(KeGetCurrentIrql() > PASSIVE_LEVEL, "Warning: IRQL is %d when exiting thread. System will posibly lockup.\n", KeGetCurrentIrql());
+		win_enable_preemption();
 	} else {
 		WARN_ONCE(1, "not a kthread function, also no fn in thread_info, giving up ...\n");
 	}

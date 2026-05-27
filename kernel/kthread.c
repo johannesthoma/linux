@@ -332,7 +332,11 @@ void __noreturn kthread_exit(long result)
  *
  * Does not return.
  */
+#ifdef CONFIG_WINDOWS
+void kthread_complete_and_exit(struct completion *comp, long code)
+#else
 void __noreturn kthread_complete_and_exit(struct completion *comp, long code)
+#endif
 {
 	if (comp)
 		complete(comp);
@@ -392,6 +396,9 @@ static int kthread(void *_create)
 		ret = threadfn(data);
 	}
 	kthread_exit(ret);
+#ifdef CONFIG_WINDOWS
+	return ret;
+#endif
 }
 
 /* called from kernel_clone() to get node information for about to be created task */

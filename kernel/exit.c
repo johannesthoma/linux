@@ -925,7 +925,9 @@ void __noreturn do_exit(long code)
 	exit_tasks_rcu_finish();
 
 	lockdep_free_task(tsk);
+#ifndef CONFIG_WINDOWS
 	do_task_dead();
+#endif
 }
 
 #ifdef CONFIG_WINDOWS

@@ -39,5 +39,6 @@ generic-y :=
 
 libs-y += arch/windows/lib/
 core-y += arch/windows/kernel/
+core-y += arch/windows/entry/
 core-y += arch/windows/windows/
 

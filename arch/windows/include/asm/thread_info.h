@@ -23,6 +23,8 @@
 #define _TIF_SECCOMP            (1 << TIF_SECCOMP)
 #define _TIF_SINGLESTEP         (1 << TIF_SINGLESTEP)
 
+#ifndef __ASSEMBLY__
+
 struct task_struct;
 extern struct task_struct init_task;
 
@@ -64,4 +66,5 @@ static __always_inline int user_mode(struct pt_regs *regs)
 	return 0;	/* never on windows */
 }
 
+#endif	/* !__ASSEMBLY__ */
 #endif

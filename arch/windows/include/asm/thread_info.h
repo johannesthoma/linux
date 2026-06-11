@@ -37,6 +37,7 @@ struct thread_info {
 	struct task_struct *task;
 	struct _KTHREAD *windows_thread;
 	struct _KEVENT *task_queued_event;
+	int status;
 
         int (*fn)(void *);
         void *fn_arg;

@@ -170,7 +170,7 @@ static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs, int nr)
 		unr = array_index_nospec(unr, IA32_NR_syscalls);
 		regs->ax = ia32_sys_call_table[unr](regs);
 	} else if (nr != -1) {
-		regs->ax = sys_ni_syscall();
+//		regs->ax = sys_ni_syscall();
 	}
 }
 

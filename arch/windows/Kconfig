@@ -5,6 +5,8 @@ menu "Windows and ReactOS-specific options"
 config WINDOWS
 	def_bool y
 
+        select ARCH_HAS_SYSCALL_WRAPPER
+
 config HZ
         int "Clock frequency."
         default 1000

@@ -980,7 +980,7 @@ __irqentry_text_end:
 //!
 // SYM_FUNC_START(entry_INT80_32)
 //	ASM_CLAC
-.globl entry_INT80_32
+.globl _entry_INT80_32
 entry_INT80_32:
 
 	pushl	%eax			/* pt_regs->orig_ax */
@@ -1035,7 +1035,7 @@ restore_all_switch_stack:
 
 	_ASM_EXTABLE(.Lirq_return, .Lasm_iret_error)
 #endif
-SYM_FUNC_END(entry_INT80_32)
+// SYM_FUNC_END(entry_INT80_32)
 #endif
 
 .macro FIXUP_ESPFIX_STACK

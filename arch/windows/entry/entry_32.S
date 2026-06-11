@@ -978,8 +978,11 @@ __irqentry_text_end:
  * ebp  arg6
  */
 //!
-SYM_FUNC_START(entry_INT80_32)
+// SYM_FUNC_START(entry_INT80_32)
 //	ASM_CLAC
+.globl entry_INT80_32
+entry_INT80_32:
+
 	pushl	%eax			/* pt_regs->orig_ax */
 
 	SAVE_ALL pt_regs_ax=$-ENOSYS switch_stacks=1	/* save rest */

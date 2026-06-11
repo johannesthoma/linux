@@ -34,6 +34,8 @@
 #include <asm/thread_info.h>
 #include <asm/irqflags.h>
 #include <asm/errno.h>
+
+#if 0
 #include <asm/segment.h>
 #include <asm/smp.h>
 #include <asm/percpu.h>
@@ -48,14 +50,36 @@
 #include <asm/nospec-branch.h>
 
 #include "calling.h"
+#endif
+
+#define __KERNEL_PERCPU                0
+
+#define PAGE_SIZE 4096
+#define PAGE_SHIFT 12
 
 	.section .entry.text, "ax"
 
 #define PTI_SWITCH_MASK         (1 << PAGE_SHIFT)
+#define MASK_entry_stack	(~(PAGE_SIZE-1))
+#define SIZEOF_entry_stack	(PAGE_SIZE)
+
+#define PT_CS	0x34
+#define PTREGS_SIZE 0x44
+#define SEGMENT_RPL_MASK        0x3
+
+/* TODO: some offset ... */
+#define TSS_entry2task_stack 42
+
+/* TODO: some selector */
+#define __USER_DS 12
+#define USER_RPL         0x3
+#define USER_SEGMENT_RPL_MASK    0x2
 
 /* Unconditionally switch to user cr3 */
+
+//!
 .macro SWITCH_TO_USER_CR3 scratch_reg:req
-	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
+//	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
 
 	movl	%cr3, \scratch_reg
 	orl	$PTI_SWITCH_MASK, \scratch_reg
@@ -63,6 +87,7 @@
 .Lend_\@:
 .endm
 
+//!
 .macro BUG_IF_WRONG_CR3 no_user_check=0
 #ifdef CONFIG_DEBUG_ENTRY
 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
@@ -85,8 +110,9 @@
  * Switch to kernel cr3 if not already loaded and return current cr3 in
  * \scratch_reg
  */
+//!
 .macro SWITCH_TO_KERNEL_CR3 scratch_reg:req
-	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
+//	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
 	movl	%cr3, \scratch_reg
 	/* Test if we are already on kernel CR3 */
 	testl	$PTI_SWITCH_MASK, \scratch_reg
@@ -103,6 +129,7 @@
 #define CS_FROM_KERNEL		(1 << 29)
 #define CS_FROM_ESPFIX		(1 << 28)
 
+//!
 .macro FIXUP_FRAME
 	/*
 	 * The high bits of the CS dword (__csh) are used for CS_FROM_*.
@@ -163,6 +190,7 @@
 .Lfrom_usermode_no_fixup_\@:
 .endm
 
+//!
 .macro IRET_FRAME
 	/*
 	 * We're called with %ds, %es, %fs, and %gs from the interrupted
@@ -202,6 +230,7 @@
 .Lfinished_frame_\@:
 .endm
 
+//!
 .macro SAVE_ALL pt_regs_ax=%eax switch_stacks=0 skip_gs=0 unwind_espfix=0
 	cld
 .if \skip_gs == 0
@@ -236,6 +265,7 @@
 .endif
 .endm
 
+#if 0
 .macro SAVE_ALL_NMI cr3_reg:req unwind_espfix=0
 	SAVE_ALL unwind_espfix=\unwind_espfix
 
@@ -252,6 +282,7 @@
 
 .Lend_\@:
 .endm
+#endif
 
 .macro RESTORE_INT_REGS
 	popl	%ebx
@@ -271,6 +302,7 @@
 4:	addl	$(4 + \pop), %esp	/* pop the unused "gs" slot */
 	IRET_FRAME
 
+#if 0
 	/*
 	 * There is no _ASM_EXTABLE_TYPE_REG() for ASM, however since this is
 	 * ASM the registers are known and we can trivially hard-code them.
@@ -278,8 +310,10 @@
 	_ASM_EXTABLE_TYPE(1b, 2b, EX_TYPE_POP_ZERO|EX_REG_DS)
 	_ASM_EXTABLE_TYPE(2b, 3b, EX_TYPE_POP_ZERO|EX_REG_ES)
 	_ASM_EXTABLE_TYPE(3b, 4b, EX_TYPE_POP_ZERO|EX_REG_FS)
+#endif
 .endm
 
+#if 0
 .macro RESTORE_ALL_NMI cr3_reg:req pop=0
 	/*
 	 * Now switch the CR3 when PTI is enabled.
@@ -301,6 +335,7 @@
 
 	RESTORE_REGS pop=\pop
 .endm
+#endif
 
 .macro CHECK_AND_APPLY_ESPFIX
 #ifdef CONFIG_X86_ESPFIX32
@@ -363,6 +398,7 @@
  * switch to it before we do any copying.
  */
 
+//!
 .macro SWITCH_TO_KERNEL_STACK
 
 	BUG_IF_WRONG_CR3
@@ -374,12 +410,14 @@
 	 * that register for the time this macro runs
 	 */
 
+#if 0
 	/* Are we on the entry stack? Bail out if not! */
 	movl	PER_CPU_VAR(cpu_entry_area), %ecx
 	addl	$CPU_ENTRY_AREA_entry_stack + SIZEOF_entry_stack, %ecx
 	subl	%esp, %ecx	/* ecx = (end of entry_stack) - esp */
 	cmpl	$SIZEOF_entry_stack, %ecx
 	jae	.Lend_\@
+#endif
 
 	/* Load stack pointer into %esi and %edi */
 	movl	%esp, %esi
@@ -668,12 +706,13 @@ __irqentry_text_start:
 	.globl __irqentry_text_end
 __irqentry_text_end:
 
+#if 0
 /*
  * %eax: prev task
  * %edx: next task
  */
 // .pushsection .text, "ax"
-SYM_CODE_START(__switch_to_asm)
+// SYM_CODE_START(__switch_to_asm)
 	/*
 	 * Save callee-saved registers
 	 * This must match the order in struct inactive_task_frame
@@ -705,7 +744,9 @@ SYM_CODE_START(__switch_to_asm)
 	 * exist, overwrite the RSB with entries which capture
 	 * speculative execution to prevent attack.
 	 */
+#if 0
 	FILL_RETURN_BUFFER %ebx, RSB_CLEAR_LOOPS, X86_FEATURE_RSB_CTXSW
+#endif
 
 	/* Restore flags or the incoming task to restore AC state. */
 	popfl
@@ -716,7 +757,7 @@ SYM_CODE_START(__switch_to_asm)
 	popl	%ebp
 
 	jmp	__switch_to
-SYM_CODE_END(__switch_to_asm)
+// SYM_CODE_END(__switch_to_asm)
 // .popsection
 
 /*
@@ -727,7 +768,7 @@ SYM_CODE_END(__switch_to_asm)
  * edi: kernel thread arg
  */
 // .pushsection .text, "ax"
-SYM_CODE_START(ret_from_fork_asm)
+// SYM_CODE_START(ret_from_fork_asm)
 	movl	%esp, %edx	/* regs */
 
 	/* return address for the stack unwinder */
@@ -742,10 +783,12 @@ SYM_CODE_START(ret_from_fork_asm)
 	FRAME_END
 
 	RET
-SYM_CODE_END(ret_from_fork_asm)
+// SYM_CODE_END(ret_from_fork_asm)
 // .popsection
 
-SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
+// SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
+#endif
+
 /*
  * All code from here through __end_SYSENTER_singlestep_region is subject
  * to being single-stepped if a user program sets TF and executes SYSENTER.
@@ -787,7 +830,8 @@ SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
  * ebp  user stack
  * 0(%ebp) arg6
  */
-SYM_FUNC_START(entry_SYSENTER_32)
+#if 0
+// SYM_FUNC_START(entry_SYSENTER_32)
 	/*
 	 * On entry-stack with all userspace-regs live - save and
 	 * restore eflags and %eax to use it as scratch-reg for the cr3
@@ -901,8 +945,9 @@ SYM_FUNC_START(entry_SYSENTER_32)
 	pushl	$X86_EFLAGS_FIXED
 	popfl
 	jmp	.Lsysenter_flags_fixed
-SYM_ENTRY(__end_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
-SYM_FUNC_END(entry_SYSENTER_32)
+// SYM_ENTRY(__end_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
+// SYM_FUNC_END(entry_SYSENTER_32)
+#endif
 
 /*
  * 32-bit legacy system call entry.
@@ -932,20 +977,24 @@ SYM_FUNC_END(entry_SYSENTER_32)
  * edi  arg5
  * ebp  arg6
  */
+//!
 SYM_FUNC_START(entry_INT80_32)
-	ASM_CLAC
+//	ASM_CLAC
 	pushl	%eax			/* pt_regs->orig_ax */
 
 	SAVE_ALL pt_regs_ax=$-ENOSYS switch_stacks=1	/* save rest */
 
 	movl	%esp, %eax
 	call	do_int80_syscall_32
+#if 0
 .Lsyscall_32_done:
 	STACKLEAK_ERASE
 
 restore_all_switch_stack:
 	SWITCH_TO_ENTRY_STACK
 	CHECK_AND_APPLY_ESPFIX
+
+#endif
 
 	/* Switch back to user CR3 */
 	SWITCH_TO_USER_CR3 scratch_reg=%eax
@@ -962,6 +1011,8 @@ restore_all_switch_stack:
 	 */
 	iret
 
+#if 0
+
 .Lasm_iret_error:
 	pushl	$0				# no error code
 	pushl	$iret_error
@@ -976,12 +1027,13 @@ restore_all_switch_stack:
 	pushl	%eax
 	SWITCH_TO_USER_CR3 scratch_reg=%eax
 	popl	%eax
-#endif
 
 	jmp	handle_exception
 
 	_ASM_EXTABLE(.Lirq_return, .Lasm_iret_error)
+#endif
 SYM_FUNC_END(entry_INT80_32)
+#endif
 
 .macro FIXUP_ESPFIX_STACK
 /*
@@ -1030,6 +1082,7 @@ SYM_FUNC_END(entry_INT80_32)
 #endif
 .endm
 
+#if 0
 SYM_CODE_START_LOCAL_NOALIGN(handle_exception)
 	/* the function address is in %gs's slot on the stack */
 	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
@@ -1223,3 +1276,4 @@ SYM_CODE_START(rewind_stack_and_make_dead)
 1:	jmp 1b
 SYM_CODE_END(rewind_stack_and_make_dead)
 // .popsection
+#endif

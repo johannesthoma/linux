@@ -981,7 +981,7 @@ __irqentry_text_end:
 // SYM_FUNC_START(entry_INT80_32)
 //	ASM_CLAC
 .globl _entry_INT80_32
-entry_INT80_32:
+_entry_INT80_32:
 
 	pushl	%eax			/* pt_regs->orig_ax */
 

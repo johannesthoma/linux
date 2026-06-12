@@ -7,6 +7,9 @@
 // Allocating this fails (at least on ReactOS):
 // #define INIT_MEMBLOCK_SIZE 1024*1024*128
 
+/* TODO: if i386 */
+void entry_INT80_32(void);
+
 void __init setup_arch(char **cmdline_p)
 {
 	void *initial_memory = win_allocate_memory(INIT_MEMBLOCK_SIZE);
@@ -20,5 +23,8 @@ void __init setup_arch(char **cmdline_p)
 	*cmdline_p = "lpj=1000 root=/dev/ram";
 
 	paging_init();
+
+/* TODO: if SUBARCH = i386 */
+	win_setup_int80(entry_INT80_32);
 }
 

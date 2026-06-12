@@ -30,4 +30,6 @@ void win_put_task_to_sleep(struct task_struct *t);
 void win_disable_preemption(void);
 void win_enable_preemption(void);
 
+void win_setup_int80(void (*fn)(void));
+
 #endif

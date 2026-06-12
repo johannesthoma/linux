@@ -18,7 +18,7 @@ void win_setup_int80(void (*fn)(void))
 	IdtEntry->Offset = ((ULONG_PTR)fn & 0xFFFF);
 	IdtEntry->ExtendedOffset = ((ULONG_PTR)fn >> 16) & 0xFFFF;
 
-	((PKIDT_ACCESS)&IdtEntry->Access)->Dpl = 0;
+	((PKIDT_ACCESS)&IdtEntry->Access)->Dpl = 3;
 	((PKIDT_ACCESS)&IdtEntry->Access)->Present = 1;
 	((PKIDT_ACCESS)&IdtEntry->Access)->SegmentType = I386_INTERRUPT_GATE;
 }

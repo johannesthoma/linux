@@ -988,7 +988,7 @@ entry_INT80_32:
 	SAVE_ALL pt_regs_ax=$-ENOSYS switch_stacks=1	/* save rest */
 
 	movl	%esp, %eax
-	call	do_int80_syscall_32
+	call	_do_int80_syscall_32
 #if 0
 .Lsyscall_32_done:
 	STACKLEAK_ERASE

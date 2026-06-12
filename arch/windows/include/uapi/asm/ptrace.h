@@ -1,6 +1,8 @@
 #ifndef _ASM_PTRACE_H
 #define _ASM_PTRACE_H
 
+#include <asm/ptrace-abi.h>
+
 // see ./include/acpi/platform/acenv.h:
 #define __linux__ 1
 

@@ -38,6 +38,7 @@ struct thread_info {
 	struct _KTHREAD *windows_thread;
 	struct _KEVENT *task_queued_event;
 	int status;
+	unsigned long           syscall_work;   /* SYSCALL_WORK_ flags */
 
         int (*fn)(void *);
         void *fn_arg;

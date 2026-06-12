@@ -185,13 +185,13 @@ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
 	 * orig_ax, the int return value truncates it. This matches
 	 * the semantics of syscall_get_nr().
 	 */
-	nr = syscall_enter_from_user_mode(regs, nr);
+//	nr = syscall_enter_from_user_mode(regs, nr);
 	instrumentation_begin();
 
 	do_syscall_32_irqs_on(regs, nr);
 
 	instrumentation_end();
-	syscall_exit_to_user_mode(regs);
+//	syscall_exit_to_user_mode(regs);
 }
 
 #if 0

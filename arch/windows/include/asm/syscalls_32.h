@@ -1,6 +1,6 @@
 __SYSCALL(0, sys_restart_syscall)
 __SYSCALL(1, sys_exit)
-// __SYSCALL(2, sys_fork)
+__SYSCALL(2, sys_fork)
 __SYSCALL(3, sys_read)
 __SYSCALL(4, sys_write)
 __SYSCALL_WITH_COMPAT(5, sys_open, compat_sys_open)

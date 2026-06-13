@@ -52,7 +52,11 @@
 #include "calling.h"
 #endif
 
-#define __KERNEL_PERCPU                0
+/* This was taken from the ReactOS KiSystemService disassembly: */
+/* This is for %fs: */
+#define __KERNEL_PERCPU               0x30 
+/* This is for %ds and %es: */
+#define __USER_DS 0x23
 
 #define PAGE_SIZE 4096
 #define PAGE_SHIFT 12
@@ -71,7 +75,6 @@
 #define TSS_entry2task_stack 42
 
 /* TODO: some selector */
-#define __USER_DS 12
 #define USER_RPL         0x3
 #define USER_SEGMENT_RPL_MASK    0x2
 
@@ -985,7 +988,8 @@ _entry_INT80_32:
 
 	pushl	%eax			/* pt_regs->orig_ax */
 
-	SAVE_ALL pt_regs_ax=$-ENOSYS switch_stacks=1	/* save rest */
+//	SAVE_ALL pt_regs_ax=$-ENOSYS switch_stacks=1	/* save rest */
+	SAVE_ALL pt_regs_ax=$-ENOSYS /* save rest do not switch stacks for now */
 
 	movl	%esp, %eax
 	call	_do_int80_syscall_32

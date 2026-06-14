@@ -1005,9 +1005,11 @@ restore_all_switch_stack:
 #endif
 
 	/* Switch back to user CR3 */
+#if 0
 	SWITCH_TO_USER_CR3 scratch_reg=%eax
 
 	BUG_IF_WRONG_CR3
+#endif
 
 	/* Restore user state */
 	RESTORE_REGS pop=4			# skip orig_eax/error_code

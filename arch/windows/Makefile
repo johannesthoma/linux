@@ -34,6 +34,14 @@ LDFLAGS_vmlinux += -shared --subsystem native --entry $(DRIVER_ENTRY) # --image-
 # format specifiers than MinGW would expect. Silence
 # warnings about printk format specifiers.
 KBUILD_CFLAGS += -Wno-format-extra-args -Wno-format
+
+# TODO: if i386:
+# This makes gcc emit i386 Linux kernel calling convention
+# first 3 paramters in registers
+# NO: Linux would treat Windows API functions (ExAllocatePool, ...)
+# also as 3 regs which causes boot to fail early (no memory)
+# KBUILD_CFLAGS += -msoft-float -mregparm=3 -freg-struct-return
+
 generated-y :=
 generic-y :=
 

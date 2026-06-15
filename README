@@ -1,18 +1,55 @@
-Linux kernel
-============
+Linux kernel: Windows support
+=============================
 
-There are several guides for kernel developers and users. These guides can
-be rendered in a number of formats, like HTML and PDF. Please read
-Documentation/admin-guide/README.rst first.
+This is the development branch for building Linux as a Windows/ReactOS
+driver. If you want to download a regular Linux kernel instead, go
+to https://www.kernel.org/ or https://github.com/torvalds/linux
 
-In order to build the documentation, use ``make htmldocs`` or
-``make pdfdocs``.  The formatted documentation can also be read online at:
+Build requirements
+------------------
 
-    https://www.kernel.org/doc/html/latest/
+You need a working i686-w64-mingw32-gcc as well as make installed.
+I usually build on Linux, but cygwin/WSL2 is probably also ok.
 
-There are various text files in the Documentation/ subdirectory,
-several of them using the Restructured Text markup notation.
+Building
+--------
 
-Please read the Documentation/process/changes.rst file, as it contains the
-requirements for building and running the kernel, and information about
-the problems which may result by upgrading your kernel.
+To build Linux as a Windows driver, do:
+
+    make ARCH=windows i686_windows_reactos_defconfig
+    make -j $(nproc) ARCH=windows
+
+It produces a vmlinux, which can be loaded as a Windows driver.
+Copy the file to a Windows machine and rename it to linux.sys.
+
+Installing
+----------
+
+To configure a system service for the linux kernel as a driver, do
+(on Windows or ReactOS as Administrator, you need to alter the
+path):
+
+    sc create linux type= kernel binpath= c:\path\to\linux.sys
+
+To start the kernel, do
+
+    sc start linux
+
+Current state
+-------------
+
+What currently works is loading and booting Linux on 32-bit
+Windows systems. If you attach a debugger (or dump the serial
+console for ReactOS) you can see the kernel log messages showing
+the boot process of the Linux kernel. In particular, running
+Linux binaries is being worked on, but currently not supported.
+
+If you want to reach me, send me an eMail to
+
+    johannes@johannesthoma.com
+
+Best wishes and happy hacking,
+
+ - Johannes
+
+

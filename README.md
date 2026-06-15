@@ -44,13 +44,8 @@ console for ReactOS) you can see the kernel log messages showing
 the boot process of the Linux kernel. In particular, running
 Linux binaries is being worked on, but currently not supported.
 
-If you want to reach me, send me an eMail to
-
-    johannes@johannesthoma.com
-
-Also, I maintain a project website at:
-
-    https://jtsoft.at/wsl4/
+If you want to reach me, send me an eMail to johannes@johannesthoma.com
+Also, I maintain a project website at https://jtsoft.at/wsl4/
 
 Best wishes and happy hacking,
 

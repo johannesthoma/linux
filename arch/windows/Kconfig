@@ -19,7 +19,7 @@ config 32BIT
 	def_bool y
 
 config MMU
-	def_bool n
+	def_bool y
 
 config HUGETLB_PAGE
 	def_bool n

@@ -1,113 +1,94 @@
-#ifndef _ASM_PAGE_H
-#define _ASM_PAGE_H
+/* SPDX-License-Identifier: GPL-2.0 */
+#ifndef _ASM_X86_PAGE_H
+#define _ASM_X86_PAGE_H
 
-/* PAGE_SHIFT determines the page size */
+/* TODO: from config */
+#define CONFIG_PAGE_OFFSET 0
 
-#define PAGE_SHIFT	12
-#ifdef __ASSEMBLY__
-#define PAGE_SIZE	(1 << PAGE_SHIFT)
+#include <linux/types.h>
+
+#ifdef __KERNEL__
+
+#include <asm/page_types.h>
+
+#ifdef CONFIG_X86_64
+#include <asm/page_64.h>
 #else
-#define PAGE_SIZE	(1UL << PAGE_SHIFT)
-#endif
-#define PAGE_MASK	(~(PAGE_SIZE-1))
-
-#include <asm/setup.h>
+#include <asm/page_32.h>
+#endif	/* CONFIG_X86_64 */
 
 #ifndef __ASSEMBLY__
 
-#define clear_page(page)	memset((page), 0, PAGE_SIZE)
-#define copy_page(to,from)	memcpy((to), (from), PAGE_SIZE)
+struct page;
 
-#define clear_user_page(page, vaddr, pg)	clear_page(page)
-#define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+#include <linux/range.h>
+extern struct range pfn_mapped[];
+extern int nr_pfn_mapped;
+
+static inline void clear_user_page(void *page, unsigned long vaddr,
+				   struct page *pg)
+{
+	clear_page(page);
+}
+
+static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
+				  struct page *topage)
+{
+	copy_page(to, from);
+}
+
+#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
+	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr, false)
+
+#ifndef __pa
+#define __pa(x)		__phys_addr((unsigned long)(x))
+#endif
+
+#define __pa_nodebug(x)	__phys_addr_nodebug((unsigned long)(x))
+/* __pa_symbol should be used for C visible symbols.
+   This seems to be the official gcc blessed way to do such arithmetic. */
+/*
+ * We need __phys_reloc_hide() here because gcc may assume that there is no
+ * overflow during __pa() calculation and can optimize it unexpectedly.
+ * Newer versions of gcc provide -fno-strict-overflow switch to handle this
+ * case properly. Once all supported versions of gcc understand it, we can
+ * remove this Voodoo magic stuff. (i.e. once gcc3.x is deprecated)
+ */
+#define __pa_symbol(x) \
+	__phys_addr_symbol(__phys_reloc_hide((unsigned long)(x)))
+
+#ifndef __va
+#define __va(x)			((void *)((unsigned long)(x)+PAGE_OFFSET))
+#endif
+
+#define __boot_va(x)		__va(x)
+#define __boot_pa(x)		__pa(x)
 
 /*
- * These are used to make use of C type-checking..
+ * virt_to_page(kaddr) returns a valid pointer if and only if
+ * virt_addr_valid(kaddr) returns true.
  */
-typedef struct {
-	unsigned long pte;
-} pte_t;
-typedef struct {
-	unsigned long pmd[16];
-} pmd_t;
-typedef struct {
-	unsigned long pgd;
-} pgd_t;
-typedef struct {
-	unsigned long pgprot;
-} pgprot_t;
-typedef struct page *pgtable_t;
+#define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+#define pfn_to_kaddr(pfn)      __va((pfn) << PAGE_SHIFT)
+extern bool __virt_addr_valid(unsigned long kaddr);
+#define virt_addr_valid(kaddr)	__virt_addr_valid((unsigned long) (kaddr))
 
-#define pte_val(x)	((x).pte)
-#define pmd_val(x)	((&x)->pmd[0])
-#define pgd_val(x)	((x).pgd)
-#define pgprot_val(x)	((x).pgprot)
-
-#define __pte(x)	((pte_t) { (x) } )
-#define __pmd(x)	((pmd_t) { (x) } )
-#define __pgd(x)	((pgd_t) { (x) } )
-#define __pgprot(x)	((pgprot_t) { (x) } )
-
-extern unsigned long memory_start;
-extern unsigned long memory_end;
-
-#endif /* !__ASSEMBLY__ */
-
-#define PAGE_OFFSET		(0)
-
-#ifndef ARCH_PFN_OFFSET
-#define ARCH_PFN_OFFSET		(PAGE_OFFSET >> PAGE_SHIFT)
-#endif
-
-#ifndef __ASSEMBLY__
-
-#define __va(x) ((void *)((unsigned long) (x)))
-#define __pa(x) ((unsigned long) (x))
-
-static inline unsigned long virt_to_pfn(const void *kaddr)
+static __always_inline u64 __canonical_address(u64 vaddr, u8 vaddr_bits)
 {
-	return __pa(kaddr) >> PAGE_SHIFT;
+	return ((s64)vaddr << (64 - vaddr_bits)) >> (64 - vaddr_bits);
 }
-#define virt_to_pfn virt_to_pfn
-static inline void *pfn_to_virt(unsigned long pfn)
+
+static __always_inline u64 __is_canonical_address(u64 vaddr, u8 vaddr_bits)
 {
-	return __va(pfn << PAGE_SHIFT);
+	return __canonical_address(vaddr, vaddr_bits) == vaddr;
 }
-#define pfn_to_virt pfn_to_virt
 
-#define virt_to_page(addr)	win_virt_to_page(addr)
-#define page_to_virt(page)	win_page_to_virt(page)
-
-#ifndef page_to_phys
-#define page_to_phys(page)      ((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)
-#endif
-
-#define	virt_addr_valid(kaddr)	(((void *)(kaddr) >= (void *)PAGE_OFFSET) && \
-				((void *)(kaddr) < (void *)memory_end))
-
-#endif /* __ASSEMBLY__ */
+#endif	/* __ASSEMBLY__ */
 
 #include <asm-generic/memory_model.h>
 #include <asm-generic/getorder.h>
 
-#include <asm-generic/pgtable-nopud.h>
+#define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
 
-/* TODO: -> thread_info.h ? */
-#define THREAD_SIZE_ORDER 1
-#define THREAD_SIZE PAGE_SIZE
-#define TASK_SIZE 0x80000000
-
-/* No pages, they are maintained by the Windows kernel */
-#define PAGE_KERNEL __pgprot(0)
-
-/* This adds the virtual member to struct page. It is needed
- * to store the actual virtual address returned by ExAllocatePool().
- */
-#define WANT_PAGE_VIRTUAL 1
-
-#ifndef __ASSEMBLY__
-struct page *win_virt_to_page(const void *vaddr);
-void *win_page_to_virt(const struct page *page);
-#endif
-
-#endif
+#endif	/* __KERNEL__ */
+#endif /* _ASM_X86_PAGE_H */

@@ -17,7 +17,7 @@
 
 #ifndef __ASSEMBLY__
 #include <linux/spinlock.h>
-// #include <asm/x86_init.h>
+#include <asm/x86_init.h>
 // #include <asm/pkru.h>
 // #include <asm/fpu/api.h>
 // #include <asm/coco.h>
@@ -132,8 +132,11 @@ static inline bool pte_dirty(pte_t pte)
 
 static inline bool pte_shstk(pte_t pte)
 {
+	return false;
+	/*
 	return cpu_feature_enabled(X86_FEATURE_SHSTK) &&
 	       (pte_flags(pte) & (_PAGE_RW | _PAGE_DIRTY)) == _PAGE_DIRTY;
+	       */
 }
 
 static inline int pte_young(pte_t pte)
@@ -148,9 +151,12 @@ static inline bool pmd_dirty(pmd_t pmd)
 
 static inline bool pmd_shstk(pmd_t pmd)
 {
+	return false;
+	/*
 	return cpu_feature_enabled(X86_FEATURE_SHSTK) &&
 	       (pmd_flags(pmd) & (_PAGE_RW | _PAGE_DIRTY | _PAGE_PSE)) ==
 	       (_PAGE_DIRTY | _PAGE_PSE);
+	       */
 }
 
 #define pmd_young pmd_young

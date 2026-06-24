@@ -173,7 +173,8 @@ enum page_cache_mode {
 };
 #endif
 
-#define _PAGE_ENC		(_AT(pteval_t, sme_me_mask))
+// #define _PAGE_ENC		(_AT(pteval_t, sme_me_mask))
+#define _PAGE_ENC		0
 
 #define _PAGE_CACHE_MASK	(_PAGE_PWT | _PAGE_PCD | _PAGE_PAT)
 #define _PAGE_LARGE_CACHE_MASK	(_PAGE_PWT | _PAGE_PCD | _PAGE_PAT_LARGE)

@@ -6,6 +6,7 @@ config WINDOWS
 	def_bool y
 
         select ARCH_HAS_SYSCALL_WRAPPER
+	select ARCH_HAS_PTE_SPECIAL
 
 config HZ
         int "Clock frequency."

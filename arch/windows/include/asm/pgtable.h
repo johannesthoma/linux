@@ -20,9 +20,10 @@
 #include <asm/x86_init.h>
 // #include <asm/pkru.h>
 // #include <asm/fpu/api.h>
-// #include <asm/coco.h>
+#include <asm/coco.h>
 // #include <asm-generic/pgtable_uffd.h>
 #include <linux/page_table_check.h>
+#include <linux/mm_types.h>
 
 extern pgd_t early_top_pgt[PTRS_PER_PGD];
 bool __init __early_make_pgtable(unsigned long address, pmdval_t pmd);
@@ -1396,13 +1397,15 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
 		unsigned long address, pmd_t *pmdp, pmd_t pmd)
 {
 	page_table_check_pmd_set(vma->vm_mm, pmdp, pmd);
+	/*
 	if (IS_ENABLED(CONFIG_SMP)) {
 		return xchg(pmdp, pmd);
 	} else {
+	*/
 		pmd_t old = *pmdp;
 		WRITE_ONCE(*pmdp, pmd);
 		return old;
-	}
+/*	} */
 }
 #endif
 
@@ -1626,6 +1629,8 @@ static inline u16 pte_flags_pkey(unsigned long pte_flags)
 
 static inline bool __pkru_allows_pkey(u16 pkey, bool write)
 {
+	return false;
+/*
 	u32 pkru = read_pkru();
 
 	if (!__pkru_allows_read(pkru, pkey))
@@ -1634,6 +1639,7 @@ static inline bool __pkru_allows_pkey(u16 pkey, bool write)
 		return false;
 
 	return true;
+*/
 }
 
 /*
@@ -1682,7 +1688,8 @@ extern bool pfn_modify_allowed(unsigned long pfn, pgprot_t prot);
 
 static inline bool arch_has_pfn_modify_check(void)
 {
-	return boot_cpu_has_bug(X86_BUG_L1TF);
+	return false;
+//	return boot_cpu_has_bug(X86_BUG_L1TF);
 }
 
 #define arch_has_hw_pte_young arch_has_hw_pte_young

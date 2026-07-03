@@ -1,6 +1,8 @@
 #ifndef WINDOWS_PROCESSOR_H
 #define WINDOWS_PROCESSOR_H
 
+#include <asm/pgtable_types.h>
+
 #define cpu_relax() do { } while (0)
 
 struct thread_struct {

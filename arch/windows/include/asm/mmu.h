@@ -8,8 +8,8 @@
 #include <linux/atomic.h>
 #include <linux/bits.h>
 
-#include <asm/page.h>
-#include <asm/pgtable.h>
+// #include <asm/page.h>
+// #include <asm/pgtable.h>
 
 /* Uprobes on this MM assume 32-bit code */
 #define MM_CONTEXT_UPROBE_IA32		0

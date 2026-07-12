@@ -1,7 +1,8 @@
 #ifndef _ASM_X86_PGTABLE_AREAS_H
 #define _ASM_X86_PGTABLE_AREAS_H
 
-#ifdef CONFIG_X86_32
+// #ifdef CONFIG_X86_32
+#if 1
 # include <asm/pgtable_32_areas.h>
 #endif
 

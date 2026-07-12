@@ -10,6 +10,12 @@
 #include <linux/bitops.h>
 #include <asm/alternative.h>
 
+/*
+ * Defines x86 CPU feature bits
+ */
+#define NCAPINTS			21	   /* N 32-bit words worth of info */
+#define NBUGINTS			2	   /* N 32-bit bug flags */
+
 enum cpuid_leafs
 {
 	CPUID_1_EDX		= 0,
@@ -144,7 +150,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
 #define set_cpu_cap(c, bit)	set_bit(bit, (unsigned long *)((c)->x86_capability))
 
 extern void setup_clear_cpu_cap(unsigned int bit);
-extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
+// extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
 
 #define setup_force_cpu_cap(bit) do { \
 	set_cpu_cap(&boot_cpu_data, bit);	\
@@ -168,6 +174,7 @@ extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
  */
 static __always_inline bool _static_cpu_has(u16 bit)
 {
+	/*
 	asm_volatile_goto(
 		ALTERNATIVE_TERNARY("jmp 6f", %P[feature], "", "jmp %l[t_no]")
 		".pushsection .altinstr_aux,\"ax\"\n"
@@ -183,6 +190,7 @@ static __always_inline bool _static_cpu_has(u16 bit)
 t_yes:
 	return true;
 t_no:
+	*/
 	return false;
 }
 

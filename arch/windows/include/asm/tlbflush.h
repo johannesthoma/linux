@@ -14,6 +14,8 @@
 #include <asm/pti.h>
 #include <asm/processor-flags.h>
 #include <asm/pgtable.h>
+#include <asm/tlbbatch.h>
+#include <linux/hugetlb.h>
 
 DECLARE_PER_CPU(u64, tlbstate_untag_mask);
 

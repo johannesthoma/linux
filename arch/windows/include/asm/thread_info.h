@@ -63,10 +63,5 @@ static inline struct thread_info *current_thread_info(void)
 
 #define current ((struct task_struct*) win_find_current_thread_info())
 
-static __always_inline int user_mode(struct pt_regs *regs)
-{
-	return 0;	/* never on windows */
-}
-
 #endif	/* !__ASSEMBLY__ */
 #endif

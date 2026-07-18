@@ -2,10 +2,12 @@
 #define _ASM_PTRACE_H
 
 #include <asm/ptrace-abi.h>
+#include <asm/ptrace.h>
 
 // see ./include/acpi/platform/acenv.h:
 #define __linux__ 1
 
+#if 0
 struct pt_regs {
 	/*
 	 * NB: 32-bit x86 CPUs are inconsistent as what happens in the
@@ -55,6 +57,7 @@ struct pt_regs {
 #define task_pt_regs(p) \
         ((struct pt_regs *)(0))
 
+
 static inline unsigned long instruction_pointer(struct pt_regs *regs)
 {
 	return regs->ip;
@@ -64,5 +67,6 @@ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
 {
 	return regs->sp;
 }
+#endif
 
 #endif

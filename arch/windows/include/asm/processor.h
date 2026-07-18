@@ -14,6 +14,13 @@ struct thread_struct {
 
 #define INIT_THREAD  {  }
 
+/*
+ * This decides where the kernel will search for a free chunk of vm
+ * space during mmap's.
+ */
+#define __TASK_UNMAPPED_BASE(task_size) (PAGE_ALIGN(task_size / 3))
+#define TASK_UNMAPPED_BASE              __TASK_UNMAPPED_BASE(TASK_SIZE_LOW)
+
 static inline unsigned long __get_wchan(struct task_struct *p)
 {
 	return 0;

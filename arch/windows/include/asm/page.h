@@ -4,6 +4,7 @@
 
 /* TODO: from config */
 #define CONFIG_PAGE_OFFSET 0
+#define WANT_PAGE_VIRTUAL 1
 
 #include <linux/types.h>
 

@@ -23,6 +23,18 @@
 #define _TIF_SECCOMP            (1 << TIF_SECCOMP)
 #define _TIF_SINGLESTEP         (1 << TIF_SINGLESTEP)
 
+#define TIF_ADDR32              29      /* 32-bit address space on 64 bits */
+
+#ifdef CONFIG_X86_32
+# ifdef CONFIG_VM86
+#  define TOP_OF_KERNEL_STACK_PADDING 16
+# else
+#  define TOP_OF_KERNEL_STACK_PADDING 8
+# endif
+#else
+# define TOP_OF_KERNEL_STACK_PADDING 0
+#endif
+
 #ifndef __ASSEMBLY__
 
 struct task_struct;

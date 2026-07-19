@@ -172,9 +172,16 @@ extern void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
 			       struct task_struct *tsk);
 #define switch_mm_irqs_off switch_mm_irqs_off
 
+#if 0
 #define activate_mm(prev, next)			\
 do {						\
 	paravirt_enter_mmap(next);		\
+	switch_mm((prev), (next), NULL);	\
+} while (0);
+#endif
+
+#define activate_mm(prev, next)			\
+do {						\
 	switch_mm((prev), (next), NULL);	\
 } while (0);
 

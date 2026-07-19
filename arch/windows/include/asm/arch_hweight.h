@@ -33,7 +33,8 @@ static inline unsigned int __arch_hweight8(unsigned int w)
 	return __arch_hweight32(w & 0xff);
 }
 
-#ifdef CONFIG_X86_32
+// TODO
+#if 1
 static inline unsigned long __arch_hweight64(__u64 w)
 {
 	return  __arch_hweight32((u32)w) +

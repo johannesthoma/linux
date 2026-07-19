@@ -21,6 +21,13 @@ struct thread_struct {
 #define __TASK_UNMAPPED_BASE(task_size) (PAGE_ALIGN(task_size / 3))
 #define TASK_UNMAPPED_BASE              __TASK_UNMAPPED_BASE(TASK_SIZE_LOW)
 
+#define task_pt_regs(task) \
+({                                                                      \
+        unsigned long __ptr = (unsigned long)task_stack_page(task);     \
+        __ptr += THREAD_SIZE - TOP_OF_KERNEL_STACK_PADDING;             \
+        ((struct pt_regs *)__ptr) - 1;                                  \
+})
+
 static inline unsigned long __get_wchan(struct task_struct *p)
 {
 	return 0;

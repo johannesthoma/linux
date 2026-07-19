@@ -2,6 +2,8 @@
 #ifndef _X86_IRQFLAGS_H_
 #define _X86_IRQFLAGS_H_
 
+#include <asm/processor-flags.h>
+
 #ifndef __ASSEMBLY__
 
 /* TODO: move this to a irqflags_x86.h and conditionally compile */
@@ -95,11 +97,11 @@ static __always_inline unsigned long arch_local_irq_save(void)
 	return flags;
 }
 
-#define THE_X86_EFLAGS_IF (1UL << 9)
+// #define THE_X86_EFLAGS_IF (1UL << 9)
 
 static __always_inline int arch_irqs_disabled_flags(unsigned long flags)
 {
-	return !(flags & THE_X86_EFLAGS_IF);
+	return !(flags & X86_EFLAGS_IF);
 }
 
 static __always_inline int arch_irqs_disabled(void)

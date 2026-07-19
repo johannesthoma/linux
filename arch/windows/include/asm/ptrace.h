@@ -4,7 +4,9 @@
 
 #include <asm/segment.h>
 #include <asm/page_types.h>
+#include <asm/processor-flags.h>
 #include <uapi/asm/ptrace.h>
+#include <linux/compiler.h>
 
 #ifndef __ASSEMBLY__
 // #ifdef __i386__ TODO
@@ -372,7 +374,8 @@ static inline unsigned long regs_get_kernel_argument(struct pt_regs *regs,
 }
 
 #define arch_has_single_step()	(1)
-#ifdef CONFIG_X86_DEBUGCTLMSR
+// TODO:
+#if 1
 #define arch_has_block_step()	(1)
 #else
 #define arch_has_block_step()	(boot_cpu_data.x86 >= 6)

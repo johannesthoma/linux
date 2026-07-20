@@ -74,10 +74,12 @@ void __init pgtable_cache_init(void)
 {
 }
 
+/*
 void *vmalloc_huge(unsigned long size, gfp_t gfp_mask)
 {
 	return win_allocate_memory(size);
 }
+*/
 
 extern void prep_compound_page(struct page *page, unsigned int order);
 

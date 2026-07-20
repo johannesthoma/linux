@@ -243,7 +243,9 @@ extern int force_personality32;
    instruction set this CPU supports.  This could be done in user space,
    but it's not easy, and we've already done it here.  */
 
-#define ELF_HWCAP		(boot_cpu_data.x86_capability[CPUID_1_EDX])
+// TODO:
+// #define ELF_HWCAP		(boot_cpu_data.x86_capability[CPUID_1_EDX])
+#define ELF_HWCAP		1
 
 extern u32 elf_hwcap2;
 
@@ -292,6 +294,12 @@ extern u32 elf_hwcap2;
 
 struct task_struct;
 
+
+// TODO:
+#define AT_SYSINFO		32
+#define	ARCH_DLINFO_IA32 do { /* nothing */ } while (0)
+
+#if 0
 #define	ARCH_DLINFO_IA32						\
 do {									\
 	if (VDSO_CURRENT_BASE) {					\
@@ -300,6 +308,7 @@ do {									\
 	}								\
 	NEW_AUX_ENT(AT_MINSIGSTKSZ, get_sigframe_size());		\
 } while (0)
+#endif
 
 /*
  * True on X86_32 or when emulating IA32 on X86_64
@@ -317,7 +326,8 @@ extern unsigned long get_mmap_base(int is_legacy);
 extern bool mmap_address_hint_valid(unsigned long addr, unsigned long len);
 extern unsigned long get_sigframe_size(void);
 
-#ifdef CONFIG_X86_32
+// TODO
+#if 1
 
 #define __STACK_RND_MASK(is32bit) (0x7ff)
 #define STACK_RND_MASK (0x7ff)

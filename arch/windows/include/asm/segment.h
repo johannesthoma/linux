@@ -316,7 +316,9 @@ do {									\
 #define __loadsegment_ds(value) __loadsegment_simple(ds, (value))
 #define __loadsegment_es(value) __loadsegment_simple(es, (value))
 
-#ifdef CONFIG_X86_32
+// #ifdef CONFIG_X86_32
+// TODO
+#if 1
 
 /*
  * On 32-bit systems, the hidden parts of FS and GS are unobservable if

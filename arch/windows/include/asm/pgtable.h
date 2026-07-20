@@ -9,11 +9,17 @@
 /*
  * Macro to mark a page protection value as UC-
  */
+#if 0
+// TODO
+//
 #define pgprot_noncached(prot)						\
 	((boot_cpu_data.x86 > 3)					\
 	 ? (__pgprot(pgprot_val(prot) |					\
 		     cachemode2protval(_PAGE_CACHE_MODE_UC_MINUS)))	\
 	 : (prot))
+#endif
+
+#define pgprot_noncached(prot) (prot)
 
 #ifndef __ASSEMBLY__
 #include <linux/spinlock.h>

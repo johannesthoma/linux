@@ -185,7 +185,8 @@ do {						\
 	switch_mm((prev), (next), NULL);	\
 } while (0);
 
-#ifdef CONFIG_X86_32
+// TODO
+#if 1
 #define deactivate_mm(tsk, mm)			\
 do {						\
 	loadsegment(gs, 0);			\

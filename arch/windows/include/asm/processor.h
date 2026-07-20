@@ -163,4 +163,7 @@ struct tss_struct {
         struct x86_io_bitmap    io_bitmap;
 } __aligned(PAGE_SIZE);
 
+extern void start_thread(struct pt_regs *regs, unsigned long new_ip,
+					       unsigned long new_sp);
+
 #endif

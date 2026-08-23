@@ -24,6 +24,7 @@
 #define _WIN32_WINNT 0x502
 
 #include <wdm.h>
+#include <ntddk.h>
 
 #undef __reserved
 

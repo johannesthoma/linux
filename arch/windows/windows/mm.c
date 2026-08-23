@@ -25,3 +25,19 @@ void *malloc(size_t size)
 	return win_allocate_memory(size);
 }
 
+void *win_allocate_physical_memory(unsigned long size)
+{
+	LARGE_INTEGER l;
+	l.QuadPart = (unsigned long long) -1;
+
+	if (size == 0)
+		size = 1;	/* return something */
+
+	return MmAllocateContiguousMemory(size, l);
+}
+
+unsigned long long win_virt_to_phys(void *virt)
+{
+	LARGE_INTEGER p = MmGetPhysicalAddress(virt);
+	return p.QuadPart;
+}

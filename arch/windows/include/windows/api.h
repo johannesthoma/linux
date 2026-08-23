@@ -4,6 +4,8 @@
 struct page;
 
 void *win_allocate_memory(unsigned long size);
+void *win_allocate_physical_memory(unsigned long size);
+unsigned long long win_virt_to_phys(void *virt);
 
 /* page virtual address to struct page */
 struct page *win_virt_to_page(const void *vaddr);

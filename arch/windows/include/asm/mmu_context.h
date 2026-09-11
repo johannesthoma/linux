@@ -130,8 +130,10 @@ static inline void mm_reset_untag_mask(struct mm_struct *mm)
 }
 #endif
 
+/*
 #define enter_lazy_tlb enter_lazy_tlb
 extern void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk);
+*/
 
 /*
  * Init a new mm.  Used on mm copies, like at fork()

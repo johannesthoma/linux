@@ -118,3 +118,18 @@ void free_initmem(void)
 	printk("Would free initmem now, but this is not supported on Windows.\n");
 }
 
+void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
+{
+	printk("arch_sync_kernel_mappings(%ld, %ld) unimplemented!\n", start, end);
+}
+
+#define DEFAULT_PTE_MASK ~(_PAGE_NX | _PAGE_GLOBAL)
+
+/* Bits supported by the hardware: */
+pteval_t __supported_pte_mask __read_mostly = DEFAULT_PTE_MASK;
+/* Bits allowed in normal kernel mappings: */
+pteval_t __default_kernel_pte_mask __read_mostly = DEFAULT_PTE_MASK;
+EXPORT_SYMBOL_GPL(__supported_pte_mask);
+/* Used in PAGE_KERNEL_* macros which are reasonably used out-of-tree: */
+EXPORT_SYMBOL(__default_kernel_pte_mask);
+

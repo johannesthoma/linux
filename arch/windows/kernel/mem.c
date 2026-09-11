@@ -210,3 +210,10 @@ int ptep_test_and_clear_young(struct vm_area_struct *vma,
 }
 
 pgd_t swapper_pg_dir[1024];
+
+void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+		      struct task_struct *tsk)
+{
+	printk("switch_mm prev: %p next: %p tsk: %p not implemented\n", prev, next, tsk);
+}
+

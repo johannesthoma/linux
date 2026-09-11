@@ -527,7 +527,7 @@ extern pgprot_t pgprot_writecombine(pgprot_t prot);
 extern pgprot_t pgprot_writethrough(pgprot_t prot);
 
 /* Indicate that x86 has its own track and untrack pfn vma functions */
-#define __HAVE_PFNMAP_TRACKING
+// #define __HAVE_PFNMAP_TRACKING
 
 #define __HAVE_PHYS_MEM_ACCESS_PROT
 struct file;

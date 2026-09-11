@@ -373,6 +373,15 @@ static inline unsigned long regs_get_kernel_argument(struct pt_regs *regs,
 		return regs_get_register(regs, argument_offs[n]);
 }
 
+#ifdef arch_has_single_step
+#undef arch_has_single_step
+#endif
+
+#ifdef arch_has_block_step
+#undef arch_has_block_step
+#endif
+
+/*
 #define arch_has_single_step()	(1)
 // TODO:
 #if 1
@@ -382,6 +391,7 @@ static inline unsigned long regs_get_kernel_argument(struct pt_regs *regs,
 #endif
 
 #define ARCH_HAS_USER_SINGLE_STEP_REPORT
+*/
 
 struct user_desc;
 extern int do_get_thread_area(struct task_struct *p, int idx,

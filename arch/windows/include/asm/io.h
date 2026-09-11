@@ -166,6 +166,7 @@ static inline unsigned int isa_virt_to_bus(volatile void *address)
 }
 #define isa_bus_to_virt		phys_to_virt
 
+#if 0
 /*
  * The default ioremap() behavior is non-cached; if you need something
  * else, you probably want one of the following.
@@ -178,6 +179,7 @@ extern void __iomem *ioremap_prot(resource_size_t offset, unsigned long size, un
 #define ioremap_prot ioremap_prot
 extern void __iomem *ioremap_encrypted(resource_size_t phys_addr, unsigned long size);
 #define ioremap_encrypted ioremap_encrypted
+#endif
 
 /**
  * ioremap     -   map bus memory into CPU space
@@ -315,10 +317,12 @@ extern void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr);
 
 extern int ioremap_change_attr(unsigned long vaddr, unsigned long size,
 				enum page_cache_mode pcm);
+#if 0
 extern void __iomem *ioremap_wc(resource_size_t offset, unsigned long size);
 #define ioremap_wc ioremap_wc
 extern void __iomem *ioremap_wt(resource_size_t offset, unsigned long size);
 #define ioremap_wt ioremap_wt
+#endif
 
 extern bool is_early_ioremap_ptep(pte_t *ptep);
 

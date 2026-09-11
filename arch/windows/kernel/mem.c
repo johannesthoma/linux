@@ -133,3 +133,28 @@ EXPORT_SYMBOL_GPL(__supported_pte_mask);
 /* Used in PAGE_KERNEL_* macros which are reasonably used out-of-tree: */
 EXPORT_SYMBOL(__default_kernel_pte_mask);
 
+
+void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+{
+	printk("flush_tlb_kernel_range(%ld, %ld) unimplemented!\n", start, end);
+}
+
+void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+                                unsigned long end, unsigned int stride_shift,
+                                bool freed_tables)
+{       
+	printk("flush_tlb_mm_range (%ld, %ld) unimplemented!\n", start, end);
+}
+
+void __iomem *ioremap(phys_addr_t offset, size_t size)
+{
+	printk("ioremap offset: %d size: %zd not implemented\n", offset, size);
+	return NULL;
+}
+
+void iounmap(volatile void __iomem *addr)
+{
+	printk("iounmap addr: %p is not implemented\n", addr);
+}
+
+

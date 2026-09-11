@@ -57,6 +57,8 @@ void __init paging_init(void)
 	free_area_init(max_zone_pfn);
 }
 
+unsigned long __aligned(PAGE_SIZE) empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] = { 0 };
+
 void __init mem_init(void)
 {
 		/* This should 'release the pages to the buddy

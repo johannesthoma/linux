@@ -157,4 +157,56 @@ void iounmap(volatile void __iomem *addr)
 	printk("iounmap addr: %p is not implemented\n", addr);
 }
 
+pgd_t *pgd_alloc(struct mm_struct *mm)
+{
+	printk("pgd_alloc %p not implemented\n", mm);
+	return NULL;
+}
 
+void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+{
+	printk("pgd_free %p %p not implemented\n", mm, pgd);
+}
+
+pgtable_t pte_alloc_one(struct mm_struct *mm)
+{
+	printk("pte_alloc_one %p not implemented\n", mm);
+	return 0;
+}
+
+void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
+{
+	printk("___pte_free_tlb not implemented\n");
+}
+
+pte_t pte_mkwrite(pte_t pte, struct vm_area_struct *vma)
+{
+	pte_t p = { 0 };
+
+	printk("pte_mkwrite not implemented\n");
+	return p;
+}
+
+int ptep_clear_flush_young(struct vm_area_struct *vma,
+                           unsigned long address, pte_t *ptep)
+{
+	printk("ptep_clear_flush_young not implemented\n");
+	return 0;
+}
+
+int ptep_set_access_flags(struct vm_area_struct *vma,
+                          unsigned long address, pte_t *ptep,
+                          pte_t entry, int dirty)
+{
+	printk("ptep_set_access_flags not implemented\n");
+	return 0;
+}
+
+int ptep_test_and_clear_young(struct vm_area_struct *vma,
+                              unsigned long addr, pte_t *ptep)
+{
+	printk("ptep_test_and_clear_young not implemented\n");
+	return 0;
+}
+
+pgd_t swapper_pg_dir[1024];

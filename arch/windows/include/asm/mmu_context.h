@@ -14,7 +14,7 @@
 // #include <asm/debugreg.h>
 // #include <asm/gsseg.h>
 
-extern atomic64_t last_mm_ctx_id;
+// extern atomic64_t last_mm_ctx_id;
 
 #ifdef CONFIG_PERF_EVENTS
 DECLARE_STATIC_KEY_FALSE(rdpmc_never_available_key);
@@ -143,9 +143,12 @@ extern void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk);
 static inline int init_new_context(struct task_struct *tsk,
 				   struct mm_struct *mm)
 {
+/* TODO: this should use a Windows mm context */
+	printk("init_new_context %p %p not implemented\n", tsk, mm);
+#if 0
 	mutex_init(&mm->context.lock);
 
-	mm->context.ctx_id = atomic64_inc_return(&last_mm_ctx_id);
+//	mm->context.ctx_id = atomic64_inc_return(&last_mm_ctx_id);
 	atomic64_set(&mm->context.tlb_gen, 0);
 
 #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
@@ -158,6 +161,7 @@ static inline int init_new_context(struct task_struct *tsk,
 #endif
 	mm_reset_untag_mask(mm);
 	init_new_context_ldt(mm);
+#endif
 	return 0;
 }
 

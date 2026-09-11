@@ -217,3 +217,16 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
 	printk("switch_mm prev: %p next: %p tsk: %p not implemented\n", prev, next, tsk);
 }
 
+bool __virt_addr_valid(unsigned long x)
+{
+	printk("__virt_addr_valid x: %lx not implemented\n", x);
+
+	return false;
+}
+
+pgprot_t vm_get_page_prot(unsigned long vm_flags)
+{
+	printk("vm_get_page_prot vm_flags: %ld not implemented\n", vm_flags);
+
+	return PAGE_NONE;
+}

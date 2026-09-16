@@ -65,11 +65,23 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
 #define __boot_va(x)		__va(x)
 #define __boot_pa(x)		__pa(x)
 
+/* In Windows, pages are allocated via ExAllocatePool(). When allocating
+ * we also allocate memory for the struct page *. We are
+ * keeping track of the virtual addresses <-> struct page mapping
+ * using a hash table.
+ */
+
+#define virt_to_page(addr)     win_virt_to_page(addr)
+#define page_to_virt(page)     win_page_to_virt(page)
+
+#if 0
 /*
  * virt_to_page(kaddr) returns a valid pointer if and only if
  * virt_addr_valid(kaddr) returns true.
  */
 #define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
+#endif
+
 #define pfn_to_kaddr(pfn)      __va((pfn) << PAGE_SHIFT)
 extern bool __virt_addr_valid(unsigned long kaddr);
 #define virt_addr_valid(kaddr)	__virt_addr_valid((unsigned long) (kaddr))

@@ -159,8 +159,10 @@ void iounmap(volatile void __iomem *addr)
 
 pgd_t *pgd_alloc(struct mm_struct *mm)
 {
-	printk("pgd_alloc %p not implemented\n", mm);
-	return NULL;
+	pgd_t *pgd = win_allocate_memory(PAGE_SIZE);
+	printk("pgd_alloc %p returning %p\n", mm, pgd);
+
+	return pgd;
 }
 
 void pgd_free(struct mm_struct *mm, pgd_t *pgd)

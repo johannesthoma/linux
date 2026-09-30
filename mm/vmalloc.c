@@ -43,6 +43,10 @@
 #include <asm/tlbflush.h>
 #include <asm/shmparam.h>
 
+#ifdef CONFIG_WINDOWS
+#include <windows/api.h>
+#endif 
+
 #define CREATE_TRACE_POINTS
 #include <trace/events/vmalloc.h>
 
@@ -3237,6 +3241,9 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
 			pgprot_t prot, unsigned long vm_flags, int node,
 			const void *caller)
 {
+#ifdef CONFIG_WINDOWS
+	return win_allocate_memory(size);
+#else
 	struct vm_struct *area;
 	void *ret;
 	kasan_vmalloc_flags_t kasan_flags = KASAN_VMALLOC_NONE;
@@ -3358,6 +3365,7 @@ fail:
 	}
 
 	return NULL;
+#endif
 }
 
 /**

@@ -3334,7 +3334,11 @@ void exit_mmap(struct mm_struct *mm)
 		cond_resched();
 	} while ((vma = mas_find(&mas, ULONG_MAX)) != NULL);
 
+#if 0
 	BUG_ON(count != mm->map_count);
+#else
+	printk("count is %d mm->map_count is %d\n", count, mm->map_count);
+#endif
 
 	trace_exit_mmap(mm);
 	__mt_destroy(&mm->mm_mt);

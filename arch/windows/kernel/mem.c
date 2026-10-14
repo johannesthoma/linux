@@ -172,8 +172,8 @@ void pgd_free(struct mm_struct *mm, pgd_t *pgd)
 
 pgtable_t pte_alloc_one(struct mm_struct *mm)
 {
-	printk("pte_alloc_one %p not implemented\n", mm);
-	return 0;
+	printk("pte_alloc_one %p allocating page\n", mm);
+	return win_alloc_pages(GFP_KERNEL, 0);
 }
 
 void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)

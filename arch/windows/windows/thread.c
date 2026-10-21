@@ -147,17 +147,30 @@ int win_initialize_task_queued_event(struct task_struct *task)
 int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread_object_p)
 {
 	HANDLE h;
+	HANDLE new_windows_process;
 	NTSTATUS status;
 	int retries;
 	int ret;
+	OBJECT_ATTRIBUTES attr = InitializeAttributes(); or so ...
 
 	ret = win_initialize_task_queued_event(task);
 	if (ret < 0)
 		return ret;
 
+/* TODO: Create a Process first, so we have a separate AddressSpace object */
+
+	status = NtCreateProcess(&new_windows_process, PROCESS_ALL_ACCESS, &attr, CurrentProces(), TRUE /* inherit file handles */, NULL /* no section */, NULL, NULL);
+
+PsGetCurrentProcess()
+Then OpenObject or so ...
+
+Also: write to (EPROCESS*)process->SubSystemMinorNumber = 0x42; 
+so we can finally MUX... (probably we want to code that in C not in
+Assembler).
+
 	retries = 0;
 	while (1) {
-	        status = PsCreateSystemThread(&h, THREAD_ALL_ACCESS, NULL, NULL, NULL, win_thread_setup, (void*) task);
+	        status = PsCreateSystemThread(&h, THREAD_ALL_ACCESS, NULL, new_windows_process, NULL, win_thread_setup, (void*) task);
 		if (NT_SUCCESS(status))
 			break;
 

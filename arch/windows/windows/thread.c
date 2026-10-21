@@ -168,6 +168,11 @@ Also: write to (EPROCESS*)process->SubSystemMinorNumber = 0x42;
 so we can finally MUX... (probably we want to code that in C not in
 Assembler).
 
+Also: PhysicalVadRoot seems to be the pmd ... or VadRoot. At least it
+looks like it is encoded in the struct somehow...Update: no:
+
+Some IdentityMap->Cr3 (also: MmGetPhysicalAddress).
+
 	retries = 0;
 	while (1) {
 	        status = PsCreateSystemThread(&h, THREAD_ALL_ACCESS, NULL, new_windows_process, NULL, win_thread_setup, (void*) task);

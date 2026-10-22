@@ -22,7 +22,10 @@
  * for now ..
  */
 #define _WIN32_WINNT 0x502
+#define NO_OLDNAMES 1
+#define _TM_DEFINED 1
 
+#include "ntoskrnl.h"
 #include <wdm.h>
 
 #undef __reserved

@@ -2190,7 +2190,9 @@ typedef ULONG NODE_REQUIREMENT;
 #define SEGMENT_ALL_ACCESS SECTION_ALL_ACCESS
 
 #define PAGE_NOACCESS          0x01
+#ifndef PAGE_READONLY
 #define PAGE_READONLY          0x02
+#endif
 #define PAGE_READWRITE         0x04
 #define PAGE_WRITECOPY         0x08
 #define PAGE_EXECUTE           0x10

@@ -120,9 +120,13 @@ C_ASSERT(sizeof(UINT_PTR) == sizeof(ULONG_PTR));
 #define INT8_MIN ((signed char)(-127 - 1))
 #define SHORT_MIN (-32768)
 #define INT16_MIN ((short)(-32767 - 1))
+#ifndef INT_MIN
 #define INT_MIN (-2147483647 - 1)
+#endif
 #define INT32_MIN (-2147483647 - 1)
+#ifndef LONG_MIN
 #define LONG_MIN (-2147483647L - 1)
+#endif
 #define LONGLONG_MIN (-9223372036854775807LL - 1)
 #define LONG64_MIN (-9223372036854775807LL - 1)
 #define INT64_MIN (-9223372036854775807LL - 1)
@@ -147,12 +151,20 @@ C_ASSERT(sizeof(UINT_PTR) == sizeof(ULONG_PTR));
 #define USHORT_MAX ((unsigned short)0xffff)
 #define UINT16_MAX ((unsigned short)0xffff)
 #define WORD_MAX ((unsigned short)0xffff)
+#ifndef INT_MAX
 #define INT_MAX 2147483647
+#endif
 #define INT32_MAX 2147483647
+#ifndef UINT_MAX
 #define UINT_MAX 0xffffffff
+#endif
 #define UINT32_MAX 0xffffffffU
+#ifndef LONG_MAX
 #define LONG_MAX 2147483647L
+#endif
+#ifndef ULONG_MAX
 #define ULONG_MAX 0xffffffffUL
+#endif
 #define DWORD_MAX 0xffffffffUL
 #define LONGLONG_MAX 9223372036854775807LL
 #define LONG64_MAX 9223372036854775807LL

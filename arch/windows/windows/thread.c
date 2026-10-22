@@ -151,12 +151,15 @@ int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread
 	NTSTATUS status;
 	int retries;
 	int ret;
+#if 0
 	OBJECT_ATTRIBUTES attr = InitializeAttributes(); or so ...
+#endif
 
 	ret = win_initialize_task_queued_event(task);
 	if (ret < 0)
 		return ret;
 
+#if 0
 /* TODO: Create a Process first, so we have a separate AddressSpace object */
 
 	status = NtCreateProcess(&new_windows_process, PROCESS_ALL_ACCESS, &attr, CurrentProces(), TRUE /* inherit file handles */, NULL /* no section */, NULL, NULL);
@@ -172,6 +175,8 @@ Also: PhysicalVadRoot seems to be the pmd ... or VadRoot. At least it
 looks like it is encoded in the struct somehow...Update: no:
 
 Some IdentityMap->Cr3 (also: MmGetPhysicalAddress).
+
+#endif
 
 	retries = 0;
 	while (1) {

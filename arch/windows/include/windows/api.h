@@ -31,5 +31,6 @@ void win_disable_preemption(void);
 void win_enable_preemption(void);
 
 void win_setup_int80(void (*fn)(void));
+void win_intercept_memory_fault_handler(void (*fn)(void));
 
 #endif

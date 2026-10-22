@@ -9,6 +9,7 @@
 
 /* TODO: if i386 */
 void entry_INT80_32(void);
+void fault_handler_mux(void);
 
 void __init setup_arch(char **cmdline_p)
 {
@@ -26,5 +27,6 @@ void __init setup_arch(char **cmdline_p)
 
 /* TODO: if SUBARCH = i386 */
 	win_setup_int80(entry_INT80_32);
+	win_intercept_memory_fault_handler(fault_handler_mux);
 }
 

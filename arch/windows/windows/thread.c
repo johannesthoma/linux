@@ -162,6 +162,8 @@ int win_create_windows_thread(struct task_struct *task, struct _KTHREAD **thread
 #if 0
 /* TODO: Create a Process first, so we have a separate AddressSpace object */
 
+Only if !task->flags & PF_KTHREAD
+
 	status = NtCreateProcess(&new_windows_process, PROCESS_ALL_ACCESS, &attr, CurrentProces(), TRUE /* inherit file handles */, NULL /* no section */, NULL, NULL);
 
 PsGetCurrentProcess()

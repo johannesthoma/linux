@@ -1,7 +1,8 @@
 #include <linux/linkage.h>
 #include <linux/export.h>
 
-        .section .entry.text, "ax"
+# TODO: needed?
+#        .section .entry.text, "ax"
 
 	.global _fault_handler_mux
 _fault_handler_mux:

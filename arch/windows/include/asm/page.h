@@ -5,7 +5,8 @@
 /* On i386, this is what Windows NT / ReactOS are using. Can't be changed.
  * Never.
  */
-#define CONFIG_PAGE_OFFSET 0x80000000
+// #define CONFIG_PAGE_OFFSET 0x80000000
+#define CONFIG_PAGE_OFFSET 0
 #define WANT_PAGE_VIRTUAL 1
 
 #include <linux/types.h>

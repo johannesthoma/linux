@@ -254,6 +254,7 @@ extern u32 elf_hwcap2;
  * the application can discover that it can safely use them.
  * The bits are defined in uapi/asm/hwcap2.h.
  */
+// TODO:
 #define ELF_HWCAP2		(elf_hwcap2)
 
 /* This yields a string that ld.so will use to load implementation
@@ -379,6 +380,8 @@ else if (IS_ENABLED(CONFIG_IA32_EMULATION))				\
 
 struct linux_binprm;
 
+// TODO:
+#if 0
 #define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
 extern int arch_setup_additional_pages(struct linux_binprm *bprm,
 				       int uses_interp);
@@ -387,6 +390,7 @@ extern int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
 #define COMPAT_ARCH_SETUP_ADDITIONAL_PAGES(bprm, ex, interpreter)	\
 	compat_arch_setup_additional_pages(bprm, interpreter,		\
 					   (ex->e_machine == EM_X86_64))
+#endif
 
 extern bool arch_syscall_is_vdso_sigreturn(struct pt_regs *regs);
 

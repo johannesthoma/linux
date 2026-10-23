@@ -19,6 +19,26 @@ void *__switch_to(struct task_struct *from, struct task_struct *to)
 	return from;
 }
 
+void
+start_thread(struct pt_regs *regs, unsigned long new_ip, unsigned long new_sp)
+{
+	printk("start_thread new_ip: %08x new_sp: %08x\n", new_ip, new_sp);
+#if 0
+        loadsegment(gs, 0);
+        regs->fs                = 0;
+        regs->ds                = __USER_DS;
+        regs->es                = __USER_DS;
+        regs->ss                = __USER_DS;
+        regs->cs                = __USER_CS;
+        regs->ip                = new_ip;
+        regs->sp                = new_sp;
+        regs->flags             = X86_EFLAGS_IF;
+#endif
+}
+EXPORT_SYMBOL_GPL(start_thread);
+
+u32 elf_hwcap2 = 0;
+
 int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
 {
 	p->thread_info.fn = args->fn;

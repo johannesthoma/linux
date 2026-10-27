@@ -125,6 +125,9 @@ extern int valid_mmap_phys_addr_range(unsigned long pfn, size_t size);
  *	this function
  */
 
+/* TODO: this is most likely wrong. Use MmGetPhysicalAddress() or something
+ * like that for getting the physical address.
+ */
 static inline phys_addr_t virt_to_phys(volatile void *address)
 {
 	return __pa(address);
@@ -142,6 +145,11 @@ static inline phys_addr_t virt_to_phys(volatile void *address)
  *	This function does not handle bus mappings for DMA transfers. In
  *	almost all conceivable cases a device driver should not be using
  *	this function
+ */
+
+/* Update: We (for now) never have physical addresses, because all
+ * memory is allocated via ExAllocatePool() which returns virtual
+ * addresses mapped by ReactOS/Windows.
  */
 
 static inline void *phys_to_virt(phys_addr_t address)

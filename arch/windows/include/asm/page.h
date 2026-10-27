@@ -62,7 +62,9 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
 	__phys_addr_symbol(__phys_reloc_hide((unsigned long)(x)))
 
 #ifndef __va
-#define __va(x)			((void *)((unsigned long)(x)+PAGE_OFFSET))
+// #define __va(x)			((void *)((unsigned long)(x)+PAGE_OFFSET))
+/* We currently only have virtual addresses. See comment in phys_to_virt() */
+#define __va(x)			((void *)((unsigned long)(x)))
 #endif
 
 #define __boot_va(x)		__va(x)

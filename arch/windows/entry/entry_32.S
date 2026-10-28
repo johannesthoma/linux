@@ -661,8 +661,9 @@
  * @has_error_code:	Hardware pushed error code on stack
  */
 .macro idtentry vector asmsym cfunc has_error_code:req
-SYM_CODE_START(\asmsym)
-	ASM_CLAC
+// SYM_CODE_START(\asmsym)
+.global \asmsym
+//	ASM_CLAC
 	cld
 
 	.if \has_error_code == 0
@@ -673,13 +674,13 @@ SYM_CODE_START(\asmsym)
 	pushl	$\cfunc
 	/* Invoke the common exception entry */
 	jmp	handle_exception
-SYM_CODE_END(\asmsym)
+// SYM_CODE_END(\asmsym)
 .endm
 
 .macro idtentry_irq vector cfunc
 	.p2align CONFIG_X86_L1_CACHE_SHIFT
 SYM_CODE_START_LOCAL(asm_\cfunc)
-	ASM_CLAC
+//	ASM_CLAC
 	SAVE_ALL switch_stacks=1
 	ENCODE_FRAME_POINTER
 	movl	%esp, %eax
@@ -703,7 +704,7 @@ SYM_CODE_END(asm_\cfunc)
 	.globl __irqentry_text_start
 __irqentry_text_start:
 
-// #include <asm/idtentry.h>
+#include <asm/idtentry.h>
 
 	.align 16
 	.globl __irqentry_text_end
@@ -1180,7 +1181,7 @@ SYM_CODE_END(asm_exc_double_fault)
  * interrupted kernel code running on the SYSENTER stack.
  */
 SYM_CODE_START(asm_exc_nmi)
-	ASM_CLAC
+//	ASM_CLAC
 
 #ifdef CONFIG_X86_ESPFIX32
 	/*

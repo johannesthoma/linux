@@ -160,6 +160,10 @@ void iounmap(volatile void __iomem *addr)
 pgd_t *pgd_alloc(struct mm_struct *mm)
 {
 	pgd_t *pgd = win_allocate_memory(PAGE_SIZE);
+	if (pgd == NULL)
+		return NULL;
+
+	memset (pgd, 0, PAGE_SIZE);
 	printk("pgd_alloc %p returning %p\n", mm, pgd);
 
 	return pgd;

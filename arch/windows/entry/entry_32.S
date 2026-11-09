@@ -35,7 +35,6 @@
 #include <asm/irqflags.h>
 #include <asm/errno.h>
 
-#if 0
 #include <asm/segment.h>
 #include <asm/smp.h>
 #include <asm/percpu.h>
@@ -50,7 +49,6 @@
 #include <asm/nospec-branch.h>
 
 #include "calling.h"
-#endif
 
 /* This was taken from the ReactOS KiSystemService disassembly: */
 /* This is for %fs: */
@@ -661,8 +659,7 @@
  * @has_error_code:	Hardware pushed error code on stack
  */
 .macro idtentry vector asmsym cfunc has_error_code:req
-// SYM_CODE_START(\asmsym)
-.global \asmsym
+SYM_CODE_START(\asmsym)
 //	ASM_CLAC
 	cld
 
@@ -674,11 +671,11 @@
 	pushl	$\cfunc
 	/* Invoke the common exception entry */
 	jmp	handle_exception
-// SYM_CODE_END(\asmsym)
+SYM_CODE_END(\asmsym)
 .endm
 
 .macro idtentry_irq vector cfunc
-	.p2align CONFIG_X86_L1_CACHE_SHIFT
+//	.p2align CONFIG_X86_L1_CACHE_SHIFT
 SYM_CODE_START_LOCAL(asm_\cfunc)
 //	ASM_CLAC
 	SAVE_ALL switch_stacks=1
@@ -716,7 +713,7 @@ __irqentry_text_end:
  * %edx: next task
  */
 // .pushsection .text, "ax"
-// SYM_CODE_START(__switch_to_asm)
+SYM_CODE_START(__switch_to_asm)
 	/*
 	 * Save callee-saved registers
 	 * This must match the order in struct inactive_task_frame
@@ -761,7 +758,7 @@ __irqentry_text_end:
 	popl	%ebp
 
 	jmp	__switch_to
-// SYM_CODE_END(__switch_to_asm)
+SYM_CODE_END(__switch_to_asm)
 // .popsection
 
 /*
@@ -772,7 +769,7 @@ __irqentry_text_end:
  * edi: kernel thread arg
  */
 // .pushsection .text, "ax"
-// SYM_CODE_START(ret_from_fork_asm)
+SYM_CODE_START(ret_from_fork_asm)
 	movl	%esp, %edx	/* regs */
 
 	/* return address for the stack unwinder */
@@ -787,10 +784,10 @@ __irqentry_text_end:
 	FRAME_END
 
 	RET
-// SYM_CODE_END(ret_from_fork_asm)
+SYM_CODE_END(ret_from_fork_asm)
 // .popsection
 
-// SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
+SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
 #endif
 
 /*
@@ -835,7 +832,7 @@ __irqentry_text_end:
  * 0(%ebp) arg6
  */
 #if 0
-// SYM_FUNC_START(entry_SYSENTER_32)
+SYM_FUNC_START(entry_SYSENTER_32)
 	/*
 	 * On entry-stack with all userspace-regs live - save and
 	 * restore eflags and %eax to use it as scratch-reg for the cr3
@@ -949,8 +946,8 @@ __irqentry_text_end:
 	pushl	$X86_EFLAGS_FIXED
 	popfl
 	jmp	.Lsysenter_flags_fixed
-// SYM_ENTRY(__end_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
-// SYM_FUNC_END(entry_SYSENTER_32)
+SYM_ENTRY(__end_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
+SYM_FUNC_END(entry_SYSENTER_32)
 #endif
 
 /*
@@ -982,7 +979,7 @@ __irqentry_text_end:
  * ebp  arg6
  */
 //!
-// SYM_FUNC_START(entry_INT80_32)
+SYM_FUNC_START(entry_INT80_32)
 //	ASM_CLAC
 .globl _entry_INT80_32
 _entry_INT80_32:
@@ -1043,7 +1040,7 @@ restore_all_switch_stack:
 
 	_ASM_EXTABLE(.Lirq_return, .Lasm_iret_error)
 #endif
-// SYM_FUNC_END(entry_INT80_32)
+SYM_FUNC_END(entry_INT80_32)
 #endif
 
 .macro FIXUP_ESPFIX_STACK

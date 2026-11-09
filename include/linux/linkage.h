@@ -163,10 +163,14 @@
 
 /* SYM_END -- use only if you have to */
 #ifndef SYM_END
+#ifdef CONFIG_WINDOWS
+#define SYM_END(name, sym_type)
+#else
 #define SYM_END(name, sym_type)				\
 	.type name sym_type ASM_NL			\
 	.set .L__sym_size_##name, .-name ASM_NL		\
 	.size name, .L__sym_size_##name
+#endif
 #endif
 
 /* SYM_ALIAS -- use only if you have to */

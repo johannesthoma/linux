@@ -110,6 +110,8 @@
 #define NR_EXTERNAL_VECTORS		(FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
 #define NR_SYSTEM_VECTORS		(NR_VECTORS - FIRST_SYSTEM_VECTOR)
 
+#if 0
+
 /*
  * Size the maximum number of interrupts.
  *
@@ -137,6 +139,11 @@
 #define NR_IRQS				(NR_VECTORS + CPU_VECTOR_LIMIT)
 #else
 #define NR_IRQS				NR_IRQS_LEGACY
+#endif
+#endif
+
+#ifndef NR_IRQS
+#define NR_IRQS				64
 #endif
 
 #endif /* _ASM_X86_IRQ_VECTORS_H */

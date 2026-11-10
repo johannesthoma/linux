@@ -13,6 +13,7 @@
 #define TIF_NOTIFY_RESUME       8
 #define TIF_SECCOMP             9       /* secure computing */
 #define TIF_SINGLESTEP          10      /* single stepping userspace */
+#define TIF_IO_BITMAP           22
 
 #define _TIF_SYSCALL_TRACE      (1 << TIF_SYSCALL_TRACE)
 #define _TIF_SIGPENDING         (1 << TIF_SIGPENDING)
@@ -22,6 +23,7 @@
 #define _TIF_SYSCALL_AUDIT      (1 << TIF_SYSCALL_AUDIT)
 #define _TIF_SECCOMP            (1 << TIF_SECCOMP)
 #define _TIF_SINGLESTEP         (1 << TIF_SINGLESTEP)
+#define _TIF_IO_BITMAP		(1 << TIF_IO_BITMAP)
 
 #define TIF_ADDR32              29      /* 32-bit address space on 64 bits */
 

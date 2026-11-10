@@ -88,7 +88,7 @@
 /* SYM_T_NONE -- type used by assembler to mark entries of unknown type */
 #ifndef SYM_T_NONE
 #ifdef CONFIG_WINDOWS
-#define SYM_T_NONE				$1
+#define SYM_T_NONE				1
 #else
 #define SYM_T_NONE				STT_NOTYPE
 #endif
@@ -171,8 +171,6 @@
 #define SYM_END(name, sym_type)				\
 	.def name ASM_NL				\
 	.type sym_type ASM_NL				\
-	.set .L__sym_size_##name, .-name ASM_NL		\
-	.size name, .L__sym_size_##name	ASM_NL		\
 	.endef
 #else
 #define SYM_END(name, sym_type)				\

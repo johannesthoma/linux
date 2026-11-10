@@ -8,6 +8,14 @@ CROSS_COMPILE = $(WINDOWS_ARCH)-w64-mingw32-
 # ?? shouldn't that be the subarch?
 SRCARCH = $(ARCH)
 
+HEADER_ARCH := x86
+HOST_DIR := arch/$(HEADER_ARCH)
+
+KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
+                   -I$(srctree)/$(HOST_DIR)/include/uapi \
+                   -I$(objtree)/$(HOST_DIR)/include/generated \
+                   -I$(objtree)/$(HOST_DIR)/include/generated/uapi
+
 # EXTRA_CFLAGS += -UWIN32
 # needed by include/acpi/platform/acenv.h ...
 # mingw does not define this:

@@ -2,10 +2,15 @@
 #define WINDOWS_PROCESSOR_H
 
 #include <asm/pgtable_types.h>
+#include <asm/segment.h>
+#include <asm/desc_defs.h>
+#include <asm/special_insns.h>
 
 #define cpu_relax() do { } while (0)
 
 struct thread_struct {
+	struct desc_struct	tls_array[GDT_ENTRY_TLS_ENTRIES];
+
 	unsigned long nix;
 };
 
@@ -121,6 +126,9 @@ struct x86_hw_tss {
 #define IO_BITMAP_BYTES			(IO_BITMAP_BITS / BITS_PER_BYTE)
 #define IO_BITMAP_LONGS			(IO_BITMAP_BYTES / sizeof(long))
 
+# define __KERNEL_TSS_LIMIT     \
+        (offsetof(struct tss_struct, x86_tss) + sizeof(struct x86_hw_tss) - 1)
+
 /*
  * All IO bitmap related data stored in the TSS:
  */
@@ -165,5 +173,122 @@ struct tss_struct {
 
 extern void start_thread(struct pt_regs *regs, unsigned long new_ip,
 					       unsigned long new_sp);
+
+/*
+ * CPU type and hardware bug flags. Kept separately for each CPU.
+ */
+
+struct cpuinfo_topology {
+	// Real APIC ID read from the local APIC
+	u32			apicid;
+	// The initial APIC ID provided by CPUID
+	u32			initial_apicid;
+
+	// Physical package ID
+	u32			pkg_id;
+
+	// Physical die ID on AMD, Relative on Intel
+	u32			die_id;
+
+	// Compute unit ID - AMD specific
+	u32			cu_id;
+
+	// Core ID relative to the package
+	u32			core_id;
+
+	// Logical ID mappings
+	u32			logical_pkg_id;
+	u32			logical_die_id;
+
+	// Cache level topology IDs
+	u32			llc_id;
+	u32			l2c_id;
+};
+
+struct cpuinfo_x86 {
+	__u8			x86;		/* CPU family */
+	__u8			x86_vendor;	/* CPU vendor */
+	__u8			x86_model;
+	__u8			x86_stepping;
+#ifdef CONFIG_X86_64
+	/* Number of 4K pages in DTLB/ITLB combined(in pages): */
+	int			x86_tlbsize;
+#endif
+#ifdef CONFIG_X86_VMX_FEATURE_NAMES
+	__u32			vmx_capability[NVMXINTS];
+#endif
+	__u8			x86_virt_bits;
+	__u8			x86_phys_bits;
+	/* CPUID returned core id bits: */
+	__u8			x86_coreid_bits;
+	/* Max extended CPUID function supported: */
+	__u32			extended_cpuid_level;
+	/* Maximum supported CPUID level, -1=no CPUID: */
+	int			cpuid_level;
+	/*
+	 * Align to size of unsigned long because the x86_capability array
+	 * is passed to bitops which require the alignment. Use unnamed
+	 * union to enforce the array is aligned to size of unsigned long.
+	 */
+	union {
+		__u32		x86_capability[NCAPINTS + NBUGINTS];
+		unsigned long	x86_capability_alignment;
+	};
+	char			x86_vendor_id[16];
+	char			x86_model_id[64];
+	struct cpuinfo_topology	topo;
+	/* in KB - valid for CPUS which support this call: */
+	unsigned int		x86_cache_size;
+	int			x86_cache_alignment;	/* In bytes */
+	/* Cache QoS architectural values, valid only on the BSP: */
+	int			x86_cache_max_rmid;	/* max index */
+	int			x86_cache_occ_scale;	/* scale to bytes */
+	int			x86_cache_mbm_width_offset;
+	int			x86_power;
+	unsigned long		loops_per_jiffy;
+	/* protected processor identification number */
+	u64			ppin;
+	/* cpuid returned max cores value: */
+	u16			x86_max_cores;
+	u16			x86_clflush_size;
+	/* number of cores as seen by the OS: */
+	u16			booted_cores;
+	/* Index into per_cpu list: */
+	u16			cpu_index;
+	/*  Is SMT active on this core? */
+	bool			smt_active;
+	u32			microcode;
+	/* Address space bits used by the cache internally */
+	u8			x86_cache_bits;
+	unsigned		initialized : 1;
+} __randomize_layout;
+
+#define X86_VENDOR_INTEL	0
+#define X86_VENDOR_CYRIX	1
+#define X86_VENDOR_AMD		2
+#define X86_VENDOR_UMC		3
+#define X86_VENDOR_CENTAUR	5
+#define X86_VENDOR_TRANSMETA	7
+#define X86_VENDOR_NSC		8
+#define X86_VENDOR_HYGON	9
+#define X86_VENDOR_ZHAOXIN	10
+#define X86_VENDOR_VORTEX	11
+#define X86_VENDOR_NUM		12
+
+#define X86_VENDOR_UNKNOWN	0xff
+
+extern struct cpuinfo_x86	boot_cpu_data;
+extern struct cpuinfo_x86	new_cpu_data;
+
+extern __u32			cpu_caps_cleared[NCAPINTS + NBUGINTS];
+extern __u32			cpu_caps_set[NCAPINTS + NBUGINTS];
+
+#ifdef CONFIG_SMP
+DECLARE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
+#define cpu_data(cpu)		per_cpu(cpu_info, cpu)
+#else
+#define cpu_info		boot_cpu_data
+#define cpu_data(cpu)		boot_cpu_data
+#endif
 
 #endif

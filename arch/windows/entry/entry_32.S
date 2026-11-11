@@ -659,7 +659,7 @@
  * @has_error_code:	Hardware pushed error code on stack
  */
 .macro idtentry vector asmsym cfunc has_error_code:req
-SYM_CODE_START(\asmsym)
+SYM_CODE_START(_\asmsym)
 //	ASM_CLAC
 	cld
 
@@ -668,9 +668,9 @@ SYM_CODE_START(\asmsym)
 	.endif
 
 	/* Push the C-function address into the GS slot */
-	pushl	$\cfunc
+	pushl	$_\cfunc
 	/* Invoke the common exception entry */
-	jmp	handle_exception
+	jmp	_handle_exception
 SYM_CODE_END(\asmsym)
 .endm
 
@@ -1177,7 +1177,7 @@ SYM_CODE_END(asm_exc_double_fault)
  * switched stacks.  We handle both conditions by simply checking whether we
  * interrupted kernel code running on the SYSENTER stack.
  */
-SYM_CODE_START(asm_exc_nmi)
+SYM_CODE_START(_asm_exc_nmi)
 //	ASM_CLAC
 
 #ifdef CONFIG_X86_ESPFIX32
@@ -1206,7 +1206,7 @@ SYM_CODE_START(asm_exc_nmi)
 	jb	.Lnmi_from_sysenter_stack
 
 	/* Not on SYSENTER stack. */
-	call	exc_nmi
+	call	_exc_nmi
 	jmp	.Lnmi_return
 
 .Lnmi_from_sysenter_stack:
@@ -1270,7 +1270,7 @@ SYM_CODE_START(asm_exc_nmi)
 	lss	(1+5+6)*4(%esp), %esp			# back to espfix stack
 	jmp	.Lirq_return
 #endif
-SYM_CODE_END(asm_exc_nmi)
+SYM_CODE_END(_asm_exc_nmi)
 
 // .pushsection .text, "ax"
 SYM_CODE_START(rewind_stack_and_make_dead)

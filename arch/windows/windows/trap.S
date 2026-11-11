@@ -15,6 +15,6 @@ _fault_handler_mux:
 	jmp *_original_fault_handler(,1)
 1:
 	pop %eax
-	jmp asm_exc_page_fault
+	jmp _asm_exc_page_fault
 
 

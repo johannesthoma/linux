@@ -68,17 +68,21 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
 	}
 
 	/* Do seccomp after ptrace, to catch any tracer changes. */
+/* TODO:
 	if (work & SYSCALL_WORK_SECCOMP) {
 		ret = __secure_computing(NULL);
 		if (ret == -1L)
 			return ret;
 	}
+*/
 
 	/* Either of the above might have changed the syscall number */
 	syscall = syscall_get_nr(current, regs);
 
+/* TODO:
 	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
 		trace_sys_enter(regs, syscall);
+*/
 
 	syscall_enter_audit(regs, syscall);
 
@@ -243,8 +247,10 @@ static void syscall_exit_work(struct pt_regs *regs, unsigned long work)
 
 	audit_syscall_exit(regs);
 
+/* TODO:
 	if (work & SYSCALL_WORK_SYSCALL_TRACEPOINT)
 		trace_sys_exit(regs, syscall_get_return_value(current, regs));
+*/
 
 	step = report_single_step(work);
 	if (step || work & SYSCALL_WORK_SYSCALL_TRACE)
@@ -383,8 +389,10 @@ void raw_irqentry_exit_cond_resched(void)
 	if (!preempt_count()) {
 		/* Sanity check RCU and thread stack */
 		rcu_irq_exit_check_preempt();
+/* TODO:
 		if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
 			WARN_ON_ONCE(!on_thread_stack());
+*/
 		if (need_resched())
 			preempt_schedule_irq();
 	}

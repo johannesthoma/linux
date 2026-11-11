@@ -5,13 +5,91 @@
 #include <asm/segment.h>
 #include <asm/desc_defs.h>
 #include <asm/special_insns.h>
+#include <asm/fpu/types.h>
+#include <asm/msr.h>
 
+#define HBP_NUM 4
+
+/* TODO: */
 #define cpu_relax() do { } while (0)
 
 struct thread_struct {
+	/* Cached TLS descriptors: */
 	struct desc_struct	tls_array[GDT_ENTRY_TLS_ENTRIES];
+#ifdef CONFIG_X86_32
+	unsigned long		sp0;
+#endif
+	unsigned long		sp;
+#ifdef CONFIG_X86_32
+	unsigned long		sysenter_cs;
+#else
+	unsigned short		es;
+	unsigned short		ds;
+	unsigned short		fsindex;
+	unsigned short		gsindex;
+#endif
 
-	unsigned long nix;
+#ifdef CONFIG_X86_64
+	unsigned long		fsbase;
+	unsigned long		gsbase;
+#else
+	/*
+	 * XXX: this could presumably be unsigned short.  Alternatively,
+	 * 32-bit kernels could be taught to use fsindex instead.
+	 */
+	unsigned long fs;
+	unsigned long gs;
+#endif
+
+	/* Save middle states of ptrace breakpoints */
+	struct perf_event	*ptrace_bps[HBP_NUM];
+	/* Debug status used for traps, single steps, etc... */
+	unsigned long           virtual_dr6;
+	/* Keep track of the exact dr7 value set by the user */
+	unsigned long           ptrace_dr7;
+	/* Fault info: */
+	unsigned long		cr2;
+	unsigned long		trap_nr;
+	unsigned long		error_code;
+#ifdef CONFIG_VM86
+	/* Virtual 86 mode info */
+	struct vm86		*vm86;
+#endif
+	/* IO permissions: */
+	struct io_bitmap	*io_bitmap;
+
+	/*
+	 * IOPL. Privilege level dependent I/O permission which is
+	 * emulated via the I/O bitmap to prevent user space from disabling
+	 * interrupts.
+	 */
+	unsigned long		iopl_emul;
+
+	unsigned int		iopl_warn:1;
+	unsigned int		sig_on_uaccess_err:1;
+
+	/*
+	 * Protection Keys Register for Userspace.  Loaded immediately on
+	 * context switch. Store it in thread_struct to avoid a lookup in
+	 * the tasks's FPU xstate buffer. This value is only valid when a
+	 * task is scheduled out. For 'current' the authoritative source of
+	 * PKRU is the hardware itself.
+	 */
+	u32			pkru;
+
+#ifdef CONFIG_X86_USER_SHADOW_STACK
+	unsigned long		features;
+	unsigned long		features_locked;
+
+	struct thread_shstk	shstk;
+#endif
+
+	/* Floating point and extended processor state */
+	struct fpu		fpu;
+	/*
+	 * WARNING: 'fpu' is dynamically-sized.  It *MUST* be at
+	 * the end.
+	 */
 };
 
 #define KSTK_ESP(task)         (0)

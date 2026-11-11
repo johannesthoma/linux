@@ -1368,17 +1368,19 @@ DEFINE_IDTENTRY_SW(iret_error)
 }
 #endif
 
+/* TODO: we probably don't want any of these: */
+
 void __init trap_init(void)
 {
 	/* Init cpu_entry_area before IST entries are set up */
 	setup_cpu_entry_areas();
 
 	/* Init GHCB memory pages when running as an SEV-ES guest */
-	sev_es_init_vc_handling();
+//	sev_es_init_vc_handling();
 
 	/* Initialize TSS before setting up traps so ISTs work */
-	cpu_init_exception_handling();
+//	cpu_init_exception_handling();
 	/* Setup traps as cpu_init() might #GP */
-	idt_setup_traps();
-	cpu_init();
+//	idt_setup_traps();
+//	cpu_init();
 }

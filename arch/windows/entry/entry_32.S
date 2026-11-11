@@ -266,7 +266,6 @@
 .endif
 .endm
 
-#if 0
 .macro SAVE_ALL_NMI cr3_reg:req unwind_espfix=0
 	SAVE_ALL unwind_espfix=\unwind_espfix
 
@@ -283,7 +282,6 @@
 
 .Lend_\@:
 .endm
-#endif
 
 .macro RESTORE_INT_REGS
 	popl	%ebx
@@ -314,7 +312,6 @@
 #endif
 .endm
 
-#if 0
 .macro RESTORE_ALL_NMI cr3_reg:req pop=0
 	/*
 	 * Now switch the CR3 when PTI is enabled.
@@ -336,7 +333,6 @@
 
 	RESTORE_REGS pop=\pop
 .endm
-#endif
 
 .macro CHECK_AND_APPLY_ESPFIX
 #ifdef CONFIG_X86_ESPFIX32
@@ -684,7 +680,7 @@ SYM_CODE_START_LOCAL(asm_\cfunc)
 	movl	PT_ORIG_EAX(%esp), %edx		/* get the vector from stack */
 	movl	$-1, PT_ORIG_EAX(%esp)		/* no syscall to restart */
 	call	\cfunc
-	jmp	handle_exception_return
+	jmp	_handle_exception_return
 SYM_CODE_END(asm_\cfunc)
 .endm
 
@@ -707,7 +703,6 @@ __irqentry_text_start:
 	.globl __irqentry_text_end
 __irqentry_text_end:
 
-#if 0
 /*
  * %eax: prev task
  * %edx: next task
@@ -788,7 +783,6 @@ SYM_CODE_END(ret_from_fork_asm)
 // .popsection
 
 SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
-#endif
 
 /*
  * All code from here through __end_SYSENTER_singlestep_region is subject
@@ -1019,8 +1013,6 @@ restore_all_switch_stack:
 	 */
 	iret
 
-#if 0
-
 .Lasm_iret_error:
 	pushl	$0				# no error code
 	pushl	$iret_error
@@ -1036,12 +1028,11 @@ restore_all_switch_stack:
 	SWITCH_TO_USER_CR3 scratch_reg=%eax
 	popl	%eax
 
-	jmp	handle_exception
+	jmp	_handle_exception
 
 	_ASM_EXTABLE(.Lirq_return, .Lasm_iret_error)
 #endif
-SYM_FUNC_END(entry_INT80_32)
-#endif
+// SYM_FUNC_END(entry_INT80_32)
 
 .macro FIXUP_ESPFIX_STACK
 /*
@@ -1090,8 +1081,7 @@ SYM_FUNC_END(entry_INT80_32)
 #endif
 .endm
 
-#if 0
-SYM_CODE_START_LOCAL_NOALIGN(handle_exception)
+SYM_CODE_START_LOCAL_NOALIGN(_handle_exception)
 	/* the function address is in %gs's slot on the stack */
 	SAVE_ALL switch_stacks=1 skip_gs=1 unwind_espfix=1
 	ENCODE_FRAME_POINTER
@@ -1105,7 +1095,7 @@ SYM_CODE_START_LOCAL_NOALIGN(handle_exception)
 	movl	%esp, %eax			# pt_regs pointer
 	CALL_NOSPEC edi
 
-handle_exception_return:
+_handle_exception_return:
 #ifdef CONFIG_VM86
 	movl	PT_EFLAGS(%esp), %eax		# mix EFLAGS and CS
 	movb	PT_CS(%esp), %al
@@ -1120,7 +1110,9 @@ handle_exception_return:
 	cmpl	$USER_RPL, %eax			# returning to v8086 or userspace ?
 	jnb	ret_to_user
 
+#if 0
 	PARANOID_EXIT_TO_KERNEL_MODE
+#endif
 	BUG_IF_WRONG_CR3
 	RESTORE_REGS 4
 	jmp	.Lirq_return
@@ -1128,9 +1120,9 @@ handle_exception_return:
 ret_to_user:
 	movl	%esp, %eax
 	jmp	restore_all_switch_stack
-SYM_CODE_END(handle_exception)
+SYM_CODE_END(_handle_exception)
 
-SYM_CODE_START(asm_exc_double_fault)
+SYM_CODE_START(_asm_exc_double_fault)
 1:
 	/*
 	 * This is a task gate handler, not an interrupt gate handler.
@@ -1168,7 +1160,7 @@ SYM_CODE_START(asm_exc_double_fault)
 1:
 	hlt
 	jmp 1b
-SYM_CODE_END(asm_exc_double_fault)
+SYM_CODE_END(_asm_exc_double_fault)
 
 /*
  * NMI is doubly nasty.  It can happen on the first instruction of
@@ -1215,7 +1207,7 @@ SYM_CODE_START(_asm_exc_nmi)
 	 * is using the thread stack right now, so it's safe for us to use it.
 	 */
 	movl	%esp, %ebx
-	movl	PER_CPU_VAR(pcpu_hot + X86_top_of_stack), %esp
+//	movl	PER_CPU_VAR(pcpu_hot + X86_top_of_stack), %esp
 	call	exc_nmi
 	movl	%ebx, %esp
 
@@ -1273,15 +1265,14 @@ SYM_CODE_START(_asm_exc_nmi)
 SYM_CODE_END(_asm_exc_nmi)
 
 // .pushsection .text, "ax"
-SYM_CODE_START(rewind_stack_and_make_dead)
+SYM_CODE_START(_rewind_stack_and_make_dead)
 	/* Prevent any naive code from trying to unwind to our caller. */
 	xorl	%ebp, %ebp
 
-	movl	PER_CPU_VAR(pcpu_hot + X86_top_of_stack), %esi
+//	movl	PER_CPU_VAR(pcpu_hot + X86_top_of_stack), %esi
 	leal	-TOP_OF_KERNEL_STACK_PADDING-PTREGS_SIZE(%esi), %esp
 
 	call	make_task_dead
 1:	jmp 1b
-SYM_CODE_END(rewind_stack_and_make_dead)
+SYM_CODE_END(_rewind_stack_and_make_dead)
 // .popsection
-#endif

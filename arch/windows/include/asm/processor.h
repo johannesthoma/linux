@@ -7,6 +7,7 @@
 #include <asm/special_insns.h>
 #include <asm/fpu/types.h>
 #include <asm/msr.h>
+#include <asm/percpu.h>
 
 #define HBP_NUM 4
 

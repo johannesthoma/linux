@@ -12,3 +12,13 @@ void show_stack(struct task_struct *task, unsigned long *sp,
 {
 	printk("stack backtrace printing is not supported yet.\n");
 }
+
+void die(const char *str, struct pt_regs *regs, long err)
+{
+	printk("I would die, but I don't know how.\n");
+}
+
+void die_addr(const char *str, struct pt_regs *regs, long err, long gp_addr)
+{
+	printk("I would die_addr, but I don't know how.\n");
+}

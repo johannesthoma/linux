@@ -372,4 +372,17 @@ DECLARE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
 #define cpu_data(cpu)		boot_cpu_data
 #endif
 
+/*
+ * Friendlier CR3 helpers.
+ */
+static inline unsigned long read_cr3_pa(void)
+{
+	return __read_cr3() & CR3_ADDR_MASK;
+}
+
+static inline unsigned long native_read_cr3_pa(void)
+{
+	return __native_read_cr3() & CR3_ADDR_MASK;
+}
+
 #endif

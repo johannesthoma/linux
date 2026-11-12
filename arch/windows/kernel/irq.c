@@ -1,6 +1,7 @@
 #include <linux/errno.h>
 #include <linux/sched.h>
 #include <windows/api.h>
+#include <asm/idtentry.h>
 
 int arch_early_irq_init(void)
 {
@@ -17,9 +18,13 @@ int arch_prctl_spec_ctrl_get(struct task_struct *t, unsigned long which)
         return -EINVAL;
 }
 
-const char *arch_vma_name(/* struct vm_area_struct *vma */ void *x)
+const char *arch_vma_name(struct vm_area_struct *vma)
 {
 	return NULL;
+}
+
+DEFINE_IDTENTRY_IRQ(common_interrupt)
+{
 }
 
 struct win_timer_list *timer_interrupt;

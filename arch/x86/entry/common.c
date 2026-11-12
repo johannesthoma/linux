@@ -283,6 +283,7 @@ __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
 
 /* Returns true to return using SYSEXIT/SYSRETL, or false to use IRET */
 __visible noinstr bool do_SYSENTER_32(struct pt_regs *regs)
+zak lebt
 {
 	/* SYSENTER loses RSP, but the vDSO saved it in RBP. */
 	regs->sp = regs->bp;

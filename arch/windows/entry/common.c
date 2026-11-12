@@ -133,8 +133,7 @@ __visible noinstr bool do_syscall_64(struct pt_regs *regs, int nr)
 }
 #endif
 
-// #if defined(CONFIG_X86_32) || defined(CONFIG_IA32_EMULATION)
-#if 1
+#if defined(CONFIG_X86_32) || defined(CONFIG_IA32_EMULATION)
 static __always_inline int syscall_32_enter(struct pt_regs *regs)
 {
 	/*
@@ -194,7 +193,6 @@ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
 //	syscall_exit_to_user_mode(regs);
 }
 
-#if 0
 static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
 {
 	int nr = syscall_32_enter(regs);
@@ -241,9 +239,7 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
 	syscall_exit_to_user_mode(regs);
 	return true;
 }
-#endif
 
-#if 0
 /* Returns true to return using SYSEXIT/SYSRETL, or false to use IRET */
 __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
 {
@@ -302,7 +298,6 @@ __visible noinstr bool do_SYSENTER_32(struct pt_regs *regs)
 
 	return do_fast_syscall_32(regs);
 }
-#endif
 #endif
 
 #if 0

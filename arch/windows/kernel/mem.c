@@ -118,11 +118,6 @@ void free_initmem(void)
 	printk("Would free initmem now, but this is not supported on Windows.\n");
 }
 
-void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
-{
-	printk("arch_sync_kernel_mappings(%ld, %ld) unimplemented!\n", start, end);
-}
-
 #define DEFAULT_PTE_MASK ~(_PAGE_NX | _PAGE_GLOBAL)
 
 /* Bits supported by the hardware: */

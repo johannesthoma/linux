@@ -409,8 +409,8 @@
 
 #if 0
 	/* Are we on the entry stack? Bail out if not! */
-	movl	PER_CPU_VAR(cpu_entry_area), %ecx
-	addl	$CPU_ENTRY_AREA_entry_stack + SIZEOF_entry_stack, %ecx
+	movl	PER_CPU_VAR(_cpu_entry_area), %ecx
+	addl	$_CPU_ENTRY_AREA_entry_stack + SIZEOF_entry_stack, %ecx
 	subl	%esp, %ecx	/* ecx = (end of entry_stack) - esp */
 	cmpl	$SIZEOF_entry_stack, %ecx
 	jae	.Lend_\@
@@ -782,7 +782,7 @@ SYM_CODE_START(ret_from_fork_asm)
 SYM_CODE_END(ret_from_fork_asm)
 // .popsection
 
-SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
+SYM_ENTRY(___begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
 
 /*
  * All code from here through __end_SYSENTER_singlestep_region is subject
@@ -874,7 +874,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
 .Lsysenter_flags_fixed:
 
 	movl	%esp, %eax
-	call	do_SYSENTER_32
+	call	_do_SYSENTER_32
 	testb	%al, %al
 	jz	.Lsyscall_32_done
 
@@ -940,7 +940,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
 	pushl	$X86_EFLAGS_FIXED
 	popfl
 	jmp	.Lsysenter_flags_fixed
-SYM_ENTRY(__end_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
+SYM_ENTRY(___end_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
 // SYM_FUNC_END(entry_SYSENTER_32)
 
 /*
@@ -1153,9 +1153,10 @@ SYM_CODE_START(_asm_exc_double_fault)
 	pushl	$X86_EFLAGS_FIXED
 	popfl				/* clear EFLAGS.NT */
 
-	call	doublefault_shim
+//	call	doublefault_shim
 
 	/* We don't support returning, so we have no IRET here. */
+	/* or so ... */
 1:
 	hlt
 	jmp 1b
@@ -1190,14 +1191,15 @@ SYM_CODE_START(_asm_exc_nmi)
 	movl	%esp, %eax			# pt_regs pointer
 
 	/* Are we currently on the SYSENTER stack? */
-	movl	PER_CPU_VAR(cpu_entry_area), %ecx
-	addl	$CPU_ENTRY_AREA_entry_stack + SIZEOF_entry_stack, %ecx
+// TODO:
+//	movl	PER_CPU_VAR(_cpu_entry_area), %ecx
+//	addl	$_CPU_ENTRY_AREA_entry_stack + SIZEOF_entry_stack, %ecx
 	subl	%eax, %ecx	/* ecx = (end of entry_stack) - esp */
 	cmpl	$SIZEOF_entry_stack, %ecx
 	jb	.Lnmi_from_sysenter_stack
 
 	/* Not on SYSENTER stack. */
-	call	_exc_nmi
+//	call	_exc_nmi
 	jmp	.Lnmi_return
 
 .Lnmi_from_sysenter_stack:
@@ -1207,7 +1209,7 @@ SYM_CODE_START(_asm_exc_nmi)
 	 */
 	movl	%esp, %ebx
 //	movl	PER_CPU_VAR(pcpu_hot + X86_top_of_stack), %esp
-	call	exc_nmi
+//	call	_exc_nmi
 	movl	%ebx, %esp
 
 .Lnmi_return:

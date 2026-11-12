@@ -13,6 +13,8 @@
 #include <asm/ia32.h>
 #include <asm/idtentry.h>
 
+#include <linux/bug.h>
+
 #define DPL0		0x0
 #define DPL3		0x3
 
@@ -264,6 +266,8 @@ void __init idt_setup_early_pf(void)
 
 static void __init idt_map_in_cea(void)
 {
+	BUG();
+#if 0
 	/*
 	 * Set the IDT descriptor to a fixed read-only location in the cpu
 	 * entry area, so that the "sidt" instruction will not leak the
@@ -273,6 +277,7 @@ static void __init idt_map_in_cea(void)
 	cea_set_pte(CPU_ENTRY_AREA_RO_IDT_VADDR, __pa_symbol(idt_table),
 		    PAGE_KERNEL_RO);
 	idt_descr.address = CPU_ENTRY_AREA_RO_IDT;
+#endif
 }
 
 /**
@@ -316,15 +321,7 @@ void __init idt_setup_apic_and_irq_gates(void)
  */
 void __init idt_setup_early_handler(void)
 {
-	int i;
-
-	for (i = 0; i < NUM_EXCEPTION_VECTORS; i++)
-		set_intr_gate(i, early_idt_handler_array[i]);
-#ifdef CONFIG_X86_32
-	for ( ; i < NR_VECTORS; i++)
-		set_intr_gate(i, early_ignore_irq);
-#endif
-	load_idt(&idt_descr);
+	BUG();
 }
 
 /**

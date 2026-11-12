@@ -13,6 +13,9 @@
 
 #include <asm/irq_stack.h>
 
+/* TODO: */
+static inline void kvm_set_cpu_l1tf_flush_l1d(void) { }
+
 /**
  * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
  *		      No error code pushed by hardware
@@ -502,7 +505,7 @@ SYM_CODE_START(irq_entries_start)
 0 :
 	ENDBR
 	.byte	0x6a, vector
-	jmp	asm_common_interrupt
+	/* TODO: jmp	asm_common_interrupt */
 	/* Ensure that the above is IDT_ALIGN bytes max */
 	.fill 0b + IDT_ALIGN - ., 1, 0xcc
 	vector = vector+1
@@ -633,7 +636,7 @@ DECLARE_IDTENTRY(X86_TRAP_VE,		exc_virtualization_exception);
 #endif
 
 /* Device interrupts common/spurious */
-DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	common_interrupt);
+// TODO: DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	common_interrupt);
 #ifdef CONFIG_X86_LOCAL_APIC
 DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	spurious_interrupt);
 #endif

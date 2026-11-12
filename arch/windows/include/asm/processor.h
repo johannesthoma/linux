@@ -250,6 +250,8 @@ struct tss_struct {
         struct x86_io_bitmap    io_bitmap;
 } __aligned(PAGE_SIZE);
 
+DECLARE_PER_CPU_PAGE_ALIGNED(struct tss_struct, cpu_tss_rw);
+
 extern void start_thread(struct pt_regs *regs, unsigned long new_ip,
 					       unsigned long new_sp);
 

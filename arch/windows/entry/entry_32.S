@@ -825,7 +825,6 @@ SYM_ENTRY(__begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
  * ebp  user stack
  * 0(%ebp) arg6
  */
-#if 0
 SYM_FUNC_START(entry_SYSENTER_32)
 	/*
 	 * On entry-stack with all userspace-regs live - save and
@@ -889,7 +888,8 @@ SYM_FUNC_START(entry_SYSENTER_32)
 	 */
 
 	/* Load entry stack pointer and allocate frame for eflags/eax */
-	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %eax
+/* TODO: */
+//	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %eax
 	subl	$(2*4), %eax
 
 	/* Copy eflags and eax to entry stack */
@@ -941,8 +941,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
 	popfl
 	jmp	.Lsysenter_flags_fixed
 SYM_ENTRY(__end_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
-SYM_FUNC_END(entry_SYSENTER_32)
-#endif
+// SYM_FUNC_END(entry_SYSENTER_32)
 
 /*
  * 32-bit legacy system call entry.

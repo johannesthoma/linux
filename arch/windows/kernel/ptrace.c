@@ -44,6 +44,36 @@
 
 #include "tls.h"
 
+long arch_ptrace(struct task_struct *child, long request,
+		 unsigned long addr, unsigned long data)
+{
+	printk("No arch_ptrace, sorry.\n");
+	return -ENOSYS;
+}
+
+void ptrace_disable(struct task_struct *child)
+{
+	printk("No ptrace_disable, sorry.\n");
+}
+
+void send_sigtrap(struct pt_regs *regs, int error_code, int si_code)
+{
+	printk("No send_sigtrap, sorry.\n");
+}
+
+void user_single_step_report(struct pt_regs *regs)
+{
+	printk("No user_single_step_report, sorry.\n");
+}
+
+const struct user_regset_view *task_user_regset_view(struct task_struct *task)
+{
+	printk("No task_user_regset_view, sorry.\n");
+	return NULL;
+}
+
+#if 0
+
 enum x86_regset_32 {
 	REGSET32_GENERAL,
 	REGSET32_FP,
@@ -1421,3 +1451,5 @@ void user_single_step_report(struct pt_regs *regs)
 {
 	send_sigtrap(regs, 0, TRAP_BRKPT);
 }
+
+#endif

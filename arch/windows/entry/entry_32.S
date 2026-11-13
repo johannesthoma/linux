@@ -1014,7 +1014,7 @@ restore_all_switch_stack:
 
 .Lasm_iret_error:
 	pushl	$0				# no error code
-	pushl	$iret_error
+	pushl	$_iret_error
 
 #ifdef CONFIG_DEBUG_ENTRY
 	/*
@@ -1273,7 +1273,7 @@ SYM_CODE_START(_rewind_stack_and_make_dead)
 //	movl	PER_CPU_VAR(pcpu_hot + X86_top_of_stack), %esi
 	leal	-TOP_OF_KERNEL_STACK_PADDING-PTREGS_SIZE(%esi), %esp
 
-	call	make_task_dead
+	call	_make_task_dead
 1:	jmp 1b
 SYM_CODE_END(_rewind_stack_and_make_dead)
 // .popsection

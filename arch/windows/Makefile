@@ -61,4 +61,6 @@ core-y += arch/windows/entry/
 core-y += arch/windows/entry/vdso/
 core-y += arch/windows/windows/
 core-y += arch/windows/mm/
+# doesn't compile: do we need it?
+# core-y += arch/windows/mm/pat/
 

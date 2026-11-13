@@ -152,6 +152,8 @@ void iounmap(volatile void __iomem *addr)
 	printk("iounmap addr: %p is not implemented\n", addr);
 }
 
+/* TODO: */
+#if 0
 pgd_t *pgd_alloc(struct mm_struct *mm)
 {
 	pgd_t *pgd = win_allocate_memory(PAGE_SIZE);
@@ -209,6 +211,8 @@ int ptep_test_and_clear_young(struct vm_area_struct *vma,
 	printk("ptep_test_and_clear_young not implemented\n");
 	return 0;
 }
+
+#endif
 
 pgd_t swapper_pg_dir[1024];
 

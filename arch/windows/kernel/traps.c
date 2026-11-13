@@ -1256,18 +1256,23 @@ DEFINE_IDTENTRY(exc_device_not_available)
 	}
 #endif
 
+/* TODO: */
+#if 0
 	/* This should not happen. */
 	if (WARN(cr0 & X86_CR0_TS, "CR0.TS was set")) {
 		/* Try to fix it up and carry on. */
-		write_cr0(cr0 & ~X86_CR0_TS);
+//		write_cr0(cr0 & ~X86_CR0_TS);
 	} else {
 		/*
 		 * Something terrible happened, and we're better off trying
 		 * to kill the task than getting stuck in a never-ending
 		 * loop of #NM faults.
 		 */
+#endif
 		die("unexpected #NM exception", regs, 0);
+#if 0
 	}
+#endif
 }
 
 #ifdef CONFIG_INTEL_TDX_GUEST

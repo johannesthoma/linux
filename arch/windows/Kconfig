@@ -86,4 +86,7 @@ config GENERIC_ENTRY
 config SECCOMP
 	def_bool n
 
+config LOCK_MM_AND_FIND_VMA
+	def_bool y
+
 endmenu

@@ -518,7 +518,9 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code, unsigned long ad
 		pgd = __va(read_cr3_pa());
 		pgd += pgd_index(address);
 
-		pte = lookup_address_in_pgd(pgd, address, &level);
+// TODO:
+//		pte = lookup_address_in_pgd(pgd, address, &level);
+		pte = 0;
 
 		if (pte && pte_present(*pte) && !pte_exec(*pte))
 			pr_crit("kernel tried to execute NX-protected page - exploit attempt? (uid: %d)\n",

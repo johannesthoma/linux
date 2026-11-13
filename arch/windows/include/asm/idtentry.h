@@ -498,7 +498,7 @@ __visible noinstr void func(struct pt_regs *regs,			\
  * extending.
  */
 	.align IDT_ALIGN
-SYM_CODE_START(irq_entries_start)
+SYM_CODE_START(_irq_entries_start)
     vector=FIRST_EXTERNAL_VECTOR
     .rept NR_EXTERNAL_VECTORS
 	UNWIND_HINT_IRET_REGS
@@ -510,7 +510,7 @@ SYM_CODE_START(irq_entries_start)
 	.fill 0b + IDT_ALIGN - ., 1, 0xcc
 	vector = vector+1
     .endr
-SYM_CODE_END(irq_entries_start)
+SYM_CODE_END(_irq_entries_start)
 
 #ifdef CONFIG_X86_LOCAL_APIC
 	.align IDT_ALIGN

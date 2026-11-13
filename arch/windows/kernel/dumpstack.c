@@ -28,3 +28,14 @@ void die_addr(const char *str, struct pt_regs *regs, long err, long gp_addr)
 {
 	printk("I would die_addr, but I don't know how.\n");
 }
+
+unsigned long oops_begin(void)
+{
+	printk("OOPS: something happened.\n");
+	return 0;
+}
+
+void oops_end(unsigned long flags, struct pt_regs *regs, int signr)
+{
+	printk("OOPS: something happened (end).\n");
+}

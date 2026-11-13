@@ -13,6 +13,11 @@ void show_stack(struct task_struct *task, unsigned long *sp,
 	printk("stack backtrace printing is not supported yet.\n");
 }
 
+void show_stack_regs(struct pt_regs *regs)
+{
+	printk("show_stack_regs not implemented\n");
+}
+
 int __die(const char *str, struct pt_regs *regs, long err)
 {
 	printk("I would __die, but I don't know how.\n");

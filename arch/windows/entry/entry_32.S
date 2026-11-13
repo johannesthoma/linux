@@ -764,7 +764,7 @@ SYM_CODE_END(__switch_to_asm)
  * edi: kernel thread arg
  */
 // .pushsection .text, "ax"
-SYM_CODE_START(ret_from_fork_asm)
+SYM_CODE_START(_ret_from_fork_asm)
 	movl	%esp, %edx	/* regs */
 
 	/* return address for the stack unwinder */
@@ -779,7 +779,7 @@ SYM_CODE_START(ret_from_fork_asm)
 	FRAME_END
 
 	RET
-SYM_CODE_END(ret_from_fork_asm)
+SYM_CODE_END(_ret_from_fork_asm)
 // .popsection
 
 SYM_ENTRY(___begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
@@ -825,7 +825,7 @@ SYM_ENTRY(___begin_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
  * ebp  user stack
  * 0(%ebp) arg6
  */
-SYM_FUNC_START(entry_SYSENTER_32)
+SYM_FUNC_START(_entry_SYSENTER_32)
 	/*
 	 * On entry-stack with all userspace-regs live - save and
 	 * restore eflags and %eax to use it as scratch-reg for the cr3
@@ -940,7 +940,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
 	popfl
 	jmp	.Lsysenter_flags_fixed
 SYM_ENTRY(___end_SYSENTER_singlestep_region, SYM_L_GLOBAL, SYM_A_NONE)
-// SYM_FUNC_END(entry_SYSENTER_32)
+// SYM_FUNC_END(_entry_SYSENTER_32)
 
 /*
  * 32-bit legacy system call entry.

@@ -87,7 +87,7 @@ struct thread_info windows_thread_info;
 
 /* should never be called ... */
 
-struct task_struct *__switch_to(struct task_struct *from, struct task_struct *to)
+struct task_struct *_switch_to(struct task_struct *from, struct task_struct *to)
 {
 /* Let the Windows scheduler do the work: */
 /* KeSetEvent(to, 1)

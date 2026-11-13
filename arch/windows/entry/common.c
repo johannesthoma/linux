@@ -243,6 +243,9 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
 /* Returns true to return using SYSEXIT/SYSRETL, or false to use IRET */
 __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
 {
+/* TODO: !!!! */
+#if 0
+
 	/*
 	 * Called using the internal vDSO SYSENTER/SYSCALL32 calling
 	 * convention.  Adjust regs so it looks like we entered using int80.
@@ -256,6 +259,7 @@ __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
 	 * Fix it up.
 	 */
 	regs->ip = landing_pad;
+#endif
 
 	/* Invoke the syscall. If it failed, keep it simple: use IRET. */
 	if (!__do_fast_syscall_32(regs))
@@ -271,9 +275,11 @@ __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
 	if (cpu_feature_enabled(X86_FEATURE_XENPV))
 		return false;
 
+#if 0
 	/* EIP must point to the VDSO landing pad */
 	if (unlikely(regs->ip != landing_pad))
 		return false;
+#endif
 
 	/* CS and SS must match the values set in MSR_STAR */
 	if (unlikely(regs->cs != __USER32_CS || regs->ss != __USER_DS))

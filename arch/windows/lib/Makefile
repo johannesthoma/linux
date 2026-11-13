@@ -1,1 +1,1 @@
-lib-y := delay.o insn.o inat.o insn-eval.o usercopy.o
+lib-y := delay.o insn.o inat.o insn-eval.o usercopy.o cmpxchg8b_emu.o

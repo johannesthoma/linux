@@ -14,6 +14,8 @@
 /* TODO: */
 #define cpu_relax() do { } while (0)
 
+struct perf_event;
+
 struct thread_struct {
 	/* Cached TLS descriptors: */
 	struct desc_struct	tls_array[GDT_ENTRY_TLS_ENTRIES];
@@ -98,6 +100,9 @@ struct thread_struct {
 
 #define INIT_THREAD  {  }
 
+#define TOP_OF_INIT_STACK ((unsigned long)&init_stack + sizeof(init_stack) - \
+			   TOP_OF_KERNEL_STACK_PADDING)
+
 /*
  * This decides where the kernel will search for a free chunk of vm
  * space during mmap's.
@@ -116,6 +121,9 @@ static inline unsigned long __get_wchan(struct task_struct *p)
 {
 	return 0;
 }
+
+/* Base offset outside of TSS_LIMIT so unpriviledged IO causes #GP */
+#define IO_BITMAP_OFFSET_INVALID	(__KERNEL_TSS_LIMIT + 1)
 
 struct entry_stack {
         char    stack[PAGE_SIZE];

@@ -732,6 +732,8 @@ static void do_int3_user(struct pt_regs *regs)
 
 DEFINE_IDTENTRY_RAW(exc_int3)
 {
+/* TODO: */
+#if 0
 	/*
 	 * poke_int3_handler() is completely self contained code; it does (and
 	 * must) *NOT* call out to anything, lest it hits upon yet another
@@ -739,6 +741,7 @@ DEFINE_IDTENTRY_RAW(exc_int3)
 	 */
 	if (poke_int3_handler(regs))
 		return;
+#endif
 
 	/*
 	 * irqentry_enter_from_user_mode() uses static_branch_{,un}likely()

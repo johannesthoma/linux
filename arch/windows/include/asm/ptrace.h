@@ -2,6 +2,8 @@
 #ifndef _ASM_X86_PTRACE_H
 #define _ASM_X86_PTRACE_H
 
+#define ARCH_HAS_USER_SINGLE_STEP_REPORT 1
+
 #include <asm/segment.h>
 #include <asm/page_types.h>
 #include <asm/processor-flags.h>

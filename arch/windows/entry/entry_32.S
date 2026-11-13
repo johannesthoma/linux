@@ -562,7 +562,7 @@
 #endif
 
 	/* Initialize source and destination for movsl */
-	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %edi
+	movl	PER_CPU_VAR(_cpu_tss_rw + TSS_sp0), %edi
 	subl	%ecx, %edi
 	movl	%esp, %esi
 
@@ -608,10 +608,10 @@
 
 	/* Copy the remaining task-stack contents to entry-stack */
 	movl	%esp, %esi
-	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %edi
+	movl	PER_CPU_VAR(_cpu_tss_rw + TSS_sp0), %edi
 
 	/* Bytes on the task-stack to ecx */
-	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp1), %ecx
+	movl	PER_CPU_VAR(_cpu_tss_rw + TSS_sp1), %ecx
 	subl	%esi, %ecx
 
 	/* Allocate stack-frame on entry-stack */
@@ -774,7 +774,7 @@ SYM_CODE_START(ret_from_fork_asm)
 	/* prev already in EAX */
 	movl	%ebx, %ecx	/* fn */
 	pushl	%edi		/* fn_arg */
-	call	ret_from_fork
+	call	_ret_from_fork
 	addl	$4, %esp
 	FRAME_END
 
@@ -888,8 +888,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
 	 */
 
 	/* Load entry stack pointer and allocate frame for eflags/eax */
-/* TODO: */
-//	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %eax
+	movl	PER_CPU_VAR(_cpu_tss_rw + TSS_sp0), %eax
 	subl	$(2*4), %eax
 
 	/* Copy eflags and eax to entry stack */
@@ -985,7 +984,6 @@ _entry_INT80_32:
 	pushl	%esp	/* pointer to regs, standard calling convention */
 	call	_do_int80_syscall_32
 	add	$4, %esp
-#if 0
 .Lsyscall_32_done:
 	STACKLEAK_ERASE
 
@@ -993,14 +991,10 @@ restore_all_switch_stack:
 	SWITCH_TO_ENTRY_STACK
 	CHECK_AND_APPLY_ESPFIX
 
-#endif
-
 	/* Switch back to user CR3 */
-#if 0
 	SWITCH_TO_USER_CR3 scratch_reg=%eax
 
 	BUG_IF_WRONG_CR3
-#endif
 
 	/* Restore user state */
 	RESTORE_REGS pop=4			# skip orig_eax/error_code

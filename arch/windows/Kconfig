@@ -89,4 +89,13 @@ config SECCOMP
 config LOCK_MM_AND_FIND_VMA
 	def_bool y
 
+# config ARCH_HAS_USER_SINGLE_STEP_REPORT
+# 	def_bool y
+
+# config PERF_EVENTS
+#	def_bool y
+
+# config HAVE_HW_BREAKPOINT
+#	def_bool y
+
 endmenu

@@ -16,5 +16,8 @@ printk("raw_copy_from_user: from: %p to: %p n: %ld\n", from, to, n);
         return 0;
 }
 
+extern unsigned long
+copy_from_user_nmi(void *to, const void __user *from, unsigned long n);
+
 #include <asm-generic/uaccess.h>
 

@@ -1,2 +1,2 @@
-obj-y += vma.o
+obj-y += vma.o extable.o
 

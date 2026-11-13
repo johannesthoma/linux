@@ -1,1 +1,1 @@
-lib-y := delay.o
+lib-y := delay.o insn.o inat.o insn-eval.o

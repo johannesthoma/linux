@@ -55,6 +55,8 @@ generic-y :=
 
 libs-y += arch/windows/lib/
 core-y += arch/windows/kernel/
+# doesn't compile:
+# core-y += arch/windows/kernel/fpu/
 core-y += arch/windows/entry/
 core-y += arch/windows/entry/vdso/
 core-y += arch/windows/windows/

@@ -1138,12 +1138,15 @@ static void math_error(struct pt_regs *regs, int trapnr)
 	 * Synchronize the FPU register state to the memory register state
 	 * if necessary. This allows the exception handler to inspect it.
 	 */
-	fpu_sync_fpstate(fpu);
+/* TODO: */
+//	fpu_sync_fpstate(fpu);
 
 	task->thread.trap_nr	= trapnr;
 	task->thread.error_code = 0;
 
-	si_code = fpu__exception_code(fpu, trapnr);
+/* TODO: */
+//	si_code = fpu__exception_code(fpu, trapnr);
+	si_code = 0;
 	/* Retry when we get spurious exceptions: */
 	if (!si_code)
 		goto exit;

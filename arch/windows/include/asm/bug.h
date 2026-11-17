@@ -9,9 +9,18 @@
 /*
  * Despite that some emulators terminate on UD2, we use it for WARN().
  */
+/* TODO: not on Windows. It would trigger the UD handler from Windows
+ * and BSOD. We will fix that later to point to the Linux UD trap handler.
+ */
+#if 0
 #define ASM_UD2		".byte 0x0f, 0x0b"
 #define INSN_UD2	0x0b0f
+#else
+#define ASM_UD2		".byte 0x90, 0x90"
+#define INSN_UD2	0x9090
+#endif
 #define LEN_UD2		2
+
 
 #ifdef CONFIG_GENERIC_BUG
 
